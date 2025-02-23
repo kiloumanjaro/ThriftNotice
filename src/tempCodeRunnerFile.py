@@ -50,11 +50,11 @@ class Maps(ft.View):
                         controls=[
                             ft.Container(on_click=self.shrink,
                                 content=ft.Icon(
-                                    ft.Icons.MENU)
+                                    ft.icons.MENU)
                             ),
                             ft.Container(
                                 content=ft.Icon(
-                                    ft.Icons.SEARCH)
+                                    ft.icons.SEARCH)
                             )
                         ]
                     ),
@@ -74,7 +74,7 @@ class Maps(ft.View):
         )
         
         self.page_1 = ft.Container()
-        self.page_2 = ft.Row(alignment='end',
+        self.page_2 = ft.Row(
             controls=[
                 ft.Container(
                     width=400,
@@ -102,13 +102,36 @@ class Maps(ft.View):
 
     def initialize(self):
         self.controls = [
+            self.display_map_page_header(),
             ft.Text("Shop", size=32),
             ft.Text("Select items from the list below"),
             self.display_map_container(),
-        ]   
+            self.display_map_page_footer(), 
+        ]
+
+
+    def display_map_page_footer(self):
+        return ft.Row([ft.Text("Trift Notice", size="10")], alignment="center")
+
+    def display_map_page_header(self):
+        return ft.Container(
+            content=ft.Row(
+                [
+                    ft.Icon(name="settings", size=18),
+                    ft.IconButton(
+                        icon="shopping_cart_outlined",  
+                        on_click=lambda e: self.page.go("/tab"),
+                        icon_size=18,
+                    )
+                ],
+                alignment=ft.MainAxisAlignment.SPACE_BETWEEN  
+            )
+        )
+
+
 
     def display_map_container(self):
-        return ft.Container(height=850, bgcolor='green', border_radius=35, 
+        return ft.Container(width=400, height=850, bgcolor='green', border_radius=35, 
         content=ft.Stack(
             controls=[
                 self.page_1,
