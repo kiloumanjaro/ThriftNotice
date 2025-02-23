@@ -73,9 +73,7 @@ class Maps(ft.View):
             )
         )
         
-        self.page_1 = ft.Container(
-            width=400,
-            height=850,
+        self.page_1 = ft.Container( 
             bgcolor='green',
             border_radius=35,
             padding=ft.padding.only(left=50, top=60, right=200),
@@ -96,14 +94,13 @@ class Maps(ft.View):
         self.page_2 = ft.Row(alignment='end',
             controls=[
                 ft.Container(
-                    width=400,
-                    height=850,
+                    width=340,
                     bgcolor='red',
                     border_radius=35,
                     animate=ft.animation.Animation(600, ft.AnimationCurve.DECELERATE),
                     animate_scale=ft.animation.Animation(400, curve='decelerate'),
                     padding=ft.padding.only(
-                        top=50, left=20, right=20, bottom=5,
+                        top=50, left=20, right=20, bottom=50,
                     ),
                     content=ft.Column(
                         controls=[
@@ -118,11 +115,18 @@ class Maps(ft.View):
     def shrink(self, e):
         self.page_2.controls[0].width = 120
         self.page_2.controls[0].scale = ft.transform.Scale(
-            0.8, alignment=ft.alignment.center_right)
+            scale=0.8,  # Keep width the same
+            alignment=ft.alignment.center_right)
+        self.page_2.controls[0].border_radius=ft.border_radius.only(
+            top_left = 35,
+            top_right = 0,
+            bottom_left = 35,
+            bottom_right = 0
+        )
         self.page_2.update()
 
     def restore(self, e):
-        self.page_2.controls[0].width = 400
+        self.page_2.controls[0].width = 340
         self.page_2.controls[0].scale = ft.transform.Scale(
             1, alignment=ft.alignment.center_right)
         self.page_2.update()
@@ -133,7 +137,7 @@ class Maps(ft.View):
         ]   
 
     def display_map_container(self):
-        return ft.Container(height=850, bgcolor='green', border_radius=35, 
+        return ft.Container(expand=True, bgcolor='green', border_radius=35, 
         content=ft.Stack(
             controls=[
                 self.page_1,
@@ -144,7 +148,10 @@ class Maps(ft.View):
 
 def main(page: ft.Page):
     page.theme_mode = ft.ThemeMode.LIGHT    
-
+    page.window.width = 375       # window's width is 200 px
+    page.window.height = 667       # window's height is 200 px
+    page.window.resizable = False  # window is not resizable
+    page.update()
 
     def router(route):
         page.views.clear()
