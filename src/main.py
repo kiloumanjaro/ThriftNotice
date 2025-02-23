@@ -73,7 +73,26 @@ class Maps(ft.View):
             )
         )
         
-        self.page_1 = ft.Container()
+        self.page_1 = ft.Container(
+            width=400,
+            height=850,
+            bgcolor='green',
+            border_radius=35,
+            padding=ft.padding.only(left=50, top=60, right=200),
+            content=ft.Column(  
+                controls=[
+                    ft.Container(
+                        border_radius=25, padding=ft.padding.only(top=13, left=20),
+                        height=50,
+                        width=50,
+                        border=ft.border.all(color='white', width=1),  
+                        on_click=self.restore,
+                        content=ft.Text('<')
+                    )
+                ]
+            )
+        )
+
         self.page_2 = ft.Row(alignment='end',
             controls=[
                 ft.Container(
@@ -98,12 +117,18 @@ class Maps(ft.View):
 
     def shrink(self, e):
         self.page_2.controls[0].width = 120
+        self.page_2.controls[0].scale = ft.transform.Scale(
+            0.8, alignment=ft.alignment.center_right)
+        self.page_2.update()
+
+    def restore(self, e):
+        self.page_2.controls[0].width = 400
+        self.page_2.controls[0].scale = ft.transform.Scale(
+            1, alignment=ft.alignment.center_right)
         self.page_2.update()
 
     def initialize(self):
         self.controls = [
-            ft.Text("Shop", size=32),
-            ft.Text("Select items from the list below"),
             self.display_map_container(),
         ]   
 
