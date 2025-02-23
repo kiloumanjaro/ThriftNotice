@@ -40,8 +40,51 @@ class Landing(ft.View):
 # define the map page ...
 class Maps(ft.View):
     def __init__(self, page: ft.Page):
+        name = 'Kint Louise Borbano'
         super(Maps, self).__init__(route="/maps")
         self.page = page
+
+        circle = ft.Stack(
+            controls=[
+                ft.Container(width=100, height=100, border_radius=50, bgcolor="white12"),
+                ft.Container(
+                    gradient=ft.SweepGradient(
+                        center=ft.alignment.center,
+                        start_angle=0.0,
+                        end_angle=3,
+                        stops=[0.5, 0.5],
+                        colors=["#00000000", 'red'],
+                    ),
+                    width=100,
+                    height=100,
+                    border_radius=50,
+                    content=ft.Row(
+                        alignment="center",
+                        controls=[
+                            ft.Container(
+                                padding=ft.padding.all(5),
+                                bgcolor='green',
+                                width=90,
+                                height=90,
+                                border_radius=50,
+                                content=ft.Container(
+                                    bgcolor='red',
+                                    height=80,
+                                    width=80,
+                                    border_radius=40,
+                                    content=ft.CircleAvatar(
+                                        opacity=0.8,
+                                        foreground_image_src="https://images.unsplash.com/photo-1545912452-8aea7e25a3d3?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=687&q=80",
+                                    ),
+                                ),
+                            )
+                        ],
+                    ),
+                ),
+            ]
+        )
+
+
 
         first_page_contents = ft.Container(
             content=ft.Column(
@@ -79,14 +122,33 @@ class Maps(ft.View):
             padding=ft.padding.only(left=50, top=60, right=200),
             content=ft.Column(  
                 controls=[
-                    ft.Container(
+                    ft.Row(alignment='end',
+                    controls=[ ft.Container(
                         border_radius=25, padding=ft.padding.only(top=13, left=20),
                         height=50,
                         width=50,
                         border=ft.border.all(color='white', width=1),  
                         on_click=self.restore,
                         content=ft.Text('<')
-                    )
+                        )
+                    ]
+                   ),
+                    ft.Divider(height=25, color="transparent"),
+                    circle,
+                    ft.Text(name, size=32, weight='bold'),
+                    ft.Divider(height=25, color="transparent"),
+                    ft.Row(controls=[
+                        ft.Icon(ft.icons.FAVORITE_BORDER_SHARP),
+                        ft.Text('Favorites', size=15, weight=ft.FontWeight.W_300, color='white', font_family='poppins')
+                    ]), 
+                    ft.Row(controls=[
+                        ft.Icon(ft.icons.CARD_TRAVEL),
+                        ft.Text('Preference', size=15, weight=ft.FontWeight.W_300, color='white', font_family='poppins')
+                    ]), 
+                                        ft.Row(controls=[
+                        ft.Icon(ft.icons.CALCULATE_OUTLINED),
+                        ft.Text('About', size=15, weight=ft.FontWeight.W_300, color='white', font_family='poppins')
+                    ]), 
                 ]
             )
         )
@@ -145,6 +207,8 @@ class Maps(ft.View):
             ]
         )
     )
+
+
 
 def main(page: ft.Page):
     page.theme_mode = ft.ThemeMode.LIGHT    
