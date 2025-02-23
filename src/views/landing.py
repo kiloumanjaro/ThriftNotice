@@ -13,7 +13,7 @@ class Landing(ft.View):
         self.title = ft.Text("THRIFT NOTICE".upper(), size=28, weight="bold")
         self.subtitle = ft.Text("by TBA", size=11)
 
-        self.maps_page_btn: Any = ft.IconButton(
+        self.maps_page_btn: ft.Any = ft.IconButton(
             "arrow_forward", 
             width=54,
             height=54,

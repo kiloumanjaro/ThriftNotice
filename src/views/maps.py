@@ -99,18 +99,33 @@ class Maps(ft.View):
                     circle,
                     ft.Text(name, size=32, weight='bold'),
                     ft.Divider(height=25, color="transparent"),
-                    ft.Row(controls=[
-                        ft.Icon(ft.icons.FAVORITE_BORDER_SHARP),
-                        ft.Text('Favorites', size=15, weight=ft.FontWeight.W_300, color='white', font_family='poppins')
-                    ]), 
-                    ft.Row(controls=[
-                        ft.Icon(ft.icons.CARD_TRAVEL),
-                        ft.Text('Preference', size=15, weight=ft.FontWeight.W_300, color='white', font_family='poppins')
-                    ]), 
-                                        ft.Row(controls=[
-                        ft.Icon(ft.icons.CALCULATE_OUTLINED),
-                        ft.Text('About', size=15, weight=ft.FontWeight.W_300, color='white', font_family='poppins')
-                    ]), 
+                    ft.TextButton(
+                        text="Favorites",
+                        icon=ft.icons.FAVORITE_BORDER_SHARP,
+                        on_click=lambda e: self.page.go("/favorite"),
+                        style=ft.ButtonStyle(
+                            color="white",
+                            padding=ft.padding.all(10)
+                        )
+                    ),
+                    ft.TextButton(
+                        text="Preference",
+                        icon=ft.icons.CARD_TRAVEL,
+                        on_click=lambda e: self.page.go("/preference"),
+                        style=ft.ButtonStyle(
+                            color="white",
+                            padding=ft.padding.all(10)
+                        )
+                    ),
+                    ft.TextButton(
+                        text="About",
+                        icon=ft.icons.CALCULATE_OUTLINED,
+                        on_click=lambda e: self.page.go("/about"),
+                        style=ft.ButtonStyle(
+                            color="white",
+                            padding=ft.padding.all(10)
+                        )
+                    ),
                 ]
             )
         )
