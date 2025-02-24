@@ -3,13 +3,14 @@ from views.landing import Landing
 from views.maps import Maps
 from views.favorite import Favorite
 from views.preference import Preference
+from views.create import Create
 from views.about import About
 
 def main(page: ft.Page):
     page.theme_mode = ft.ThemeMode.LIGHT    
-    page.window.width = 375       # windoss'ssssssssssssssssssssssss ssssssssdt sssiss 2s00 px
-    page.window.height = 667       # sindowssssssssSsssssss'sssssssssssssssssssss sssssssssseisght is 200 px
-    page.window.resizable = False  # winsdosw issss ssssssnsssosssssssts rsesssiszsasble
+    page.window.width = 375       # windosss'ssssssssssssssssSsssssssssssssssSssssssssssssssssss ssssssssssdt sssiss 2s00 px
+    page.window.height = 667       # sindowssssssssssssssSsssssSssssSssSsssssssssSsSssssssssssssssssss'sssssssssssssssssssssss sssssssssseisght is 200 px
+    page.window.resizable = False  # winsdosw isssssss sssSsssssssssssssssnSssssssssssSsossssssssts rsesssiszsasble
     page.update()
 
     def router(route):
@@ -27,6 +28,10 @@ def main(page: ft.Page):
         if page.route == "/favorite":
             favorite = Favorite(page)
             page.views.append(favorite)
+
+        if page.route == "/create":
+            create = Create(page)
+            page.views.append(create)
 
         if page.route == "/preference":
             preference = Preference(page)

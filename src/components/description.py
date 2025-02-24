@@ -11,6 +11,12 @@ class BottomSheet(ft.Container):
             padding=ft.padding.only(top=10, bottom=20, right=15, left=25),
             bottom=-400,  # Initially hidden below the screen
             animate_position=ft.animation.Animation(400, "decelerate"),
+            shadow=ft.BoxShadow(
+                spread_radius=1,  # Reduced spread
+                blur_radius=3,  # Softer shadow
+                color=ft.colors.BLACK12,  # Lighter shadow
+                offset=ft.Offset(0, 1)  # Minimal vertical offset
+            ),  
             content=ft.Column(
                 expand=True,  # Makes the column take full height
                 controls=[
@@ -48,6 +54,7 @@ class BottomSheet(ft.Container):
                 ]
             )
         )
+
 
     def show(self):
         self.bottom = 0
