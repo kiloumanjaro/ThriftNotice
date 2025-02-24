@@ -5,7 +5,7 @@ class Preference(ft.View):
         super(Preference, self).__init__(route="/preference")
         self.page = page
 
-        questions_content = ft.Container(
+        questions_container = ft.Container(
             width=375,
             height=575,
             padding=10,

@@ -3,12 +3,13 @@ from views.landing import Landing
 from views.maps import Maps
 from views.favorite import Favorite
 from views.preference import Preference
+from views.about import About
 
 def main(page: ft.Page):
     page.theme_mode = ft.ThemeMode.LIGHT    
-    page.window.width = 375       # windo's sdt iss 200 px
-    page.window.height = 667       # sindowss'sss sseisght is 200 px
-    page.window.resizable = False  # window is not resiszasble
+    page.window.width = 375       # windos'sss sssssdt sssiss 2s00 px
+    page.window.height = 667       # sindowssss'sssssss ssssssseisght is 200 px
+    page.window.resizable = False  # winsdosw iss nosst ressiszasble
     page.update()
 
     def router(route):
@@ -29,6 +30,10 @@ def main(page: ft.Page):
         if page.route == "/preference":
             preference = Preference(page)
             page.views.append(preference)
+
+        if page.route == "/about":
+            about = About(page)
+            page.views.append(about)
 
         page.update()
 

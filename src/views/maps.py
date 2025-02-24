@@ -97,7 +97,7 @@ class Maps(ft.View):
                    ),
                     ft.Divider(height=25, color="transparent"),
                     circle,
-                    ft.Text(name, size=32, weight='bold'),
+                    ft.Text(name, size=20, weight='bold'),
                     ft.Divider(height=25, color="transparent"),
                     ft.TextButton(
                         text="Favorites",
@@ -151,6 +151,10 @@ class Maps(ft.View):
         )
         self.initialize() 
 
+    def initialize(self):
+        self.controls = [
+            self.display_map_container(),
+        ]   
     def shrink(self, e):
         self.page_2.controls[0].width = 120
         self.page_2.controls[0].scale = ft.transform.Scale(
@@ -165,15 +169,12 @@ class Maps(ft.View):
         self.page_2.update()
 
     def restore(self, e):
+        print("Back button clicked!")  # Debugging
         self.page_2.controls[0].width = 340
         self.page_2.controls[0].scale = ft.transform.Scale(
             1, alignment=ft.alignment.center_right)
         self.page_2.update()
 
-    def initialize(self):
-        self.controls = [
-            self.display_map_container(),
-        ]   
 
     def display_map_container(self):
         return ft.Container(expand=True, bgcolor='green', border_radius=35, 

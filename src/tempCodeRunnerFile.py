@@ -1,1 +1,0 @@
-    page.window.height = 667  
