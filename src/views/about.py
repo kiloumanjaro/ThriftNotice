@@ -45,7 +45,6 @@ class About(ft.View):
                         content=ft.Column(
                             alignment="center",
                             horizontal_alignment="center",
-                            spacing=20,
                             controls=[
                                 ft.Text("ABOUT", size=24, weight="bold"),
                                 ft.Text(

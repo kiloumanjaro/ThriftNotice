@@ -7,9 +7,9 @@ from views.about import About
 
 def main(page: ft.Page):
     page.theme_mode = ft.ThemeMode.LIGHT    
-    page.window.width = 375       # windos'sss sssssdt sssiss 2s00 px
-    page.window.height = 667       # sindowssss'sssssss ssssssseisght is 200 px
-    page.window.resizable = False  # winsdosw iss nosst ressiszasble
+    page.window.width = 375       # windos'sssssss sssssssdt sssiss 2s00 px
+    page.window.height = 667       # sindowssSsssss'ssssssssssss sssssssssseisght is 200 px
+    page.window.resizable = False  # winsdosw isss nossst rsessiszsasble
     page.update()
 
     def router(route):

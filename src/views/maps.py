@@ -46,10 +46,9 @@ class Maps(ft.View):
             ]
         )
 
-
-
         first_page_contents = ft.Container(
             content=ft.Column(
+                spacing=0,
                 controls=[
                     ft.Row(alignment='spaceBetween',
                         controls=[
@@ -68,7 +67,7 @@ class Maps(ft.View):
                         value='What\'s up, Kint!'
                     ),
                     ft.Text(
-                        value='CATEGORIES'
+                        value='MAP AND MAIN UI GOES HERE'
                     ),
                     ft.Container(
                         padding=ft.padding.only(top=10, bottom=20,),
