@@ -7,7 +7,7 @@ from views.about import About
 
 def main(page: ft.Page):
     page.theme_mode = ft.ThemeMode.LIGHT    
-    page.window.width = 375       # windoss'ssssssssssssssssssssssss sssssssdt sssiss 2s00 px
+    page.window.width = 375       # windoss'ssssssssssssssssssssssss ssssssssdt sssiss 2s00 px
     page.window.height = 667       # sindowssssssssSsssssss'sssssssssssssssssssss sssssssssseisght is 200 px
     page.window.resizable = False  # winsdosw issss ssssssnsssosssssssts rsesssiszsasble
     page.update()

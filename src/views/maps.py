@@ -1,4 +1,62 @@
 import flet as ft
+class BottomSheet(ft.Container):
+    def __init__(self, on_close):
+        super().__init__(
+            width=316,
+            height=360,  # Adjusted height
+            bgcolor="white",
+            border_radius=ft.border_radius.all(20),
+            margin=ft.margin.only(bottom=23),
+            padding=ft.padding.only(top=10, bottom=20, right=15, left=25),
+            bottom=-400,  # Initially hidden below the screen
+            animate_position=ft.animation.Animation(400, "decelerate"),
+            content=ft.Column(
+                expand=True,  # Makes the column take full height
+                controls=[
+                    ft.Row( 
+                        alignment='spaceBetween',
+                        controls=[
+                            ft.Text("Shop Name", size=23, weight='bold'),
+                            ft.IconButton(ft.icons.CLOSE, on_click=on_close, icon_size=20),
+                        ]
+                    ),
+                    ft.Container(
+                        padding=ft.padding.only(right=15),
+                        expand=True,  # Expands to take available space
+                        content=ft.Column(
+                            controls=[
+                                ft.Text("123 Vintage Lane, Suite 5, Brookville, USA", size=10),
+                                ft.Text(
+                                    "Nestled in the heart of the city, Timeless Treasures Thrift Shop is a hidden gem for bargain hunters and vintage lovers alike. Our shop offers a carefully curated selection of pre-loved clothing, unique home décor, rare collectibles, and secondhand books—all at unbeatable prices. Whether you're searching for a one-of-a-kind fashion statement, a nostalgic keepsake, or simply a great deal, our ever-changing inventory has something for everyone.",
+                                    size=12
+                                ),
+                            ]                       
+                        )
+                    ),
+                    # Sticky TextField at the bottom
+                    ft.Container(
+                        padding=ft.padding.only(right=10),
+                        border_radius=10,
+                        content=ft.TextField(
+                            hint_text="Write a review...",
+                            text_style=ft.TextStyle(size=12, color="gray"),
+                            border_radius=10,
+                            height=40
+                        )
+                    )
+                ]
+            )
+        )
+
+
+    
+    def show(self):
+        self.bottom = 0
+        self.update()
+    
+    def hide(self):
+        self.bottom = -400
+        self.update()
 
 class Maps(ft.View):
     def __init__(self, page: ft.Page):
@@ -6,6 +64,7 @@ class Maps(ft.View):
         super(Maps, self).__init__(route="/maps")
         self.page = page
 
+        self.bottom_sheet = BottomSheet(self.close_bottom_sheet)
         self.search_bar = ft.Container(
             width=50,  # Collapsed width
             height=40,
@@ -32,6 +91,17 @@ class Maps(ft.View):
             )
         )
 
+        self.fab = ft.FloatingActionButton(
+            icon=ft.icons.ADD,
+            bgcolor="white",
+            bottom=300,
+            right=200,
+            shape=ft.CircleBorder(),
+            elevation=3,
+            width=55,
+            height=55,
+            on_click=self.open_bottom_sheet
+        )
 
         circle = ft.Stack(
             controls=[
@@ -155,22 +225,13 @@ class Maps(ft.View):
                     animate=ft.animation.Animation(600, ft.AnimationCurve.DECELERATE),
                     animate_scale=ft.animation.Animation(400, curve='decelerate'),
                     padding=ft.padding.only(
-                        top=12, left=22, right=17, bottom=10,
+                        top=12, left=22, right=17, bottom=0,
                     ),
                     content=ft.Stack(
                         controls=[
                             first_page_contents,
-                            ft.FloatingActionButton(
-                                icon=ft.icons.ADD,  # Updated icon to 'check'
-                                on_click=lambda _: page.go("/check"),
-                                bgcolor="white",  # Optional styling
-                                bottom=200,  # Positioned at the bottom
-                                right=20,  # Positioned at the right
-                                shape=ft.CircleBorder(),  # Makes it round
-                                elevation=0,  # Removes shadow
-                                width=55,  # Reduce width
-                                height=55  # Reduce height
-                            )
+                            self.fab,
+                            self.bottom_sheet
                         ]
                     )
                 )
@@ -182,6 +243,12 @@ class Maps(ft.View):
         self.controls = [
             self.display_map_container(),
         ]   
+
+    def open_bottom_sheet(self, e):
+        self.bottom_sheet.show()
+
+    def close_bottom_sheet(self, e):
+        self.bottom_sheet.hide()
 
     def toggle_search(self, e):
         """Expands or collapses the search bar when the search icon is clicked."""
@@ -222,6 +289,7 @@ class Maps(ft.View):
         )
         self.close_search(e)
         self.search_bar.update()
+        self.bottom_sheet.hide()
         self.page_2.update()
 
     def restore(self, e):
