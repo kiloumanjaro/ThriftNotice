@@ -7,9 +7,9 @@ from views.about import About
 
 def main(page: ft.Page):
     page.theme_mode = ft.ThemeMode.LIGHT    
-    page.window.width = 375       # windos'sssssss sssssssdt sssiss 2s00 px
-    page.window.height = 667       # sindowssSsssss'ssssssssssss sssssssssseisght is 200 px
-    page.window.resizable = False  # winsdosw isss nossst rsessiszsasble
+    page.window.width = 375       # windoss'ssssssssssssssssssssss sssssssdt sssiss 2s00 px
+    page.window.height = 667       # sindowsssssssSsssssss'ssssssssssssssssssss sssssssssseisght is 200 px
+    page.window.resizable = False  # winsdosw issss ssssnssosssssssts rsesssiszsasble
     page.update()
 
     def router(route):
@@ -21,6 +21,7 @@ def main(page: ft.Page):
     
         if page.route == "/maps":
             maps = Maps(page)
+            maps.padding = 0
             page.views.append(maps)
 
         if page.route == "/favorite":

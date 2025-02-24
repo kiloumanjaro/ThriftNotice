@@ -6,6 +6,31 @@ class Maps(ft.View):
         super(Maps, self).__init__(route="/maps")
         self.page = page
 
+        self.search_bar = ft.Container(
+            width=50,  # Collapsed width
+            height=40,
+            border=None,
+            border_radius=20,
+            bgcolor="red",
+            animate=ft.animation.Animation(400, "decelerate"),
+            content=ft.Row(
+                spacing=0,  # Set spacing to 0
+                controls=[
+                    ft.IconButton(ft.icons.SEARCH, on_click=self.toggle_search),
+                    ft.TextField(
+                        hint_text="Search...",
+                        bgcolor="white",
+                        border=None,
+                        border_radius=20,
+                        border_width=0,
+                        expand=True,
+                        visible=False,  # Initially hidden
+                    ),
+                ]
+            )
+        )
+
+
         circle = ft.Stack(
             controls=[
                 ft.Container(width=100, height=100, border_radius=50, bgcolor="white12"),
@@ -53,33 +78,23 @@ class Maps(ft.View):
                     ft.Row(alignment='spaceBetween',
                         controls=[
                             ft.Container(on_click=self.shrink,
-                                content=ft.Icon(
-                                    ft.Icons.MENU)
+                                content=ft.Icon(ft.Icons.MENU)
                             ),
-                            ft.Container(
-                                content=ft.Icon(
-                                    ft.Icons.SEARCH)
-                            )
+                            self.search_bar,  # Expandable search bar
                         ]
                     ),
                     ft.Divider(height=20, color="transparent"),
-                    ft.Text(
-                        value='What\'s up, Kint!'
-                    ),
-                    ft.Text(
-                        value='MAP AND MAIN UI GOES HERE'
-                    ),
-                    ft.Container(
-                        padding=ft.padding.only(top=10, bottom=20,),
-                    )
-                    
+                    ft.Text(value="What's up, Kint!"),
+                    ft.Text(value="MAP AND MAIN UI GOES HERE"),
                 ]
-            )
+            ),
+            on_click=self.close_search,  # Detect clicks outside search bar
         )
+
         
         self.page_1 = ft.Container( 
             bgcolor='green',
-            border_radius=35,
+            border_radius=0,
             padding=ft.padding.only(left=50, top=60, right=200),
             content=ft.Column(  
                 controls=[
@@ -132,13 +147,13 @@ class Maps(ft.View):
         self.page_2 = ft.Row(alignment='end',
             controls=[
                 ft.Container(
-                    width=340,
+                    width=375,
                     bgcolor='red',
-                    border_radius=35,
+                    border_radius=0,
                     animate=ft.animation.Animation(600, ft.AnimationCurve.DECELERATE),
                     animate_scale=ft.animation.Animation(400, curve='decelerate'),
                     padding=ft.padding.only(
-                        top=50, left=20, right=20, bottom=50,
+                        top=10, left=22, right=20, bottom=50,
                     ),
                     content=ft.Column(
                         controls=[
@@ -154,6 +169,25 @@ class Maps(ft.View):
         self.controls = [
             self.display_map_container(),
         ]   
+
+    def toggle_search(self, e):
+        """Expands or collapses the search bar when the search icon is clicked."""
+        text_field = self.search_bar.content.controls[1]
+        if self.search_bar.width == 50:
+            self.search_bar.width = 250  # Expand width
+            text_field.visible = True  # Show input field
+        else:
+            self.close_search(e)  # Collapse if already expanded
+        self.search_bar.update()
+
+    def close_search(self, e):
+        """Closes the search bar when clicking outside of it."""
+        text_field = self.search_bar.content.controls[1]
+        if self.search_bar.width > 50:  # Only close if expanded
+            self.search_bar.width = 50
+            text_field.visible = False
+            self.search_bar.update()
+
     def shrink(self, e):
         self.page_2.controls[0].width = 120
         self.page_2.controls[0].scale = ft.transform.Scale(
@@ -165,18 +199,25 @@ class Maps(ft.View):
             bottom_left = 35,
             bottom_right = 0
         )
+        self.close_search(e)
+        self.search_bar.update()
         self.page_2.update()
 
     def restore(self, e):
-        print("Back button clicked!")  # Debugging
-        self.page_2.controls[0].width = 340
+        self.page_2.controls[0].width = 375
         self.page_2.controls[0].scale = ft.transform.Scale(
             1, alignment=ft.alignment.center_right)
+        self.page_2.controls[0].border_radius=ft.border_radius.only(
+            top_left = 0,
+            top_right = 0,
+            bottom_left = 0,
+            bottom_right = 0
+        )
         self.page_2.update()
 
 
     def display_map_container(self):
-        return ft.Container(expand=True, bgcolor='green', border_radius=35, 
+        return ft.Container(expand=True, bgcolor='green', border_radius=0, 
         content=ft.Stack(
             controls=[
                 self.page_1,
