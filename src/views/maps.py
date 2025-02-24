@@ -155,11 +155,22 @@ class Maps(ft.View):
                     animate=ft.animation.Animation(600, ft.AnimationCurve.DECELERATE),
                     animate_scale=ft.animation.Animation(400, curve='decelerate'),
                     padding=ft.padding.only(
-                        top=12, left=22, right=17, bottom=50,
+                        top=12, left=22, right=17, bottom=10,
                     ),
-                    content=ft.Column(
+                    content=ft.Stack(
                         controls=[
-                            first_page_contents
+                            first_page_contents,
+                            ft.FloatingActionButton(
+                                icon=ft.icons.ADD,  # Updated icon to 'check'
+                                on_click=lambda _: page.go("/check"),
+                                bgcolor="white",  # Optional styling
+                                bottom=200,  # Positioned at the bottom
+                                right=20,  # Positioned at the right
+                                shape=ft.CircleBorder(),  # Makes it round
+                                elevation=0,  # Removes shadow
+                                width=55,  # Reduce width
+                                height=55  # Reduce height
+                            )
                         ]
                     )
                 )
@@ -207,7 +218,7 @@ class Maps(ft.View):
             top=12,
             left=22,
             right=0, 
-            bottom=50,
+            bottom=10,
         )
         self.close_search(e)
         self.search_bar.update()
@@ -227,7 +238,7 @@ class Maps(ft.View):
             top=12,
             left=22,
             right=17, 
-            bottom=50,
+            bottom=10,
         )
         self.page_2.update()
 
@@ -237,7 +248,7 @@ class Maps(ft.View):
         content=ft.Stack(
             controls=[
                 self.page_1,
-                self.page_2
+                self.page_2,
             ]
         )
     )
