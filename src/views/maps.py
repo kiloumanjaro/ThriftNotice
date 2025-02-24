@@ -12,16 +12,18 @@ class Maps(ft.View):
             border=None,
             border_radius=20,
             bgcolor="red",
+            padding=ft.padding.only(right=20),
             animate=ft.animation.Animation(400, "decelerate"),
             content=ft.Row(
                 spacing=0,  # Set spacing to 0
                 controls=[
                     ft.IconButton(ft.icons.SEARCH, on_click=self.toggle_search),
                     ft.TextField(
-                        hint_text="Search...",
+                        hint_text=" Search",
+                        text_style=ft.TextStyle(size=14, color="gray"), 
                         bgcolor="white",
                         border=None,
-                        border_radius=20,
+                        border_radius=25,
                         border_width=0,
                         expand=True,
                         visible=False,  # Initially hidden
@@ -153,7 +155,7 @@ class Maps(ft.View):
                     animate=ft.animation.Animation(600, ft.AnimationCurve.DECELERATE),
                     animate_scale=ft.animation.Animation(400, curve='decelerate'),
                     padding=ft.padding.only(
-                        top=10, left=22, right=20, bottom=50,
+                        top=12, left=22, right=17, bottom=50,
                     ),
                     content=ft.Column(
                         controls=[
@@ -174,11 +176,13 @@ class Maps(ft.View):
         """Expands or collapses the search bar when the search icon is clicked."""
         text_field = self.search_bar.content.controls[1]
         if self.search_bar.width == 50:
-            self.search_bar.width = 250  # Expand width
+            self.search_bar.width = 300  # Expand width
             text_field.visible = True  # Show input field
         else:
             self.close_search(e)  # Collapse if already expanded
         self.search_bar.update()
+
+
 
     def close_search(self, e):
         """Closes the search bar when clicking outside of it."""
@@ -199,6 +203,12 @@ class Maps(ft.View):
             bottom_left = 35,
             bottom_right = 0
         )
+        self.page_2.controls[0].padding=ft.padding.only(
+            top=12,
+            left=22,
+            right=0, 
+            bottom=50,
+        )
         self.close_search(e)
         self.search_bar.update()
         self.page_2.update()
@@ -212,6 +222,12 @@ class Maps(ft.View):
             top_right = 0,
             bottom_left = 0,
             bottom_right = 0
+        )
+        self.page_2.controls[0].padding=ft.padding.only(
+            top=12,
+            left=22,
+            right=17, 
+            bottom=50,
         )
         self.page_2.update()
 
