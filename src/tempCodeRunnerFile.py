@@ -1,2 +1,1 @@
-
-        if page.route == "/":
+from views.landing import Landing
