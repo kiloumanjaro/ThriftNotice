@@ -42,7 +42,7 @@ class Landing(ft.View):
             ft.Container(
                 expand=True,
                 padding=ft.padding.only(left=30, right=30),
-                bgcolor=self.wg,
+                bgcolor="white",
                 content=ft.Column(
                     expand=True,
                     controls=[
