@@ -10,6 +10,7 @@ class Maps(ft.View):
         bg='#1c1c1c'
         fg='#98e2f6'
         wg='#f8f9ff'
+        fg1='#5f82a6'
 
         self.bottom_sheet = BottomSheet(self.close_bottom_sheet)
         self.search_bar = ft.Container(
@@ -23,7 +24,7 @@ class Maps(ft.View):
             content=ft.Row(
                 spacing=0,  # Set spacing to 0
                 controls=[
-                    ft.IconButton(ft.icons.SEARCH, on_click=self.toggle_search),
+                    ft.IconButton(ft.icons.SEARCH, on_click=self.toggle_search, icon_color=fg1),
                     ft.TextField(
                         hint_text=" Search",
                         text_style=ft.TextStyle(size=14, color="gray"), 
@@ -61,7 +62,7 @@ class Maps(ft.View):
                         start_angle=0.0,
                         end_angle=3,
                         stops=[0.5, 0.5],
-                        colors=["#00000000", '#98e2f6'],
+                        colors=["#00000000", fg],
                     ),
                     width=100,
                     height=100,
@@ -99,7 +100,7 @@ class Maps(ft.View):
                     ft.Row(alignment='spaceBetween',
                         controls=[
                             ft.Container(on_click=self.shrink,
-                                content=ft.Icon(ft.Icons.MENU)
+                                content=ft.Icon(ft.Icons.MENU, color=fg1,)
                             ),
                             self.search_bar,  # Expandable search bar
                         ]
@@ -122,7 +123,7 @@ class Maps(ft.View):
                     circle,
                     ft.Divider(height=10, color="transparent"),
                     ft.Text(name, size=28, weight='bold', color=wg),
-                    ft.Divider(height=25, color="transparent"),
+                    ft.Divider(height=15, color="transparent"),
                     ft.TextButton(
                         text="Favorites",
                         icon=ft.icons.FAVORITE_BORDER_SHARP,
@@ -157,6 +158,17 @@ class Maps(ft.View):
                         text="About",
                         icon=ft.icons.INFO_OUTLINE_ROUNDED,
                         on_click=lambda e: self.page.go("/about"),
+                        style=ft.ButtonStyle(
+                            color=wg,
+                            icon_color=wg,
+                            padding=ft.padding.all(10)
+                        )
+                    ),
+                    ft.Divider(height=20, color="transparent"),
+                    ft.TextButton(
+                        text="Sign Out",
+                        icon=ft.icons.LOGOUT,
+                        on_click=lambda e: self.page.go("/"),
                         style=ft.ButtonStyle(
                             color=wg,
                             icon_color=wg,

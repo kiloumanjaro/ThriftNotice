@@ -6,6 +6,7 @@ class Create(ft.View):
         super(Create, self).__init__(route="/create")
         self.page = page
         self.initialize()
+
     
     def initialize(self):
         self.controls = [self.display_create_container()]
@@ -16,7 +17,7 @@ class Create(ft.View):
     
     def display_create_container(self):
         name = ft.TextField()
-        description = ft.TextField(multiline=True, max_lines=2)
+        address = ft.TextField(multiline=True, max_lines=2)
         
         type_selector = ft.Dropdown(
             options=[
@@ -25,7 +26,7 @@ class Create(ft.View):
             ]
         )
 
-        date_time_field = ft.TextField(disabled=True)
+        date_time_field = ft.TextField(disabled=True, width=155)
 
         def on_type_change(e):
             date_time_field.disabled = type_selector.value != "Pop-up"
@@ -42,16 +43,24 @@ class Create(ft.View):
                     width=200,  # Adjust the width as needed
                     height=50,  # Adjust the height as needed
                     style=ft.ButtonStyle(
-                        color="black"  # Change this to any color you want
+                        bgcolor="#1c1c1c",  # Background color
+                        color="white",  # Text color
+                        elevation=0  # Remove shadow effect
                     )
                 )
             ]
         )
 
+        bg='#1c1c1c'
+        fg='#98e2f6'
+        wg='#f8f9ff'
+        fg1='#5f82a6'
+
         return ft.Container(
             expand=True,
             bgcolor='white',
             content=ft.Column(
+                expand=True,
                 controls=[  
                     ft.Row(
                         controls=[
@@ -73,27 +82,39 @@ class Create(ft.View):
                         ],
                         alignment="start",
                     ),
-                    ft.Divider(height=10, color="transparent"),
                     ft.Container(
-                        padding=ft.padding.only(left=20, right=20, top=0),
+                        padding=ft.padding.only(top=0, left=10, right=10, bottom=0),
+                        alignment=ft.alignment.bottom_center,
+                        content=ft.Row(
+                            controls=[
+                                ft.Icon(ft.icons.MAP, color=fg1, size=180),  # Added landmark icon
+                            ],
+                            alignment="center"
+                        ),
+                    ),
+                    ft.Container(
+                        padding=ft.padding.only(left=20, right=20, top=0, bottom=25),
                         content=ft.Column(
                             controls=[
-                                ft.Divider(height=10, color="transparent"),
                                 ft.Text("Title", size=13),
                                 name,
-                                ft.Text("Description", size=13),
-                                description,
+                                ft.Text("Address", size=13),
+                                address,
+                                ft.Text("Type                                Date & Time", size=13),
+                                ft.Row(  
+                                    controls=[
+                                        type_selector,
+                                        date_time_field
+                                    ],
+                                    alignment="stretch"
+                                ),
                                 ft.Divider(height=15, color="transparent"),
-                                ft.Text("Type", size=13),
-                                type_selector,
-                                ft.Divider(height=5, color="transparent"),
-                                ft.Text("Date & Time", size=13),
-                                date_time_field,
-                                ft.Divider(height=15, color="transparent"),
-                                submit_button  # Now centered
+                                submit_button
                             ]
                         )
                     )
-                ]
+                ],
+                alignment=ft.MainAxisAlignment.SPACE_BETWEEN  # Pushes the placeholder to the bottom
             )
         )
+

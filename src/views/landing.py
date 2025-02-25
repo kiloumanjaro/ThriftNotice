@@ -9,30 +9,31 @@ class Landing(ft.View):
 
         self.page = page
 
-        self.tab_logo = ft.Icon(name="shopping_cart_outlined", size=64)
-        self.title = ft.Text("THRIFT NOTICE".upper(), size=28, weight="bold")
-        self.subtitle = ft.Text("by TBA", size=11)
+        self.tab_logo = ft.Icon(name="shopping_cart_outlined", size=200)    
+        self.title = ft.Text("Thrift Notice", size=28, weight="bold", text_align="center")
 
-        self.maps_page_btn: ft.Any = ft.IconButton(
-            "arrow_forward", 
-            width=54,
-            height=54,
-            style=ft.ButtonStyle(
-                bgcolor={"": "#FFFFFF"},
-                shape={"": ft.RoundedRectangleBorder(radius=8)},
-                side={"": ft.BorderSide(2, "white54")},
-            ),
-            on_click=lambda e: self.page.go("/maps") 
+        # Column to control spacing between logo and title, ensuring center alignment
+        self.logo_title_column = ft.Column([
+            self.tab_logo,
+            ft.Container(height=10),  # Adjust height for spacing
+            self.title
+        ], alignment="center", horizontal_alignment="center", spacing=20)
+
+        # Get Started Button
+        self.get_started_button = ft.ElevatedButton(
+            text="Get Started",
+            on_click=lambda e: self.page.go("/maps"),
+            width=200
         )
 
         self.controls = [
-            self.tab_logo, 
-            ft.Divider(height=25, color="transparent"),
-            self.title,
-            self.subtitle,
-            ft.Divider(height=10, color="transparent"),
-            self.maps_page_btn,
-
+            ft.Column([
+                self.logo_title_column, 
+                ft.Divider(height=10, color="transparent"),
+                ft.Container(
+                    content=self.get_started_button,
+                    alignment=ft.alignment.center,
+                    expand=True
+                )  # Button sticks to the bottom
+            ], alignment="center", horizontal_alignment="center", expand=True)
         ]
-
-
