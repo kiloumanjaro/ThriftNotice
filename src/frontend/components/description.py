@@ -3,7 +3,7 @@ import flet as ft
 class BottomSheet(ft.Container):
     def __init__(self, on_close):
         super().__init__(
-            width=316,
+            width=318,
             height=360,  # Adjusted height
             bgcolor="white",
             border_radius=ft.border_radius.all(20),

@@ -1,5 +1,6 @@
 import flet as ft
 from components.description import BottomSheet
+import flet.map as map
 
 class Maps(ft.View):
     def __init__(self, page: ft.Page):
@@ -93,6 +94,64 @@ class Maps(ft.View):
             ]
         )
 
+        marker_layer_ref = ft.Ref[map.MarkerLayer]()
+        self.tapped_pins = set()
+        def handle_tap(e: map.MapTapEvent):
+            coordinates = (e.coordinates.latitude, e.coordinates.longitude)
+
+            if coordinates in self.tapped_pins:
+                self.open_bottom_sheet(e)
+            else:
+                # Add new marker and store it
+                self.tapped_pins.add(coordinates)
+                marker_layer_ref.current.markers.append(
+                    map.Marker(
+                        content=ft.Icon(ft.Icons.LOCATION_ON, color=ft.cupertino_colors.DESTRUCTIVE_RED, size=25),
+                        coordinates=e.coordinates,
+                    )
+                )
+                marker_layer_ref.current.update()
+
+        def handle_event(e: map.MapEvent):
+            print(e)
+
+        cebu = map.Map(
+            expand=True,
+            initial_zoom=14,
+            initial_center=map.MapLatitudeLongitude(10.3055, 123.8938), 
+            interaction_configuration=map.MapInteractionConfiguration(
+                flags=map.MapInteractiveFlag.ALL
+            ),
+            on_init=lambda e: print(f"Initialized Map"),
+            on_tap=handle_tap,
+            on_secondary_tap=handle_tap,
+            on_long_press=handle_tap,
+            on_event=lambda e: print(e),
+            layers=[
+                map.TileLayer(
+                    url_template="https://tile.openstreetmap.org/{z}/{x}/{y}.png", 
+                    on_image_error=lambda e: print("TileLayer Error"),
+                ),
+                map.MarkerLayer(
+                    ref=marker_layer_ref,
+                    markers=[
+                        map.Marker(
+                            content=ft.Icon(ft.Icons.LOCATION_ON),
+                            coordinates=map.MapLatitudeLongitude(30, 15),
+                        ),
+                        map.Marker(
+                            content=ft.Icon(ft.Icons.LOCATION_ON),
+                            coordinates=map.MapLatitudeLongitude(10, 10),
+                        ),
+                        map.Marker(
+                            content=ft.Icon(ft.Icons.LOCATION_ON),
+                            coordinates=map.MapLatitudeLongitude(25, 45),
+                        ),
+                    ],
+                ),
+            ]
+        )
+
         first_page_contents = ft.Container(
             content=ft.Column(
                 spacing=0,
@@ -105,9 +164,21 @@ class Maps(ft.View):
                             self.search_bar,  # Expandable search bar
                         ]
                     ),
-                    ft.Divider(height=20, color="transparent"),
-                    ft.Text(value="What's up, Kint!"),
-                    ft.Text(value="MAP AND MAIN UI GOES HERE"),
+                    ft.Divider(height=10, color="transparent"),
+                    ft.Container(
+                    width=320,  # Slightly bigger than map container
+                    height=543,
+                    border_radius=21,  # Ensures a rounded border
+                    bgcolor=ft.colors.BLACK,  # Border color
+                    padding=1,  # Space for border thickness
+                        content=ft.Container(
+                        content=cebu,
+                        width=580,
+                        height=541,
+                        border_radius=20,  # Ensures rounded corners inside
+                        clip_behavior=ft.ClipBehavior.HARD_EDGE,  # Ensures map stays within rounded shape     
+                        )
+                    )
                 ]
             ),
             on_click=self.close_search,  # Detect clicks outside search bar
@@ -175,8 +246,6 @@ class Maps(ft.View):
                             padding=ft.padding.all(10)
                         )
                     ),
-
-
                 ]
             )
         )
@@ -190,7 +259,7 @@ class Maps(ft.View):
                     animate=ft.animation.Animation(600, ft.AnimationCurve.DECELERATE),
                     animate_scale=ft.animation.Animation(400, curve='decelerate'),
                     padding=ft.padding.only(
-                        top=12, left=22, right=17, bottom=0,
+                        top=12, left=20, right=17, bottom=0,
                     ),
                     content=ft.Stack(
                         controls=[
@@ -224,8 +293,6 @@ class Maps(ft.View):
         else:
             self.close_search(e)  # Collapse if already expanded
         self.search_bar.update()
-
-
 
     def close_search(self, e):
         """Closes the search bar when clicking outside of it."""
