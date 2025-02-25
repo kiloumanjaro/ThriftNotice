@@ -1,4 +1,7 @@
 import flet as ft
+import requests
+
+API_URL = "http://127.0.0.1:8000/api/thriftstores/"
 
 class Create(ft.View):
 
@@ -15,9 +18,11 @@ class Create(ft.View):
         self.page.go("/maps")
         self.page.update()
     
+
+        
     def display_create_container(self):
-        name = ft.TextField()
-        address = ft.TextField(multiline=True, max_lines=2)
+        self.name = ft.TextField()
+        self.address = ft.TextField(multiline=True, max_lines=2)
         
         type_selector = ft.Dropdown(
             options=[
@@ -34,12 +39,31 @@ class Create(ft.View):
 
         type_selector.on_change = on_type_change
 
+        def submit_form(e):
+            # Gather field values
+            data = {
+                "shopname": self.name.value,
+                "formattedaddress": self.address.value,
+            }
+            try:
+                response = requests.post(API_URL, json=data)
+                if response.status_code == 201:
+                    print("Store Added!")
+                    self.page.snack_bar = ft.SnackBar(ft.Text("Store added successfully!"), bgcolor="green")
+                else:
+                    print("Failed:", response.json())
+                    self.page.snack_bar = ft.SnackBar(ft.Text("Failed to add store"), bgcolor="red")
+            except Exception as ex:
+                print("Request failed:", ex)
+                self.page.snack_bar = ft.SnackBar(ft.Text(f"Request failed: {ex}"), bgcolor="red")
+            self.page.update()
+
         submit_button = ft.Row(
             alignment="center",  # Center horizontally
             controls=[
                 ft.ElevatedButton(
                     "Submit", 
-                    on_click=lambda e: print("Form Submitted"),
+                    on_click=submit_form,
                     width=200,  # Adjust the width as needed
                     height=50,  # Adjust the height as needed
                     style=ft.ButtonStyle(
@@ -97,9 +121,9 @@ class Create(ft.View):
                         content=ft.Column(
                             controls=[
                                 ft.Text("Title", size=13),
-                                name,
+                                self.name,
                                 ft.Text("Address", size=13),
-                                address,
+                                self.address,
                                 ft.Text("Type                                Date & Time", size=13),
                                 ft.Row(  
                                     controls=[
