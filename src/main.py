@@ -8,9 +8,9 @@ from views.about import About
 
 def main(page: ft.Page):
     page.theme_mode = ft.ThemeMode.LIGHT    
-    page.window.width = 375       # windosss'sssssssssssssSssssSSssssssSssssssssssssssssssssssssssSssssssssssssssssss ssssssssssdt sssiss 2s00 px
-    page.window.height = 667       # sindowsssssssssssssssssssssSsssssssSssssssssSsssssssSssssSsssssssssSsSssssssssssssssssss'sssssssssssssssssssssss sssssssssseisght is 200 px
-    page.window.resizable = False  # winsdosw issssssss ssssSsssssSsssssssssssssssssssnSssssssssssssSsossssssssts rsesssiszsasble
+    page.window.width = 375       # windossss'ssssssssssssssSssssssSsSssssssssSssssssssssssssssssssssssssSssssssssssssssssss ssssssssssdt sssiss 2s00 px
+    page.window.height = 667       # sindowsssssssssssssssssssssssssSssssssssssSsssssssssSsssssssSssssSsssssssssSsSssssssssssssssssss'sssssssssssssssssssssss sssssssssseisght is 200 px
+    page.window.resizable = False  # winsdosw issssssssss ssssssSsssssSssssssssssssssssssssssssnSssssssssssssSsossssssssts rsesssiszsasble
     page.update()
 
     def router(route):
