@@ -66,7 +66,7 @@ class Favorite(ft.View):
                             content=ft.Row(
                                 controls=[
                                     ft.Icon(name=ft.icons.STORE, color="black", size=14), 
-                                    ft.Text(f"Shop {i+1}", size=13, color="black", weight="bold"),  
+                                    ft.Text(f"Shop {i+1}", size=13, color="black", weight="regular"),  
                                     ft.IconButton(
                                         icon=ft.icons.ARROW_DROP_DOWN,
                                         icon_color="black",  
@@ -104,7 +104,7 @@ class Favorite(ft.View):
                                 on_click=self.go_back_to_maps,
                                 icon_color="black",
                             ),
-                            ft.Text("FAVORITE SHOPS", size=18, weight="bold", color="#f8f9ff"),
+                            ft.Text("Favorite Shops", size=18, weight="bold", color="#f8f9ff"),
                             ft.Icon(  
                                 name=ft.icons.FAVORITE,  
                                 color="#FF6347",
