@@ -5,9 +5,11 @@ class Landing(ft.View):
         super(Landing, self).__init__(
             route="/", horizontal_alignment="center",
             vertical_alignment="center"
+            
         )
 
         self.page = page
+        self.wg='#f8f9ff'
 
         # Logo Image
         self.logo = ft.Container(
@@ -18,7 +20,7 @@ class Landing(ft.View):
         # Column to control spacing between logo and title, ensuring center alignment
         self.logo_title_column = ft.Column([
             self.logo,  # Add logo above the title
-            ft.Container(height=10),  # Adjust height for spacing
+            ft.Container(height=15),  # Adjust height for spacing
             ft.Text("Thrift Notice", size=28, weight="bold", text_align="center"),
             ft.Text("The art of thrifting isn’t for everyone, but we just might change your mind.", size=13, text_align="center")
         ], alignment="center", horizontal_alignment="center")
@@ -40,7 +42,7 @@ class Landing(ft.View):
             ft.Container(
                 expand=True,
                 padding=ft.padding.only(left=30, right=30),
-                bgcolor="white",
+                bgcolor=self.wg,
                 content=ft.Column(
                     expand=True,
                     controls=[
@@ -48,7 +50,7 @@ class Landing(ft.View):
                         self.logo_title_column, 
                         ft.Divider(height=10, color="transparent"),
                         ft.Container(
-                            padding=ft.padding.only(left=20, right=20, top=0, bottom=25),
+                            padding=ft.padding.only(left=20, right=20, top=0, bottom=30),
                             alignment=ft.alignment.bottom_center,
                             content=self.get_started_button
                         )  # Button sticks to the bottom
