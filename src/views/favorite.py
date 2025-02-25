@@ -67,7 +67,7 @@ class Favorite(ft.View):
                             ),
                             ft.Text("FAVORITE SHOPS", size=18, weight="bold"),
                         ],
-                        alignment="start",  # Aligns back button and title to the left
+                        alignment="start", 
                     ),
 
                     # Shop List & FAB Button

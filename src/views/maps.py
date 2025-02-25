@@ -1,68 +1,16 @@
 import flet as ft
-class BottomSheet(ft.Container):
-    def __init__(self, on_close):
-        super().__init__(
-            width=316,
-            height=360,  # Adjusted height
-            bgcolor="white",
-            border_radius=ft.border_radius.all(20),
-            margin=ft.margin.only(bottom=23),
-            padding=ft.padding.only(top=10, bottom=20, right=15, left=25),
-            bottom=-400,  # Initially hidden below the screen
-            animate_position=ft.animation.Animation(400, "decelerate"),
-            content=ft.Column(
-                expand=True,  # Makes the column take full height
-                controls=[
-                    ft.Row( 
-                        alignment='spaceBetween',
-                        controls=[
-                            ft.Text("Shop Name", size=23, weight='bold'),
-                            ft.IconButton(ft.icons.CLOSE, on_click=on_close, icon_size=20),
-                        ]
-                    ),
-                    ft.Container(
-                        padding=ft.padding.only(right=15),
-                        expand=True,  # Expands to take available space
-                        content=ft.Column(
-                            controls=[
-                                ft.Text("123 Vintage Lane, Suite 5, Brookville, USA", size=10),
-                                ft.Text(
-                                    "Nestled in the heart of the city, Timeless Treasures Thrift Shop is a hidden gem for bargain hunters and vintage lovers alike. Our shop offers a carefully curated selection of pre-loved clothing, unique home décor, rare collectibles, and secondhand books—all at unbeatable prices. Whether you're searching for a one-of-a-kind fashion statement, a nostalgic keepsake, or simply a great deal, our ever-changing inventory has something for everyone.",
-                                    size=12
-                                ),
-                            ]                       
-                        )
-                    ),
-                    # Sticky TextField at the bottom
-                    ft.Container(
-                        padding=ft.padding.only(right=10),
-                        border_radius=10,
-                        content=ft.TextField(
-                            hint_text="Write a review...",
-                            text_style=ft.TextStyle(size=12, color="gray"),
-                            border_radius=10,
-                            height=40
-                        )
-                    )
-                ]
-            )
-        )
-
-
-    
-    def show(self):
-        self.bottom = 0
-        self.update()
-    
-    def hide(self):
-        self.bottom = -400
-        self.update()
+from components.description import BottomSheet
 
 class Maps(ft.View):
     def __init__(self, page: ft.Page):
         name = 'Kint Louise Borbano'
         super(Maps, self).__init__(route="/maps")
         self.page = page
+        self.is_shrunk = False
+        bg='#1c1c1c'
+        fg='#98e2f6'
+        wg='#f8f9ff'
+        fg1='#5f82a6'
 
         self.bottom_sheet = BottomSheet(self.close_bottom_sheet)
         self.search_bar = ft.Container(
@@ -70,13 +18,13 @@ class Maps(ft.View):
             height=40,
             border=None,
             border_radius=20,
-            bgcolor="red",
+            bgcolor=wg,
             padding=ft.padding.only(right=20),
             animate=ft.animation.Animation(400, "decelerate"),
             content=ft.Row(
                 spacing=0,  # Set spacing to 0
                 controls=[
-                    ft.IconButton(ft.icons.SEARCH, on_click=self.toggle_search),
+                    ft.IconButton(ft.icons.SEARCH, on_click=self.toggle_search, icon_color=fg1),
                     ft.TextField(
                         hint_text=" Search",
                         text_style=ft.TextStyle(size=14, color="gray"), 
@@ -101,8 +49,10 @@ class Maps(ft.View):
             width=55,
             height=55,
             on_click=self.open_bottom_sheet
+            #on_click=lambda e: self.page.go("/create"),
         )
 
+        # Define the main circular stack
         circle = ft.Stack(
             controls=[
                 ft.Container(width=100, height=100, border_radius=50, bgcolor="white12"),
@@ -112,7 +62,7 @@ class Maps(ft.View):
                         start_angle=0.0,
                         end_angle=3,
                         stops=[0.5, 0.5],
-                        colors=["#00000000", 'red'],
+                        colors=["#00000000", fg],
                     ),
                     width=100,
                     height=100,
@@ -122,18 +72,18 @@ class Maps(ft.View):
                         controls=[
                             ft.Container(
                                 padding=ft.padding.all(5),
-                                bgcolor='green',
+                                bgcolor=bg,
                                 width=90,
                                 height=90,
                                 border_radius=50,
                                 content=ft.Container(
-                                    bgcolor='red',
+                                    bgcolor=bg,
                                     height=80,
                                     width=80,
                                     border_radius=40,
                                     content=ft.CircleAvatar(
-                                        opacity=0.8,
-                                        foreground_image_src="https://images.unsplash.com/photo-1545912452-8aea7e25a3d3?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=687&q=80",
+                                        bgcolor='#1c1c1c',
+                                        content=ft.Icon(name=ft.icons.ACCOUNT_CIRCLE, size=80, color=wg)
                                     ),
                                 ),
                             )
@@ -150,7 +100,7 @@ class Maps(ft.View):
                     ft.Row(alignment='spaceBetween',
                         controls=[
                             ft.Container(on_click=self.shrink,
-                                content=ft.Icon(ft.Icons.MENU)
+                                content=ft.Icon(ft.Icons.MENU, color=fg1,)
                             ),
                             self.search_bar,  # Expandable search bar
                         ]
@@ -165,53 +115,68 @@ class Maps(ft.View):
 
         
         self.page_1 = ft.Container( 
-            bgcolor='green',
+            bgcolor=bg,
             border_radius=0,
-            padding=ft.padding.only(left=50, top=60, right=200),
+            padding=ft.padding.only(left=50, top=60, right=150),
             content=ft.Column(  
                 controls=[
-                    ft.Row(alignment='end',
-                    controls=[ ft.Container(
-                        border_radius=25, padding=ft.padding.only(top=13, left=20),
-                        height=50,
-                        width=50,
-                        border=ft.border.all(color='white', width=1),  
-                        on_click=self.restore,
-                        content=ft.Text('<')
-                        )
-                    ]
-                   ),
-                    ft.Divider(height=25, color="transparent"),
                     circle,
-                    ft.Text(name, size=20, weight='bold'),
-                    ft.Divider(height=25, color="transparent"),
+                    ft.Divider(height=10, color="transparent"),
+                    ft.Text(name, size=28, weight='bold', color=wg),
+                    ft.Divider(height=15, color="transparent"),
                     ft.TextButton(
                         text="Favorites",
                         icon=ft.icons.FAVORITE_BORDER_SHARP,
                         on_click=lambda e: self.page.go("/favorite"),
                         style=ft.ButtonStyle(
-                            color="white",
+                            color=wg,
+                            icon_color=wg,
                             padding=ft.padding.all(10)
                         )
                     ),
                     ft.TextButton(
-                        text="Preference",
-                        icon=ft.icons.CARD_TRAVEL,
+                        text="Create",
+                        icon=ft.icons.ADD,
+                        on_click=lambda e: self.page.go("/create"),
+                        style=ft.ButtonStyle(
+                            color=wg,
+                            icon_color=wg,  # Change to your desired color
+                            padding=ft.padding.all(10)
+                        )
+                    ),
+                    ft.TextButton(
+                        text="Preferences",
+                        icon=ft.icons.SETTINGS,
                         on_click=lambda e: self.page.go("/preference"),
                         style=ft.ButtonStyle(
-                            color="white",
+                            color=wg,
+                            icon_color=wg,
                             padding=ft.padding.all(10)
                         )
                     ),
                     ft.TextButton(
                         text="About",
-                        icon=ft.icons.CALCULATE_OUTLINED,
+                        icon=ft.icons.INFO_OUTLINE_ROUNDED,
                         on_click=lambda e: self.page.go("/about"),
                         style=ft.ButtonStyle(
-                            color="white",
+                            color=wg,
+                            icon_color=wg,
                             padding=ft.padding.all(10)
                         )
                     ),
+                    ft.Divider(height=20, color="transparent"),
+                    ft.TextButton(
+                        text="Sign Out",
+                        icon=ft.icons.LOGOUT,
+                        on_click=lambda e: self.page.go("/"),
+                        style=ft.ButtonStyle(
+                            color=wg,
+                            icon_color=wg,
+                            padding=ft.padding.all(10)
+                        )
+                    ),
+
+
                 ]
             )
         )
@@ -220,7 +185,7 @@ class Maps(ft.View):
             controls=[
                 ft.Container(
                     width=375,
-                    bgcolor='red',
+                    bgcolor=wg,
                     border_radius=0,
                     animate=ft.animation.Animation(600, ft.AnimationCurve.DECELERATE),
                     animate_scale=ft.animation.Animation(400, curve='decelerate'),
@@ -271,45 +236,52 @@ class Maps(ft.View):
             self.search_bar.update()
 
     def shrink(self, e):
-        self.page_2.controls[0].width = 120
-        self.page_2.controls[0].scale = ft.transform.Scale(
-            scale=0.8,  # Keep width the same
-            alignment=ft.alignment.center_right)
-        self.page_2.controls[0].border_radius=ft.border_radius.only(
-            top_left = 35,
-            top_right = 0,
-            bottom_left = 35,
-            bottom_right = 0
-        )
-        self.page_2.controls[0].padding=ft.padding.only(
-            top=12,
-            left=22,
-            right=0, 
-            bottom=10,
-        )
-        self.close_search(e)
-        self.search_bar.update()
-        self.bottom_sheet.hide()
-        self.page_2.update()
+        if self.is_shrunk:  # If already shrunk, restore
+            self.restore(e)
+            self.is_shrunk = False
+        else:  # Shrink if not already shrunk
+            self.page_2.controls[0].width = 150
+            self.page_2.controls[0].scale = ft.transform.Scale(
+                scale=0.8,
+                alignment=ft.alignment.center_right
+            )
+            self.page_2.controls[0].border_radius = ft.border_radius.only(
+                top_left=35,
+                top_right=0,
+                bottom_left=35,
+                bottom_right=0
+            )
+            self.page_2.controls[0].padding = ft.padding.only(
+                top=12,
+                left=22,
+                right=0,
+                bottom=10,
+            )
+            self.close_search(e)
+            self.search_bar.update()
+            self.bottom_sheet.hide()
+            self.page_2.update()
+            self.is_shrunk = True  # Mark as shrunk
 
     def restore(self, e):
         self.page_2.controls[0].width = 375
         self.page_2.controls[0].scale = ft.transform.Scale(
-            1, alignment=ft.alignment.center_right)
-        self.page_2.controls[0].border_radius=ft.border_radius.only(
-            top_left = 0,
-            top_right = 0,
-            bottom_left = 0,
-            bottom_right = 0
+            1, alignment=ft.alignment.center_right
         )
-        self.page_2.controls[0].padding=ft.padding.only(
+        self.page_2.controls[0].border_radius = ft.border_radius.only(
+            top_left=0,
+            top_right=0,
+            bottom_left=0,
+            bottom_right=0
+        )
+        self.page_2.controls[0].padding = ft.padding.only(
             top=12,
             left=22,
-            right=17, 
+            right=17,
             bottom=10,
         )
         self.page_2.update()
-
+        self.is_shrunk = False  # Mark as not shrunk
 
     def display_map_container(self):
         return ft.Container(expand=True, bgcolor='green', border_radius=0, 

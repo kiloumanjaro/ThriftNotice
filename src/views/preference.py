@@ -54,7 +54,7 @@ class Preference(ft.View):
                                         controls=[
                                             ft.Text(
                                                 "Clothing",
-                                                size=15
+                                                size=14
                                             ),
                                             ft.Dropdown(
                                                 hint_text="Select your clothing style",
@@ -72,7 +72,7 @@ class Preference(ft.View):
                                             
                                             ft.Text(
                                                 "Budget",
-                                                size=15
+                                                size=14
                                             ),
                                             ft.Dropdown(
                                                 hint_text="What is your preferred price range per item?",
@@ -90,7 +90,7 @@ class Preference(ft.View):
 
                                             ft.Text(
                                                 "Shopping Environment",
-                                                size=15
+                                                size=14
                                             ),
                                             ft.Dropdown(
                                                 hint_text="Do you prefer stores with air conditioning?",
@@ -106,7 +106,7 @@ class Preference(ft.View):
 
                                             ft.Text(
                                                 "Organization",
-                                                size=15
+                                                size=14
                                             ),
                                             ft.Dropdown(
                                                 hint_text="Do you enjoy thrift stores that are:",
@@ -122,7 +122,7 @@ class Preference(ft.View):
                                             ft.Container(height=2),
                                             ft.Text(
                                                 "Interest",
-                                                size=15
+                                                size=14
                                             ),
                                             ft.Dropdown(
                                                 hint_text="Are you interested in stores that specialize in:",
