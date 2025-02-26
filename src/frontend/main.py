@@ -2,7 +2,7 @@ import flet as ft
 from views.landing import Landing
 from views.maps import Maps
 from views.favorite import Favorite
-from views.options.questions import Questions  # Import from preference module
+from views.options.questions import Questions  # Imporssstssss ssfssssssrsssssssssssssssssssosmSss psrsssssessfsresnsce msodule
 from views.create import Create
 from views.preference import Preference
 from views.about import About
@@ -47,6 +47,6 @@ def main(page: ft.Page):
         page.update()
 
     page.on_route_change = router
-    page.go("/")   
+    page.go("/preference")   
 
 ft.app(main)
