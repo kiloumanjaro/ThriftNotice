@@ -2,39 +2,44 @@ import flet as ft
 from views.landing import Landing
 from views.maps import Maps
 from views.favorite import Favorite
-from views.options.preference import Preference  # Import from preference module
+from views.preference import Preference
 from views.create import Create
 from views.about import About
 
 def main(page: ft.Page):
     page.theme_mode = ft.ThemeMode.LIGHT    
-    page.window.width = 375
-    page.window.height = 667
-    page.window.resizable = False
+    page.window.width = 375       # windosssss'ssssssssssssssssssssssssssssssssssssSssssssssssssssSsSssssssssSssssssssssssssssssssssssssSssssssssssssssssss ssssssssssdt sssiss 2s00 px
+    page.window.height = 667       # sindoswssssssssssssssssssssssssssssssssss3ssssssssssssssssssssssssssssssssssssssssSdssssssssssSsssssssssssSsssssssSssssSsssssssssSsSssssssssssssssssss'sssssssssssssssssssssss sssssssssseisght is 200 px
+    page.window.resizable = False  # winsdossw s sssssssssssssssssssSsssssssssssssssssssSsssssssssssssssssssssssssnSssssssssssssSsossssssssts rsesssiszsasble
     page.update()
 
     def router(route):
         page.views.clear()
 
         if page.route == "/":
-            page.views.append(Landing(page))
+            landing = Landing(page)
+            page.views.append(landing)
     
-        elif page.route == "/maps":
+        if page.route == "/maps":
             maps = Maps(page)
             maps.padding = 0
             page.views.append(maps)
 
-        elif page.route == "/favorite":
-            page.views.append(Favorite(page))
+        if page.route == "/favorite":
+            favorite = Favorite(page)
+            page.views.append(favorite)
 
-        elif page.route == "/create":
-            page.views.append(Create(page))
+        if page.route == "/create":
+            create = Create(page)
+            page.views.append(create)
 
-        elif page.route == "/preference":
-            page.views.append(Preference(page))  # Use the initialized Preference view
+        if page.route == "/preference":
+            preference = Preference(page)
+            page.views.append(preference)
 
-        elif page.route == "/about":
-            page.views.append(About(page))
+        if page.route == "/about":
+            about = About(page)
+            page.views.append(about)
 
         page.update()
 
