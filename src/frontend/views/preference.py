@@ -39,7 +39,7 @@ class Preference(ft.View):
                                 )
                             ),
                             ft.Container(
-                                padding=ft.padding.only(left=80),
+                                padding=ft.padding.only(left=76),
                                 content=ft.Text("Preferences", size=16, weight=ft.FontWeight.BOLD, color="black"),
                                 alignment=ft.alignment.center
                         ),

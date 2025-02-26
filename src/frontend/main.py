@@ -39,6 +39,8 @@ def main(page: ft.Page):
             page.views.append(Preference(page))  # Use the initialized Preference view
 
         elif page.route == "/about":
+            about = About(page)
+            about.padding = 0
             page.views.append(About(page))
 
         elif page.route == "/profile":

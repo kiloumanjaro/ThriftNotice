@@ -135,7 +135,7 @@ class Favorite(ft.View):
                             )
                         ),
                         ft.Container(
-                            padding=ft.padding.only(left=86),
+                            padding=ft.padding.only(left=83),
                             content=ft.Text("Favorites", size=16, weight=ft.FontWeight.BOLD, color='white'),
                             alignment=ft.alignment.center
                         ),
