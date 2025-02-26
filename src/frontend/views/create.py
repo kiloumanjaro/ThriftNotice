@@ -1,12 +1,18 @@
 import flet as ft
 import requests
+from dotenv import load_dotenv
+import os
 
-API_URL = "http://127.0.0.1:8000/api/thriftstores/"
+def configure():
+    load_dotenv()
+
+API_URL = ""
 
 class Create(ft.View):
 
     def __init__(self, page: ft.Page): 
         super(Create, self).__init__(route="/create")
+        configure()
         self.page = page
         self.initialize()
 
@@ -17,8 +23,6 @@ class Create(ft.View):
         self.page.go("/maps")
         self.page.update()
     
-
-        
     def display_create_container(self):
         self.name = ft.TextField()
         self.address = ft.TextField(multiline=True, max_lines=2)
@@ -45,7 +49,7 @@ class Create(ft.View):
                 "formattedaddress": self.address.value,
             }
             try:
-                response = requests.post(API_URL, json=data)
+                response = requests.post(os.getenv("API_URL"), json=data)
                 if response.status_code == 201:
                     print("Store Added!")
                     self.page.snack_bar = ft.SnackBar(ft.Text("Store added successfully!"), bgcolor="green")
