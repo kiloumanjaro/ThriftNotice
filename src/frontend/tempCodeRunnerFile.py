@@ -1,1 +1,1 @@
-
+from views.profile import Profile

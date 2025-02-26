@@ -28,7 +28,7 @@ class Landing(ft.View):
         # Get Started Button
         self.get_started_button = ft.ElevatedButton(
             text="Get Started",
-            on_click=lambda e: self.page.go("/maps"),
+            on_click=lambda e: self.page.go("/profile"),
             width=200, 
             height=50, 
             style=ft.ButtonStyle(

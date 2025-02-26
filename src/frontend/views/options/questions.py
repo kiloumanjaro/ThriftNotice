@@ -5,9 +5,9 @@ from .shopping_environment import shopping_environment_page
 from .organization import organization_page
 from .interest import interest_page
 
-class Preference(ft.View):
+class Questions(ft.View):
     def __init__(self, page: ft.Page): 
-        super(Preference, self).__init__(route="/preference")
+        super(Questions, self).__init__(route="/questions")
         self.page = page
         self.current_page = 0  
 

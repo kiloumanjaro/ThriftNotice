@@ -2,9 +2,11 @@ import flet as ft
 from views.landing import Landing
 from views.maps import Maps
 from views.favorite import Favorite
-from views.options.preference import Preference  # Import from preference module
+from views.options.questions import Questions  # Import from preference module
 from views.create import Create
+from views.preference import Preference
 from views.about import About
+from views.profile import Profile
 
 def main(page: ft.Page):
     page.theme_mode = ft.ThemeMode.LIGHT    
@@ -30,11 +32,17 @@ def main(page: ft.Page):
         elif page.route == "/create":
             page.views.append(Create(page))
 
+        elif page.route == "/questions":
+            page.views.append(Questions(page))  # Use the initialized Preference view
+
         elif page.route == "/preference":
             page.views.append(Preference(page))  # Use the initialized Preference view
 
         elif page.route == "/about":
             page.views.append(About(page))
+
+        elif page.route == "/profile":
+            page.views.append(Profile(page))
 
         page.update()
 
