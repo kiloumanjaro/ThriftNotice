@@ -10,7 +10,6 @@ class Create(ft.View):
         self.page = page
         self.initialize()
 
-    
     def initialize(self):
         self.controls = [self.display_create_container()]
 
