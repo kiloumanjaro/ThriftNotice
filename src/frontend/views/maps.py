@@ -2,6 +2,8 @@ import flet as ft
 from components.description import BottomSheet
 import flet.map as map
 import math
+import os
+import requests
 
 
 class Maps(ft.View):
@@ -102,6 +104,51 @@ class Maps(ft.View):
         self.marker_data = {}  # Dictionary to store marker id and coordinates
         self.marker_counter = 1  # Counter to assign unique IDs
 
+        def get_initial_map_markers(e):
+            """Fetches map markers from API, adds them to marker_layer."""
+            locations_api_url = os.getenv("LOCATIONS_API_URL") # API URL from environment
+            response = requests.get(locations_api_url) # Fetch data from API
+
+            if response.status_code == 200: # API call successful
+                locations_data = response.json() # Parse JSON response
+                print(f"Locations Data from API: {locations_data}") # Debug: print API data
+
+                # --- Ensure marker_layer_ref is valid ---
+                if marker_layer_ref.current is None: # Check if marker_layer_ref is initialized
+                    print("Error: marker_layer_ref.current is None. Map init issue.")
+                    return
+                if not hasattr(marker_layer_ref.current, 'markers'): # Check if markers list exists
+                    print("Error: marker_layer_ref.current.markers not initialized.")
+                    return
+
+                marker_layer_ref.current.markers.clear() # Clear existing markers on map
+
+                for location in locations_data: # Loop through API locations
+                    latitude = location.get('latitude') # Get latitude, handle missing key
+                    longitude = location.get('longitude') # Get longitude, handle missing key
+
+                    if latitude is not None and longitude is not None: # Check for valid coordinates
+                        try:
+                            latitude = float(latitude) # Convert latitude to float
+                            longitude = float(longitude) # Convert longitude to float
+                            marker = map.Marker( # Create a new map marker
+                                content=ft.Icon(ft.icons.LOCATION_ON, color=ft.cupertino_colors.DESTRUCTIVE_RED, size=25), # Marker style
+                                coordinates=map.MapLatitudeLongitude(latitude, longitude), # Set marker coordinates
+                                data={"shopid": location['shopid']} # Store shop ID in marker data
+                            )
+                            marker_layer_ref.current.markers.append(marker) # Add marker to marker layer
+
+                        except (ValueError, TypeError) as e: # Handle coordinate conversion errors
+                            print(f"Error: Invalid coords for shop {location.get('shopid')}: {e}")
+                    else: # Skip location with missing coordinates
+                        print(f"Skipping shop {location.get('shopid')}: Missing lat/long.")
+
+                marker_layer_ref.current.update() # Update map to show markers
+                print("Initial map markers loaded using marker_layer_ref.") # Confirmation msg
+
+            else: # API call failed
+                print(f"Error fetching map locations: {response.status_code} - {response.text}") # API error info
+
         def handle_tap(e: map.MapTapEvent):
             coordinates = (e.coordinates.latitude, e.coordinates.longitude)
 
@@ -122,28 +169,27 @@ class Maps(ft.View):
                     self.open_bottom_sheet(e)
                     return
             
-            # Prevent placing a new marker if it's too close to an existing one
-            for marker_id, coord in self.marker_data.items():
-                if is_within_radius(coord, coordinates, radius=30):  
-                    print(f"Too close to marker ID {marker_id}, cannot place here!")
-                    return  
+            # # Prevent placing a new marker if it's too close to an existing one
+            # for marker_id, coord in self.marker_data.items():
+            #     if is_within_radius(coord, coordinates, radius=30):  
+            #         print(f"Too close to marker ID {marker_id}, cannot place here!")
+            #         return  
 
-            # Assign a unique ID and store the new marker
-            marker_id = self.marker_counter
-            self.marker_counter += 1
-            self.marker_data[marker_id] = coordinates
+            # # Assign a unique ID and store the new marker
+            # marker_id = self.marker_counter
+            # self.marker_counter += 1
+            # self.marker_data[marker_id] = coordinates
 
-            # Add new marker
-            marker_layer_ref.current.markers.append(
-                map.Marker(
-                    content=ft.Icon(ft.icons.LOCATION_ON, color=ft.cupertino_colors.DESTRUCTIVE_RED, size=25),
-                    coordinates=e.coordinates,
-                )
-            )
-            marker_layer_ref.current.update()
+            # # Add new marker
+            # marker_layer_ref.current.markers.append(
+            #     map.Marker(
+            #         content=ft.Icon(ft.icons.LOCATION_ON, color=ft.cupertino_colors.DESTRUCTIVE_RED, size=25),
+            #         coordinates=e.coordinates,
+            #     )
+            # )
+            # marker_layer_ref.current.update()
 
-            print(f"Added marker ID: {marker_id} at {coordinates}")  
-
+            # print(f"Added marker ID: {marker_id} at {coordinates}")  
 
 
         cebu = map.Map(
@@ -153,7 +199,8 @@ class Maps(ft.View):
             interaction_configuration=map.MapInteractionConfiguration(
                 flags=map.MapInteractiveFlag.ALL
             ),
-            on_init=lambda e: print(f"Initialized Map"),
+            # on_init=lambda e: (print(f"Initialized Map"), get_initial_map_markers),
+            on_init=get_initial_map_markers,
             on_tap=handle_tap,
             on_secondary_tap=handle_tap,
             on_long_press=handle_tap,
@@ -307,6 +354,8 @@ class Maps(ft.View):
             self.display_map_container(),
         ]   
 
+
+
     def open_bottom_sheet(self, e):
         self.bottom_sheet.show()
 
@@ -380,6 +429,7 @@ class Maps(ft.View):
         self.is_shrunk = False  # Mark as not shrunk
 
     def display_map_container(self):
+        # self.get_initial_map_markers()
         return ft.Container(expand=True, bgcolor='green', border_radius=0, 
         content=ft.Stack(
             controls=[
