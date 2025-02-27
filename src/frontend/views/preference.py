@@ -14,7 +14,7 @@ class Preference(ft.View):
     
     def go_back_to_maps(self, e):
         self.page.go("/maps")
-        self.page.update()
+        #self.page.update()
 
 
 

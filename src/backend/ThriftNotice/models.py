@@ -14,6 +14,7 @@ class ThriftStores(models.Model):
     popupstarttime      = models.TimeField      (db_column='PopUpStartTime', blank=True, null=True)         # Field name made lowercase.
     hasfittingrooms     = models.BooleanField   (db_column='HasFittingRooms', blank=True, null=True)        # Field name made lowercase.
     parkingavailability = models.TextField      (db_column='ParkingAvailability', blank=True, null=True)    # Field name made lowercase.
+    review              = models.TextField      (db_column='Review', blank=True, null=True)                 # Field name made lowercase.
 
     class Meta:
         db_table = 'thrift_stores'

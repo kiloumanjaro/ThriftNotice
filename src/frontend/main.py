@@ -58,6 +58,6 @@ def main(page: ft.Page):
         page.update()
 
     page.on_route_change = router
-    page.go("/preference")   
+    page.go("/maps")   
 
 ft.app(main)
