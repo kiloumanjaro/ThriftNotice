@@ -1,6 +1,7 @@
 import flet as ft
 from components.description import BottomSheet
 import flet.map as map
+import math
 
 
 class Maps(ft.View):
@@ -13,6 +14,21 @@ class Maps(ft.View):
         fg='#98e2f6'
         wg='#f8f9ff'
         fg1='#5f82a6'
+
+        def is_within_radius(coord1, coord2, radius):  # Radius in meters
+            lat1, lon1 = coord1
+            lat2, lon2 = coord2
+            R = 6371000  # Earth radius in meters
+
+            phi1, phi2 = math.radians(lat1), math.radians(lat2)
+            delta_phi = math.radians(lat2 - lat1)
+            delta_lambda = math.radians(lon2 - lon1)
+
+            a = math.sin(delta_phi / 2) ** 2 + math.cos(phi1) * math.cos(phi2) * math.sin(delta_lambda / 2) ** 2
+            c = 2 * math.atan2(math.sqrt(a), math.sqrt(1 - a))
+            
+            distance = R * c  # Distance in meters
+            return distance < radius  # Returns True if inside restricted radius
 
         self.bottom_sheet = BottomSheet(self.close_bottom_sheet)
         self.search_bar = ft.Container(
@@ -102,30 +118,45 @@ class Maps(ft.View):
         def handle_tap(e: map.MapTapEvent):
             coordinates = (e.coordinates.latitude, e.coordinates.longitude)
 
-            # Check if marker already exists
-            for marker_id, coord in self.marker_data.items():
-                if coord == coordinates:
-                    print(f"Clicked marker ID: {marker_id}")  # Identify place
+            # Check if the tapped location is near an existing marker
+            for marker in marker_layer_ref.current.markers:
+                marker_coords = (marker.coordinates.latitude, marker.coordinates.longitude)
+                
+                if is_within_radius(marker_coords, coordinates, radius=30):  # Use radius for easier detection
+                    
+                    # Reset all markers to default size
+                    for m in marker_layer_ref.current.markers:
+                        m.content = ft.Icon(ft.icons.LOCATION_ON, color=ft.cupertino_colors.DESTRUCTIVE_RED, size=25)
+
+                    # Enlarge the selected marker
+                    marker.content = ft.Icon(ft.icons.LOCATION_ON, color="blue", size=40)  
+                    marker_layer_ref.current.update()
+
                     self.open_bottom_sheet(e)
                     return
+            
+            # Prevent placing a new marker if it's too close to an existing one
+            for marker_id, coord in self.marker_data.items():
+                if is_within_radius(coord, coordinates, radius=30):  
+                    print(f"Too close to marker ID {marker_id}, cannot place here!")
+                    return  
 
-            # Assign a unique ID
+            # Assign a unique ID and store the new marker
             marker_id = self.marker_counter
             self.marker_counter += 1
-
-            # Store the ID and coordinates mapping
             self.marker_data[marker_id] = coordinates
 
             # Add new marker
             marker_layer_ref.current.markers.append(
                 map.Marker(
-                    content=ft.Icon(ft.Icons.LOCATION_ON, color=ft.cupertino_colors.DESTRUCTIVE_RED, size=25),
+                    content=ft.Icon(ft.icons.LOCATION_ON, color=ft.cupertino_colors.DESTRUCTIVE_RED, size=25),
                     coordinates=e.coordinates,
                 )
             )
             marker_layer_ref.current.update()
 
-            print(f"Added marker ID: {marker_id} at {coordinates}")
+            print(f"Added marker ID: {marker_id} at {coordinates}")  
+
 
 
         cebu = map.Map(
