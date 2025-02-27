@@ -20,5 +20,14 @@ class ThriftStores(models.Model):
         db_table = 'thrift_stores'
         db_table_comment = 'A Relation Containing Information Of Each Thrift Shop'
 
-    def __str__(self):
-        return self.title
+class Users(models.Model):
+    userid              = models.BigAutoField   (db_column='userid', primary_key=True)                      # Field name made lowercase.
+    clothing            = models.TextField      (db_column='clothing')                                      # Field name made lowercase.
+    budget              = models.TextField      (db_column='budget')                                        # Field name made lowercase.
+    shoppingenvironment = models.TextField      (db_column='shoppingenvironment')                           # Field name made lowercase.
+    organization        = models.TextField      (db_column='organization')                                  # Field name made lowercase.
+    interest            = models.TextField      (db_column='interest')                                      # Field name made lowercase.
+
+    class Meta:
+        db_table = 'users_pref'
+        db_table_comment = 'A Relation Containing Information Of Users Preferences'

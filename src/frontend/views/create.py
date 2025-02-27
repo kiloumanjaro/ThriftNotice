@@ -6,9 +6,6 @@ import os
 def configure():
     load_dotenv()
 
-SUPABASE_URL = ""
-GEOCODE_API_URL= ""
-
 class Create(ft.View):
 
     def __init__(self, page: ft.Page): 
@@ -73,14 +70,7 @@ class Create(ft.View):
                     formatted_address = self.address.value  # Fallback to input address
 
             
-                store_api_url = os.getenv("SUPABASE_URL")  
-                supabase_api_key = os.getenv("SUPABASE_API_KEY")  
-
-                headers = {
-                    "apikey": supabase_api_key,
-                    "Authorization": f"Bearer {supabase_api_key}",
-                    "Content-Type": "application/json"
-                }
+                store_api_url = os.getenv("THRIFTSTORE_API_URL")  
 
                 data = {
                     "shopname": self.name.value,
@@ -90,7 +80,7 @@ class Create(ft.View):
                     "popupstarttime": date_time_field.value,
                 }
 
-                store_response = requests.post(store_api_url, json=data, headers=headers)
+                store_response = requests.post(store_api_url, json=data)
 
                 if store_response.status_code == 201:
                     print("Store Added!")
@@ -98,17 +88,12 @@ class Create(ft.View):
                 else:
                     print("Failed:", store_response.json())
                     self.page.snack_bar = ft.SnackBar(ft.Text("Failed to add store"), bgcolor="red")
-            
-                print("Mock store added (ignoring Supabase). Data:", data)
-                self.page.snack_bar = ft.SnackBar(ft.Text("Store data processed! (Supabase skipped)"), bgcolor="blue")
 
             except Exception as ex:
                 print("Request failed:", ex)
                 self.page.snack_bar = ft.SnackBar(ft.Text(f"Request failed: {ex}"), bgcolor="red")
 
             self.page.update()
-
-
 
         submit_button = ft.Row(
             alignment="center",  # Center horizontally
