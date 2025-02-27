@@ -71,17 +71,12 @@ class BottomSheet(ft.Container):
         try:
             # Store review in Supabase
             store_api_url = os.getenv("SUPABASE_URL")
-            supabase_api_key = os.getenv("SUPABASE_API_KEY")
-            headers = {
-                "apikey": supabase_api_key,
-                "Authorization": f"Bearer {supabase_api_key}",
-                "Content-Type": "application/json"
-            }
+
             data = {
                 "shopname": self.shop_name,
                 "review": self.review_text.value,
             }
-            store_response = requests.post(store_api_url, json=data, headers=headers)
+            store_response = requests.post(store_api_url, json=data)
 
             if store_response.status_code == 201:
                 print("Review Added!")
