@@ -72,7 +72,7 @@ class Create(ft.View):
             
                 store_api_url = os.getenv("THRIFTSTORE_API_URL")  
 
-                data = {
+                + = {
                     "shopname": self.name.value,
                     "formattedaddress": formatted_address,
                     "latitude": latitude,
