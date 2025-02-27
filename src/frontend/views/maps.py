@@ -169,27 +169,27 @@ class Maps(ft.View):
                     self.open_bottom_sheet(e)
                     return
             
-            # Prevent placing a new marker if it's too close to an existing one
-            for marker_id, coord in self.marker_data.items():
-                if is_within_radius(coord, coordinates, radius=30):  
-                    print(f"Too close to marker ID {marker_id}, cannot place here!")
-                    return  
+            # # Prevent placing a new marker if it's too close to an existing one
+            # for marker_id, coord in self.marker_data.items():
+            #     if is_within_radius(coord, coordinates, radius=30):  
+            #         print(f"Too close to marker ID {marker_id}, cannot place here!")
+            #         return  
 
-            # Assign a unique ID and store the new marker
-            marker_id = self.marker_counter
-            self.marker_counter += 1
-            self.marker_data[marker_id] = coordinates
+            # # Assign a unique ID and store the new marker
+            # marker_id = self.marker_counter
+            # self.marker_counter += 1
+            # self.marker_data[marker_id] = coordinates
 
-            # Add new marker
-            marker_layer_ref.current.markers.append(
-                map.Marker(
-                    content=ft.Icon(ft.icons.LOCATION_ON, color=ft.cupertino_colors.DESTRUCTIVE_RED, size=25),
-                    coordinates=e.coordinates,
-                )
-            )
-            marker_layer_ref.current.update()
+            # # Add new marker
+            # marker_layer_ref.current.markers.append(
+            #     map.Marker(
+            #         content=ft.Icon(ft.icons.LOCATION_ON, color=ft.cupertino_colors.DESTRUCTIVE_RED, size=25),
+            #         coordinates=e.coordinates,
+            #     )
+            # )
+            # marker_layer_ref.current.update()
 
-            print(f"Added marker ID: {marker_id} at {coordinates}")  
+            # print(f"Added marker ID: {marker_id} at {coordinates}")  
 
 
         cebu = map.Map(
