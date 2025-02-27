@@ -1,8 +1,17 @@
 import flet as ft
+from dotenv import load_dotenv
+import os
+
+# Load environment variables at the start
+def configure():
+    load_dotenv()
+
+configure()  # Call it once at the beginning of the script
+
 from views.landing import Landing
 from views.maps import Maps
 from views.favorite import Favorite
-from views.options.questions import Questions  # Imporssstssss ssfssssssrsssssssssssssssssssosmSss psrsssssessfsresnsce msodule
+from views.options.questions import Questions  
 from views.create import Create
 from views.preference import Preference
 from views.about import About
@@ -30,18 +39,18 @@ def main(page: ft.Page):
             page.views.append(Favorite(page))
 
         elif page.route == "/create":
-            page.views.append(Create(page))
+            page.views.append(Create(page))  # Create uses API_URL
 
         elif page.route == "/questions":
-            page.views.append(Questions(page))  # Use the initialized Preference view
+            page.views.append(Questions(page))
 
         elif page.route == "/preference":
-            page.views.append(Preference(page))  # Use the initialized Preference view
+            page.views.append(Preference(page))
 
         elif page.route == "/about":
             about = About(page)
             about.padding = 0
-            page.views.append(About(page))
+            page.views.append(about)
 
         elif page.route == "/profile":
             page.views.append(Profile(page))

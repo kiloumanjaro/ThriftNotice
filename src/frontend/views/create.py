@@ -6,7 +6,8 @@ import os
 def configure():
     load_dotenv()
 
-API_URL = ""
+SUPABASE_URL = ""
+GEOCODE_API_URL= ""
 
 class Create(ft.View):
 
@@ -48,18 +49,58 @@ class Create(ft.View):
                 "shopname": self.name.value,
                 "formattedaddress": self.address.value,
             }
+
             try:
-                response = requests.post(os.getenv("API_URL"), json=data)
-                if response.status_code == 201:
-                    print("Store Added!")
-                    self.page.snack_bar = ft.SnackBar(ft.Text("Store added successfully!"), bgcolor="green")
+                # Geocode the address
+                geocode_response = requests.post(os.getenv("GEOCODE_API_URL"), json={"address": self.address.value})
+
+                print("Raw response status:", geocode_response.status_code)
+                print("Raw response text:", geocode_response.text)  # <--- Print raw response
+
+                if geocode_response.status_code == 200:
+                    geocode_data = geocode_response.json()
+                    print("Parsed JSON Response:", geocode_data)  # <--- Print parsed JSON
+
+                    latitude = geocode_data.get("latitude")
+                    longitude = geocode_data.get("longitude")
+
+                    if latitude and longitude:
+                        print(f"Coordinates: {latitude}, {longitude}")
+                    else:
+                        print("Latitude or longitude not found in response!")
+
                 else:
-                    print("Failed:", response.json())
-                    self.page.snack_bar = ft.SnackBar(ft.Text("Failed to add store"), bgcolor="red")
+                    print("Geocoding failed:", geocode_response.json())
+
+                # --- IGNORE SUPABASE FOR NOW ---
+                # store_api_url = os.getenv("SUPABASE_URL")  
+                # supabase_api_key = os.getenv("SUPABASE_API_KEY")  
+
+                # headers = {
+                #     "apikey": supabase_api_key,
+                #     "Authorization": f"Bearer {supabase_api_key}",
+                #     "Content-Type": "application/json"
+                # }
+
+                # store_response = requests.post(store_api_url, json=data, headers=headers)
+
+                # if store_response.status_code == 201:
+                #     print("Store Added!")
+                #     self.page.snack_bar = ft.SnackBar(ft.Text("Store added successfully!"), bgcolor="green")
+                # else:
+                #     print("Failed:", store_response.json())
+                #     self.page.snack_bar = ft.SnackBar(ft.Text("Failed to add store"), bgcolor="red")
+            
+                print("Mock store added (ignoring Supabase). Data:", data)
+                self.page.snack_bar = ft.SnackBar(ft.Text("Store data processed! (Supabase skipped)"), bgcolor="blue")
+
             except Exception as ex:
                 print("Request failed:", ex)
                 self.page.snack_bar = ft.SnackBar(ft.Text(f"Request failed: {ex}"), bgcolor="red")
+
             self.page.update()
+
+
 
         submit_button = ft.Row(
             alignment="center",  # Center horizontally
@@ -144,4 +185,5 @@ class Create(ft.View):
                 alignment=ft.MainAxisAlignment.SPACE_BETWEEN  # Pushes the placeholder to the bottom
             )
         )
+
 
