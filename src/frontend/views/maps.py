@@ -57,19 +57,6 @@ class Maps(ft.View):
             )
         )
 
-        self.fab = ft.FloatingActionButton(
-            icon=ft.icons.ADD,
-            bgcolor="white",
-            bottom=300,
-            right=200,
-            shape=ft.CircleBorder(),
-            elevation=3,
-            width=55,
-            height=55,
-            on_click=self.open_bottom_sheet
-            #on_click=lambda e: self.page.go("/create"),
-        )
-
         # Define the main circular stack
         circle = ft.Stack(
             controls=[
@@ -307,7 +294,6 @@ class Maps(ft.View):
                     content=ft.Stack(
                         controls=[
                             first_page_contents,
-                            self.fab,
                             self.bottom_sheet
                         ]
                     )
