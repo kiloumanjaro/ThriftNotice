@@ -72,24 +72,24 @@ class Create(ft.View):
                 else:
                     print("Geocoding failed:", geocode_response.json())
 
-                # --- IGNORE SUPABASE FOR NOW ---
-                # store_api_url = os.getenv("SUPABASE_URL")  
-                # supabase_api_key = os.getenv("SUPABASE_API_KEY")  
+            
+                store_api_url = os.getenv("SUPABASE_URL")  
+                supabase_api_key = os.getenv("SUPABASE_API_KEY")  
 
-                # headers = {
-                #     "apikey": supabase_api_key,
-                #     "Authorization": f"Bearer {supabase_api_key}",
-                #     "Content-Type": "application/json"
-                # }
+                headers = {
+                    "apikey": supabase_api_key,
+                    "Authorization": f"Bearer {supabase_api_key}",
+                    "Content-Type": "application/json"
+                }
 
-                # store_response = requests.post(store_api_url, json=data, headers=headers)
+                store_response = requests.post(store_api_url, json=data, headers=headers)
 
-                # if store_response.status_code == 201:
-                #     print("Store Added!")
-                #     self.page.snack_bar = ft.SnackBar(ft.Text("Store added successfully!"), bgcolor="green")
-                # else:
-                #     print("Failed:", store_response.json())
-                #     self.page.snack_bar = ft.SnackBar(ft.Text("Failed to add store"), bgcolor="red")
+                if store_response.status_code == 201:
+                    print("Store Added!")
+                    self.page.snack_bar = ft.SnackBar(ft.Text("Store added successfully!"), bgcolor="green")
+                else:
+                    print("Failed:", store_response.json())
+                    self.page.snack_bar = ft.SnackBar(ft.Text("Failed to add store"), bgcolor="red")
             
                 print("Mock store added (ignoring Supabase). Data:", data)
                 self.page.snack_bar = ft.SnackBar(ft.Text("Store data processed! (Supabase skipped)"), bgcolor="blue")
