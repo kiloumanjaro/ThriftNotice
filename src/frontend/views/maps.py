@@ -104,38 +104,50 @@ class Maps(ft.View):
         self.marker_data = {}  # Dictionary to store marker id and coordinates
         self.marker_counter = 1  # Counter to assign unique IDs
 
-        def get_initial_map_markers(self):
-                """Fetches map markers from the Django API and creates Flet MapMarker objects."""
-                locations_api_url = os.getenv("LOCATIONS_API_URL")
-                response = requests.get(locations_api_url)
-                initial_markers = []
-                if response.status_code == 200:
-                    locations_data = response.json()
-                    print(f"Locations Data from API: {locations_data}") # Print to inspect data
-                    for location in locations_data:
-                        latitude = location.get('latitude') # Use .get() to safely handle missing keys
-                        longitude = location.get('longitude') # Use .get() to safely handle missing keys
+        def get_initial_map_markers(e):
+            """Fetches map markers from API, adds them to marker_layer."""
+            locations_api_url = os.getenv("LOCATIONS_API_URL") # API URL from environment
+            response = requests.get(locations_api_url) # Fetch data from API
 
-                        if latitude is not None and longitude is not None: # Check for null values
-                            try:
-                                # Convert to float to be sure and catch potential errors
-                                latitude = float(latitude)
-                                longitude = float(longitude)
-                                marker = map.Marker(
-                                    content=ft.Icon(ft.icons.LOCATION_ON, color=ft.cupertino_colors.DESTRUCTIVE_RED, size=25), # Same content style as handle_tap
-                                    coordinates=map.MapLatitudeLongitude(latitude, longitude), # Coordinates as LatLong
-                                    data={"shopid": location['shopid']}
-                                )
-                                initial_markers.append(marker)
-                            except (ValueError, TypeError) as e:
-                                print(f"Error creating marker for shop ID {location.get('shopid')}: Invalid coordinate values ({latitude}, {longitude}). Error: {e}")
-                        else:
-                            print(f"Skipping shop ID {location.get('shopid')}: Missing latitude or longitude.")
+            if response.status_code == 200: # API call successful
+                locations_data = response.json() # Parse JSON response
+                print(f"Locations Data from API: {locations_data}") # Debug: print API data
 
-                else:
-                    print(f"Error fetching map locations: {response.status_code} - {response.text}")
-                    # Handle error appropriately in UI
-                return initial_markers
+                # --- Ensure marker_layer_ref is valid ---
+                if marker_layer_ref.current is None: # Check if marker_layer_ref is initialized
+                    print("Error: marker_layer_ref.current is None. Map init issue.")
+                    return
+                if not hasattr(marker_layer_ref.current, 'markers'): # Check if markers list exists
+                    print("Error: marker_layer_ref.current.markers not initialized.")
+                    return
+
+                marker_layer_ref.current.markers.clear() # Clear existing markers on map
+
+                for location in locations_data: # Loop through API locations
+                    latitude = location.get('latitude') # Get latitude, handle missing key
+                    longitude = location.get('longitude') # Get longitude, handle missing key
+
+                    if latitude is not None and longitude is not None: # Check for valid coordinates
+                        try:
+                            latitude = float(latitude) # Convert latitude to float
+                            longitude = float(longitude) # Convert longitude to float
+                            marker = map.Marker( # Create a new map marker
+                                content=ft.Icon(ft.icons.LOCATION_ON, color=ft.cupertino_colors.DESTRUCTIVE_RED, size=25), # Marker style
+                                coordinates=map.MapLatitudeLongitude(latitude, longitude), # Set marker coordinates
+                                data={"shopid": location['shopid']} # Store shop ID in marker data
+                            )
+                            marker_layer_ref.current.markers.append(marker) # Add marker to marker layer
+
+                        except (ValueError, TypeError) as e: # Handle coordinate conversion errors
+                            print(f"Error: Invalid coords for shop {location.get('shopid')}: {e}")
+                    else: # Skip location with missing coordinates
+                        print(f"Skipping shop {location.get('shopid')}: Missing lat/long.")
+
+                marker_layer_ref.current.update() # Update map to show markers
+                print("Initial map markers loaded using marker_layer_ref.") # Confirmation msg
+
+            else: # API call failed
+                print(f"Error fetching map locations: {response.status_code} - {response.text}") # API error info
 
         def handle_tap(e: map.MapTapEvent):
             coordinates = (e.coordinates.latitude, e.coordinates.longitude)
@@ -187,7 +199,8 @@ class Maps(ft.View):
             interaction_configuration=map.MapInteractionConfiguration(
                 flags=map.MapInteractiveFlag.ALL
             ),
-            on_init=lambda e: print(f"Initialized Map"),
+            # on_init=lambda e: (print(f"Initialized Map"), get_initial_map_markers),
+            on_init=get_initial_map_markers,
             on_tap=handle_tap,
             on_secondary_tap=handle_tap,
             on_long_press=handle_tap,
