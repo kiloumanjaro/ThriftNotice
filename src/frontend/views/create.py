@@ -45,10 +45,6 @@ class Create(ft.View):
 
         def submit_form(e):
             # Gather field values
-            data = {
-                "shopname": self.name.value,
-                "formattedaddress": self.address.value,
-            }
 
             try:
                 # Geocode the address
@@ -80,6 +76,13 @@ class Create(ft.View):
                     "apikey": supabase_api_key,
                     "Authorization": f"Bearer {supabase_api_key}",
                     "Content-Type": "application/json"
+                }
+
+                data = {
+                    "shopname": self.name.value,
+                    "formattedaddress": self.address.value,
+                    "latitude": latitude,
+                    "longitude": longitude,
                 }
 
                 store_response = requests.post(store_api_url, json=data, headers=headers)

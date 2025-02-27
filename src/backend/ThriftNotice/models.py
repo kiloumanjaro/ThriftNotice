@@ -13,15 +13,13 @@ class ThriftStores(models.Model):
     specialty           = models.TextField      (db_column='Specialty', blank=True, null=True)              # Field name made lowercase.
     isestablishedstore  = models.BinaryField    (db_column='IsEstablishedStore', blank=True, null=True)     # Field name made lowercase.
     popupstarttime      = models.DateTimeField  (db_column='PopUpStartTime', blank=True, null=True)         # Field name made lowercase.
-    daysopen            = models.TextField      (db_column='DaysOpen', blank=True, null=True)               # Field name made lowercase.
     hasfittingrooms     = models.BooleanField   (db_column='HasFittingRooms', blank=True, null=True)        # Field name made lowercase.
     parkingavailability = models.TextField      (db_column='ParkingAvailability', blank=True, null=True)    # Field name made lowercase.
-    averagerating       = models.FloatField     (db_column='AverageRating', blank=True, null=True)          # Field name made lowercase.
     ispopupevent        = models.BooleanField   (db_column='IsPopUpEvent', blank=True, null=True)           # Field name made lowercase.
 
     class Meta:
         managed = False
-        db_table = 'Thrift Stores'
+        db_table = 'thrift_stores'
         db_table_comment = 'A Relation Containing Information Of Each Thrift Shop'
 
     def __str__(self):
