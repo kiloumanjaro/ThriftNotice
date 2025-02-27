@@ -2,6 +2,8 @@ import flet as ft
 from components.description import BottomSheet
 import flet.map as map
 import math
+import os
+import requests
 
 
 class Maps(ft.View):
@@ -115,6 +117,39 @@ class Maps(ft.View):
         self.marker_data = {}  # Dictionary to store marker id and coordinates
         self.marker_counter = 1  # Counter to assign unique IDs
 
+        def get_initial_map_markers(self):
+                """Fetches map markers from the Django API and creates Flet MapMarker objects."""
+                locations_api_url = os.getenv("LOCATIONS_API_URL")
+                response = requests.get(locations_api_url)
+                initial_markers = []
+                if response.status_code == 200:
+                    locations_data = response.json()
+                    print(f"Locations Data from API: {locations_data}") # Print to inspect data
+                    for location in locations_data:
+                        latitude = location.get('latitude') # Use .get() to safely handle missing keys
+                        longitude = location.get('longitude') # Use .get() to safely handle missing keys
+
+                        if latitude is not None and longitude is not None: # Check for null values
+                            try:
+                                # Convert to float to be sure and catch potential errors
+                                latitude = float(latitude)
+                                longitude = float(longitude)
+                                marker = map.Marker(
+                                    content=ft.Icon(ft.icons.LOCATION_ON, color=ft.cupertino_colors.DESTRUCTIVE_RED, size=25), # Same content style as handle_tap
+                                    coordinates=map.MapLatitudeLongitude(latitude, longitude), # Coordinates as LatLong
+                                    data={"shopid": location['shopid']}
+                                )
+                                initial_markers.append(marker)
+                            except (ValueError, TypeError) as e:
+                                print(f"Error creating marker for shop ID {location.get('shopid')}: Invalid coordinate values ({latitude}, {longitude}). Error: {e}")
+                        else:
+                            print(f"Skipping shop ID {location.get('shopid')}: Missing latitude or longitude.")
+
+                else:
+                    print(f"Error fetching map locations: {response.status_code} - {response.text}")
+                    # Handle error appropriately in UI
+                return initial_markers
+
         def handle_tap(e: map.MapTapEvent):
             coordinates = (e.coordinates.latitude, e.coordinates.longitude)
 
@@ -156,7 +191,6 @@ class Maps(ft.View):
             marker_layer_ref.current.update()
 
             print(f"Added marker ID: {marker_id} at {coordinates}")  
-
 
 
         cebu = map.Map(
@@ -321,6 +355,8 @@ class Maps(ft.View):
             self.display_map_container(),
         ]   
 
+
+
     def open_bottom_sheet(self, e):
         self.bottom_sheet.show()
 
@@ -394,6 +430,7 @@ class Maps(ft.View):
         self.is_shrunk = False  # Mark as not shrunk
 
     def display_map_container(self):
+        # self.get_initial_map_markers()
         return ft.Container(expand=True, bgcolor='green', border_radius=0, 
         content=ft.Stack(
             controls=[
