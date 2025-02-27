@@ -59,14 +59,18 @@ class Create(ft.View):
 
                     latitude = geocode_data.get("latitude")
                     longitude = geocode_data.get("longitude")
+                    formatted_address = geocode_data.get("formatted_address")  # Extract formatted address
 
-                    if latitude and longitude:
+                    if latitude and longitude and formatted_address:
                         print(f"Coordinates: {latitude}, {longitude}")
+                        print(f"Formatted Address: {formatted_address}")
                     else:
-                        print("Latitude or longitude not found in response!")
+                        print("Latitude, longitude, or formatted address not found in response!")
+                        formatted_address = self.address.value  # Fallback to input address
 
                 else:
                     print("Geocoding failed:", geocode_response.json())
+                    formatted_address = self.address.value  # Fallback to input address
 
             
                 store_api_url = os.getenv("SUPABASE_URL")  
@@ -80,9 +84,10 @@ class Create(ft.View):
 
                 data = {
                     "shopname": self.name.value,
-                    "formattedaddress": self.address.value,
+                    "formattedaddress": formatted_address,
                     "latitude": latitude,
                     "longitude": longitude,
+                    "popupstarttime": date_time_field.value,
                 }
 
                 store_response = requests.post(store_api_url, json=data, headers=headers)

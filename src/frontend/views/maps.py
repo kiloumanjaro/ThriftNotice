@@ -161,7 +161,7 @@ class Maps(ft.View):
 
         cebu = map.Map(
             expand=True,
-            initial_zoom=14,
+            initial_zoom=14.5,
             initial_center=map.MapLatitudeLongitude(10.3055, 123.8938), 
             interaction_configuration=map.MapInteractionConfiguration(
                 flags=map.MapInteractiveFlag.ALL

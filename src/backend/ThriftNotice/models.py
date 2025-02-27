@@ -11,11 +11,9 @@ class ThriftStores(models.Model):
     shortdescription    = models.TextField      (db_column='ShortDescription', blank=True, null=True)       # Field name made lowercase.
     pricerange          = models.TextField      (db_column='PriceRange', blank=True, null=True)             # Field name made lowercase.
     specialty           = models.TextField      (db_column='Specialty', blank=True, null=True)              # Field name made lowercase.
-    isestablishedstore  = models.BinaryField    (db_column='IsEstablishedStore', blank=True, null=True)     # Field name made lowercase.
     popupstarttime      = models.TimeField      (db_column='PopUpStartTime', blank=True, null=True)         # Field name made lowercase.
     hasfittingrooms     = models.BooleanField   (db_column='HasFittingRooms', blank=True, null=True)        # Field name made lowercase.
     parkingavailability = models.TextField      (db_column='ParkingAvailability', blank=True, null=True)    # Field name made lowercase.
-    ispopupevent        = models.BooleanField   (db_column='IsPopUpEvent', blank=True, null=True)           # Field name made lowercase.
 
     class Meta:
         db_table = 'thrift_stores'
