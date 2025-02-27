@@ -2,6 +2,7 @@ import flet as ft
 from components.description import BottomSheet
 import flet.map as map
 
+
 class Maps(ft.View):
     def __init__(self, page: ft.Page):
         name = 'Kint Louise Borbano'
@@ -95,25 +96,37 @@ class Maps(ft.View):
         )
 
         marker_layer_ref = ft.Ref[map.MarkerLayer]()
-        self.tapped_pins = set()
+        self.marker_data = {}  # Dictionary to store marker id and coordinates
+        self.marker_counter = 1  # Counter to assign unique IDs
+
         def handle_tap(e: map.MapTapEvent):
             coordinates = (e.coordinates.latitude, e.coordinates.longitude)
 
-            if coordinates in self.tapped_pins:
-                self.open_bottom_sheet(e)
-            else:
-                # Add new marker and store it
-                self.tapped_pins.add(coordinates)
-                marker_layer_ref.current.markers.append(
-                    map.Marker(
-                        content=ft.Icon(ft.Icons.LOCATION_ON, color=ft.cupertino_colors.DESTRUCTIVE_RED, size=25),
-                        coordinates=e.coordinates,
-                    )
-                )
-                marker_layer_ref.current.update()
+            # Check if marker already exists
+            for marker_id, coord in self.marker_data.items():
+                if coord == coordinates:
+                    print(f"Clicked marker ID: {marker_id}")  # Identify place
+                    self.open_bottom_sheet(e)
+                    return
 
-        def handle_event(e: map.MapEvent):
-            print(e)
+            # Assign a unique ID
+            marker_id = self.marker_counter
+            self.marker_counter += 1
+
+            # Store the ID and coordinates mapping
+            self.marker_data[marker_id] = coordinates
+
+            # Add new marker
+            marker_layer_ref.current.markers.append(
+                map.Marker(
+                    content=ft.Icon(ft.Icons.LOCATION_ON, color=ft.cupertino_colors.DESTRUCTIVE_RED, size=25),
+                    coordinates=e.coordinates,
+                )
+            )
+            marker_layer_ref.current.update()
+
+            print(f"Added marker ID: {marker_id} at {coordinates}")
+
 
         cebu = map.Map(
             expand=True,
@@ -126,7 +139,6 @@ class Maps(ft.View):
             on_tap=handle_tap,
             on_secondary_tap=handle_tap,
             on_long_press=handle_tap,
-            on_event=lambda e: print(e),
             layers=[
                 map.TileLayer(
                     url_template="https://tile.openstreetmap.org/{z}/{x}/{y}.png", 

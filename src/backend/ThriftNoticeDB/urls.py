@@ -1,5 +1,5 @@
 """
-URL configuration for backend project.
+URL configuration for ThriftNoticeDB project.
 
 The `urlpatterns` list routes URLs to views. For more information please see:
     https://docs.djangoproject.com/en/5.1/topics/http/urls/
@@ -17,7 +17,8 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 
-urlpatterns = [
+urlpatterns = [ 
     path('admin/', admin.site.urls),
-    path('api/', include('geocoding_app.urls')),  # API route
+    path('api/', include('ThriftNotice.urls')), 
+    path('api/', include('geocoding_app.urls')), # Include URLs from your app under the /api/ path
 ]
