@@ -22,12 +22,22 @@ class ThriftStores(models.Model):
 
 class Users(models.Model):
     userid              = models.BigAutoField   (db_column='userid', primary_key=True)                      # Field name made lowercase.
-    clothing            = models.TextField      (db_column='clothing')                                      # Field name made lowercase.
-    budget              = models.TextField      (db_column='budget')                                        # Field name made lowercase.
-    shoppingenvironment = models.TextField      (db_column='shoppingenvironment')                           # Field name made lowercase.
-    organization        = models.TextField      (db_column='organization')                                  # Field name made lowercase.
-    interest            = models.TextField      (db_column='interest')                                      # Field name made lowercase.
+    username            = models.TextField      (db_column='username', blank=True, null=True)               # Field name made lowercase.
+    clothing            = models.TextField      (db_column='clothing', blank=True, null=True)               # Field name made lowercase.
+    budget              = models.TextField      (db_column='budget', blank=True, null=True)                 # Field name made lowercase.
+    shoppingenvironment = models.TextField      (db_column='shoppingenvironment', blank=True, null=True)    # Field name made lowercase.
+    organization        = models.TextField      (db_column='organization', blank=True, null=True)           # Field name made lowercase.
+    interest            = models.TextField      (db_column='interest', blank=True, null=True)               # Field name made lowercase.
 
     class Meta:
         db_table = 'users_pref'
         db_table_comment = 'A Relation Containing Information Of Users Preferences'
+
+class FavoriteShop(models.Model):
+    userid = models.ForeignKey(Users, on_delete=models.CASCADE, db_column='userid', primary_key=True)  
+    shopid = models.ForeignKey(ThriftStores, on_delete=models.CASCADE, db_column='shopid')
+
+    class Meta:
+        db_table = 'favorite_shops'
+        db_table_comment = 'A table storing favorite shops for each user.'
+        unique_together = ('userid', 'shopid')  # Ensures a user can't favorite the same shop twice
