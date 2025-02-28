@@ -5,7 +5,6 @@ import math
 import os
 import requests
 
-
 class Maps(ft.View):
     def __init__(self, page: ft.Page):
         name = 'Kint Louise Borbano'
@@ -165,6 +164,8 @@ class Maps(ft.View):
                     # Enlarge the selected marker
                     marker.content = ft.Icon(ft.icons.LOCATION_ON, color="blue", size=40)  
                     marker_layer_ref.current.update()
+
+                    cebu.center_on(map.MapLatitudeLongitude((marker.coordinates.latitude)*0.999763, (marker.coordinates.longitude)), zoom=16.6)
 
                     self.open_bottom_sheet(e)
                     return
