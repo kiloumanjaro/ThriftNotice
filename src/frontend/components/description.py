@@ -53,6 +53,7 @@ class BottomSheet(ft.Container):
                     ]
                 ),
                 ft.Container(
+                    expand=True,
                     padding=ft.padding.only(right=15),
                     content=ft.Column(
                         controls=[
