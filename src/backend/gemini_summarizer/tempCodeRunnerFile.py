@@ -1,5 +1,4 @@
 from google import genai
-from google.genai import types
 import os
 from dotenv import load_dotenv
 
@@ -8,6 +7,9 @@ def configure():
     load_dotenv()
 
 configure()  # Call this function to load environment variables
+
+from google import genai
+from google.genai import types
 
 client = genai.Client(api_key=os.getenv("GOOGLE_GENAI_API_KEY"))
 
@@ -23,6 +25,8 @@ def summarize_reviews(text1: str, text2: str, max_length: int = 425) -> str:
         )
     )
     return response.text.strip() if response and response.text else "Error: No response generated."
+
+
 
 # Sample input
 text1 = """The laptop has an impressive battery life and a stunning display. The performance is top-notch, handling all my tasks effortlessly. However, the fan noise can get quite loud under heavy load, which is a bit annoying."""
