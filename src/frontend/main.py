@@ -16,6 +16,7 @@ from views.create import Create
 from views.preference import Preference
 from views.about import About
 from views.profile import Profile
+from views.shop import Shop
 
 def main(page: ft.Page):
     page.theme_mode = ft.ThemeMode.LIGHT    
@@ -39,7 +40,7 @@ def main(page: ft.Page):
             page.views.append(Favorite(page))
 
         elif page.route == "/create":
-            page.views.append(Create(page))  # Create uses API_URL
+            page.views.append(Create(page))  # Create usess API_URL
 
         elif page.route == "/questions":
             page.views.append(Questions(page))
@@ -52,12 +53,17 @@ def main(page: ft.Page):
             about.padding = 0
             page.views.append(about)
 
+        elif page.route == "/shop":
+            shop = Shop(page)
+            shop.padding = 0
+            page.views.append(shop)
+
         elif page.route == "/profile":
             page.views.append(Profile(page))
 
         page.update()
 
     page.on_route_change = router
-    page.go("/")   
+    page.go("/shop")   
 
 ft.app(main)

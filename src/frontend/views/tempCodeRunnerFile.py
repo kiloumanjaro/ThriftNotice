@@ -1,0 +1,1 @@
+on_click=lambda e: self.page.go("/favorite"),

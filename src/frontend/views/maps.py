@@ -38,7 +38,7 @@ class Maps(ft.View):
             border=None,
             border_radius=20,
             bgcolor=wg,
-            padding=ft.padding.only(right=20),
+            padding=ft.padding.only(right=18),
             animate=ft.animation.Animation(400, "decelerate"),
             content=ft.Row(
                 spacing=0,  # Set spacing to 0
@@ -242,7 +242,7 @@ class Maps(ft.View):
                             self.search_bar,  # Expandable search bar
                         ]
                     ),
-                    ft.Divider(height=10, color="transparent"),
+                    ft.Divider(height=7, color="transparent"),
                     ft.Container(
                     width=320,  # Slightly bigger than map container
                     height=543,
@@ -271,7 +271,7 @@ class Maps(ft.View):
                 controls=[
                     circle,
                     ft.Divider(height=10, color="transparent"),
-                    ft.Text(name, size=28, weight='bold', color=wg),
+                    ft.Text(name, size=28, color=wg),
                     ft.Divider(height=15, color="transparent"),
                     ft.TextButton(
                         text="Favorites",
@@ -422,9 +422,9 @@ class Maps(ft.View):
         )
         self.page_2.controls[0].padding = ft.padding.only(
             top=12,
-            left=22,
+            left=20,
             right=17,
-            bottom=10,
+            bottom=0,
         )
         self.page_2.update()
         self.is_shrunk = False  # Mark as not shrunk

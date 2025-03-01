@@ -11,8 +11,8 @@ class BottomSheet(ft.Container):
         self.client = self.create_client()
         
         super().__init__(
-            width=318,
-            height=360,
+            width=322,
+            height=350,
             bgcolor="white",
             border_radius=ft.border_radius.all(20),
             margin=ft.margin.only(bottom=23),
@@ -48,7 +48,14 @@ class BottomSheet(ft.Container):
                 ft.Row(
                     alignment='spaceBetween',
                     controls=[
-                        ft.Text(self.shop_name, size=23, weight='bold'),
+                        ft.TextButton(
+                            self.shop_name,
+                            on_click=lambda e: self.page.go("/shop"),
+                            style=ft.ButtonStyle(
+                                text_style=ft.TextStyle(size=23, weight="bold",),
+                                padding=0,
+                        )
+                    ),
                         ft.IconButton(ft.icons.CLOSE, on_click=on_close, icon_size=20),
                     ]
                 ),
@@ -56,6 +63,7 @@ class BottomSheet(ft.Container):
                     expand=True,
                     padding=ft.padding.only(right=15),
                     content=ft.Column(
+                        spacing=15,
                         controls=[
                             ft.Text(self.formatted_address, size=10),
                             ft.Text(self.short_description, size=12),
