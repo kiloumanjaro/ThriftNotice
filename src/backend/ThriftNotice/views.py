@@ -3,8 +3,8 @@ from django.shortcuts import render
 # Create your views here.
 # ThriftNotice/views.py
 from rest_framework import viewsets
-from .models import ThriftStores, Users
-from .serializers import ThriftStoreSerializer, UsersSerializer
+from .models import ThriftStores, Users, FavoriteShop
+from .serializers import ThriftStoreSerializer, UsersSerializer, FavoriteShopSerializer
 from rest_framework.decorators import action # Import the @action decorator
 from rest_framework.response import Response
 from rest_framework import status
@@ -25,3 +25,7 @@ class ThriftStoreViewSet(viewsets.ModelViewSet):
 class UsersViewSet(viewsets.ModelViewSet):
     queryset = Users.objects.all() #  Get all Notice objects
     serializer_class = UsersSerializer # Use the NoticeSerializer
+
+class FavoriteShopViewSet(viewsets.ModelViewSet):
+    queryset = FavoriteShop.objects.all() #  Get all Notice objects
+    serializer_class = FavoriteShopSerializer # Use the NoticeSerializer
