@@ -36,6 +36,13 @@ class Profile(ft.View):
             )
         )
 
+        self.name_input = ft.TextField(
+                            label="Who are you?",
+                            border="none",  # Remove default border
+                            bgcolor=self.bg1,  # Match container background
+                            color="white",  # Text color
+                            label_style=ft.TextStyle(color="white"),  # Make label white
+                        )
 
         self.name_container = ft.Container(
             padding=ft.padding.only(left=40, right=40, top=0, bottom=0),
@@ -45,13 +52,7 @@ class Profile(ft.View):
                         bgcolor=self.bg1,  # Match background
                         border_radius=10,  # Rounded corners
                         padding=ft.padding.all(5),  # Add padding to prevent clipping
-                        content=ft.TextField(
-                            label="Who are you?",
-                            border="none",  # Remove default border
-                            bgcolor=self.bg1,  # Match container background
-                            color="white",  # Text color
-                            label_style=ft.TextStyle(color="white"),  # Make label white
-                        ),
+                        content= self.name_input,
                     ),
                     ft.Divider(height=30, color="transparent"),
                     ft.Container(
@@ -63,10 +64,14 @@ class Profile(ft.View):
             )
         )
 
-        # Get Started Button
+        def submit_button(choice, e):
+            self.page.session.set("username", self.name_input.value)
+            print(self.page.session.get("username"))
+            (self.page.go("/questions") if choice == 1 else self.page.go("/maps"))
+
         self.proceed_button = ft.ElevatedButton(
             text="Proceed",
-            on_click=lambda e: self.page.go("/questions"),
+            on_click=lambda e: submit_button(1, e),
             width=190, 
             height=47, 
             style=ft.ButtonStyle(
@@ -80,7 +85,7 @@ class Profile(ft.View):
 
         self.skip_button = ft.ElevatedButton(
             text="Skip",
-            on_click=lambda e: self.page.go("/maps"),
+            on_click=lambda e: submit_button(0, e),
             width=110, 
             height=47, 
             style=ft.ButtonStyle(

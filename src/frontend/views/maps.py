@@ -7,9 +7,9 @@ import requests
 
 class Maps(ft.View):
     def __init__(self, page: ft.Page):
-        name = 'Kint Louise Borbano'
         super(Maps, self).__init__(route="/maps")
         self.page = page
+        self.name = self.page.session.get("username") or "Guest-101"
         self.is_shrunk = False
         bg='#1c1c1c'
         fg='#98e2f6'
@@ -271,7 +271,7 @@ class Maps(ft.View):
                 controls=[
                     circle,
                     ft.Divider(height=10, color="transparent"),
-                    ft.Text(name, size=28, color=wg),
+                    ft.Text(self.name, size=28, color=wg),
                     ft.Divider(height=15, color="transparent"),
                     ft.TextButton(
                         text="Favorites",
