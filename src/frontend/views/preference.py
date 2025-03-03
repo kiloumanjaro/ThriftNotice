@@ -95,6 +95,7 @@ class Preference(ft.View):
         def submit_form(e):
             try:
                 data = {
+                    "username": self.page.session.get("username") or "Guest-101",
                     "clothing": self.clothing_dropdown.value,
                     "budget": self.budget_dropdown.value,
                     "shoppingenvironment": self.environment_dropdown.value,

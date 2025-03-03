@@ -34,10 +34,10 @@ class Users(models.Model):
         db_table_comment = 'A Relation Containing Information Of Users Preferences'
 
 class FavoriteShop(models.Model):
-    userid = models.ForeignKey(Users, on_delete=models.CASCADE, db_column='userid', primary_key=True)  
+    userid = models.ForeignKey(Users, on_delete=models.CASCADE, db_column='userid')  
     shopid = models.ForeignKey(ThriftStores, on_delete=models.CASCADE, db_column='shopid')
 
     class Meta:
         db_table = 'favorite_shops'
+        unique_together = (('userid', 'shopid'))
         db_table_comment = 'A table storing favorite shops for each user.'
-        unique_together = ('userid', 'shopid')  # Ensures a user can't favorite the same shop twice
