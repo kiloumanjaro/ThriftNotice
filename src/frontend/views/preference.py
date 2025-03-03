@@ -181,15 +181,50 @@ class Preference(ft.View):
                                     content=ft.Column(
                                         controls=[
                                             ft.Text("Clothing", size=14, color="black"),
-                                            self.clothing_dropdown,
+                                            ft.Container(
+                                                bgcolor="#eceef4",
+                                                border_radius=0,
+                                                border=ft.border.all(1, "black"),  # Custom border
+                                                padding=ft.padding.only(bottom=2, left=6),  
+                                                content=self.clothing_dropdown,
+                                            ),
+                                            ft.Container(height=2),
                                             ft.Text("Budget", size=14, color="black"),
-                                            self.budget_dropdown,
+                                            ft.Container(
+                                                bgcolor="#eceef4",
+                                                border_radius=0,
+                                                border=ft.border.all(1, "black"),  # Custom border
+                                                padding=ft.padding.only(bottom=2, left=6),  
+                                                content=self.budget_dropdown,
+                                            ),
+                                            ft.Container(height=2),
                                             ft.Text("Shopping Environment", size=14, color="black"),
-                                            self.environment_dropdown,
+                                            ft.Container(
+                                                bgcolor="#eceef4",
+                                                border_radius=0,
+                                                border=ft.border.all(1, "black"),  # Custom border
+                                                padding=ft.padding.only(bottom=2, left=6),  
+                                                content=self.environment_dropdown,
+                                            ),
+                                            ft.Container(height=2),
                                             ft.Text("Organization", size=14, color="black"),
-                                            self.organization_dropdown,
+                                            ft.Container(
+                                                bgcolor="#eceef4",
+                                                border_radius=0,
+                                                border=ft.border.all(1, "black"),  # Custom border
+                                                padding=ft.padding.only(bottom=2, left=6),  
+                                                content=self.organization_dropdown,
+                                            ),
+                                            ft.Container(height=2),
                                             ft.Text("Interest", size=14, color="black"),
-                                            self.interest_dropdown,
+                                            ft.Container(
+                                                bgcolor="#eceef4",
+                                                border_radius=0,
+                                                border=ft.border.all(1, "black"),  # Custom border
+                                                padding=ft.padding.only(bottom=2, left=6),  
+                                                content=self.interest_dropdown,
+                                            ),
+                                            ft.Container(height=13),
                                             submit_button
                                         ]
                                     )
