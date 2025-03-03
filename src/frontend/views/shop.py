@@ -64,12 +64,11 @@ class Shop(ft.View):
                 controls=[
                     ft.Container(
                         top=0,
-                        border=ft.border.all(0.5, "black"),
                         border_radius=ft.border_radius.only(bottom_left=15, bottom_right=15),
                         content=ft.Container(
                             alignment=ft.alignment.center,
                             content=ft.Image(
-                                src="cyres.jpg",
+                                src="placeholder.png",
                                 width=380,
                                 height=280,
                                 fit=ft.ImageFit.COVER,
@@ -120,7 +119,7 @@ class Shop(ft.View):
                         border_radius=50,
                         alignment=ft.alignment.center,
                         content=ft.IconButton(
-                            icon=ft.icons.MAP,
+                            icon=ft.icons.HOME,
                             icon_size=20,
                             icon_color="white",
                             on_click=self.go_back_to_maps

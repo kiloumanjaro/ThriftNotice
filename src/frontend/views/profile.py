@@ -57,7 +57,7 @@ class Profile(ft.View):
                     ft.Divider(height=30, color="transparent"),
                     ft.Container(
                         padding=ft.padding.only(left=30, right=30),
-                        content=ft.Text("Would like AI to assist you?", size=28, text_align="center", color="White")
+                        content=ft.Text("Would you like AI to assist you?", size=28, text_align="center", color="White")
                     )
                         
                 ]    

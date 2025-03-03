@@ -17,6 +17,7 @@ from views.preference import Preference
 from views.about import About
 from views.profile import Profile
 from views.shop import Shop
+from views.ai import AI
 
 def main(page: ft.Page):
     page.theme_mode = ft.ThemeMode.LIGHT    
@@ -61,9 +62,14 @@ def main(page: ft.Page):
         elif page.route == "/profile":
             page.views.append(Profile(page))
 
+        elif page.route == "/ai":
+            ai = AI(page)
+            ai.padding = 0
+            page.views.append(ai)
+        
         page.update()
 
     page.on_route_change = router
-    page.go("/shop")   
+    page.go("/")   
 
 ft.app(main)
