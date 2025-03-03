@@ -231,6 +231,7 @@ class Maps(ft.View):
         )
 
         first_page_contents = ft.Container(
+            margin=ft.margin.only(left=20),
             content=ft.Column(
                 spacing=0,
                 controls=[
@@ -247,7 +248,12 @@ class Maps(ft.View):
                     width=320,  # Slightly bigger than map container
                     height=543,
                     border_radius=21,  # Ensures a rounded border
-                    bgcolor=ft.colors.BLACK,  # Border color
+                    #bgcolor=ft.colors.BLACK,  # Border color
+                    shadow=ft.BoxShadow(
+                        blur_radius=3,  # Controls the blur effect
+                        spread_radius=0,  # Controls the shadow spread
+                        color=ft.colors.BLACK45,  # Adjust opacity as needed
+                    ),
                     padding=1,  # Space for border thickness
                         content=ft.Container(
                         content=cebu,
@@ -261,8 +267,7 @@ class Maps(ft.View):
             ),
             on_click=self.close_search,  # Detect clicks outside search bar
         )
-
-        
+ 
         self.page_1 = ft.Container( 
             bgcolor=bg,
             border_radius=0,
@@ -277,6 +282,17 @@ class Maps(ft.View):
                         text="Favorites",
                         icon=ft.icons.FAVORITE_BORDER_SHARP,
                         on_click=lambda e: self.page.go("/favorite"),
+                        style=ft.ButtonStyle(
+                            color=wg,
+                            icon_color=wg,
+                            padding=ft.padding.all(10)
+                        )
+                    ),
+                    ft.TextButton(
+                        text="Assistant",
+                        icon=ft.icons.AUTO_AWESOME_OUTLINED,
+                        on_click=lambda e: self.page.go("/ai"),
+                        
                         style=ft.ButtonStyle(
                             color=wg,
                             icon_color=wg,
@@ -313,6 +329,7 @@ class Maps(ft.View):
                             padding=ft.padding.all(10)
                         )
                     ),
+                    
                     ft.Divider(height=20, color="transparent"),
                     ft.TextButton(
                         text="Sign Out",
@@ -337,12 +354,13 @@ class Maps(ft.View):
                     animate=ft.animation.Animation(600, ft.AnimationCurve.DECELERATE),
                     animate_scale=ft.animation.Animation(400, curve='decelerate'),
                     padding=ft.padding.only(
-                        top=12, left=20, right=17, bottom=0,
+                        top=12, right=17, bottom=0,
                     ),
                     content=ft.Stack(
+                        height=667,
                         controls=[
                             first_page_contents,
-                            self.bottom_sheet
+                            self.bottom_sheet,
                         ]
                     )
                 )
@@ -354,8 +372,6 @@ class Maps(ft.View):
         self.controls = [
             self.display_map_container(),
         ]   
-
-
 
     def open_bottom_sheet(self, e):
         self.bottom_sheet.show()
@@ -399,16 +415,16 @@ class Maps(ft.View):
             )
             self.page_2.controls[0].padding = ft.padding.only(
                 top=12,
-                left=22,
+                left=0,
                 right=0,
-                bottom=10,
+                bottom=0,
             )
             self.close_search(e)
             self.search_bar.update()
             self.bottom_sheet.hide()
             self.page_2.update()
             self.is_shrunk = True  # Mark as shrunk
-
+    
     def restore(self, e):
         self.page_2.controls[0].width = 375
         self.page_2.controls[0].scale = ft.transform.Scale(
@@ -422,7 +438,6 @@ class Maps(ft.View):
         )
         self.page_2.controls[0].padding = ft.padding.only(
             top=12,
-            left=20,
             right=17,
             bottom=0,
         )
@@ -430,13 +445,17 @@ class Maps(ft.View):
         self.is_shrunk = False  # Mark as not shrunk
 
     def display_map_container(self):
-        # self.get_initial_map_markers()
-        return ft.Container(expand=True, bgcolor='green', border_radius=0, 
-        content=ft.Stack(
-            controls=[
-                self.page_1,
-                self.page_2,
-            ]
+        return ft.Container(
+            expand=True, 
+            bgcolor='green', 
+            border_radius=0, 
+            content=ft.Stack(
+                expand=True,
+                controls=[
+                    self.page_1,
+                    self.page_2,
+                ]
+            )
         )
-    )
+
 

@@ -2,9 +2,12 @@ import flet as ft
 import requests
 from dotenv import load_dotenv
 import os
+from datetime import datetime
 
 def configure():
     load_dotenv()
+
+current_time = datetime.now().strftime("%H:%M:%S")
 
 class Create(ft.View):
 
@@ -32,7 +35,7 @@ class Create(ft.View):
             ]
         )
 
-        date_time_field = ft.TextField(disabled=True, width=155)
+        date_time_field = ft.TextField(disabled=True, width=155, value=current_time)
 
         def on_type_change(e):
             date_time_field.disabled = type_selector.value != "Pop-up"

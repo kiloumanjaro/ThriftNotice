@@ -1,6 +1,21 @@
 import flet as ft
 
 def clothing_page(pref_view):
+    selected_clothing = ft.Ref[ft.Text]()  # Stores selected clothing types
+    selected_options = set()  # Tracks selected options
+
+    def toggle_clothing(e):
+        option = e.control.data  # Retrieve option text
+        if option in selected_options:
+            selected_options.remove(option)
+        else:
+            selected_options.add(option)
+
+        # Save preferences and update UI
+        pref_view.update_preference("clothing_types", list(selected_options))
+        selected_clothing.current.value = f"Selected: {', '.join(selected_options) if selected_options else 'None'}"
+        selected_clothing.current.update()
+
     return ft.Container(
         expand=True,
         padding=ft.padding.symmetric(horizontal=20),
@@ -21,59 +36,33 @@ def clothing_page(pref_view):
                 
                 ft.Container(height=20),  
                 
-                # Checkbox options 
+                # Clothing choices as outlined buttons
                 ft.Column(
                     spacing=10,
+                    alignment="center",
                     controls=[
                         ft.OutlinedButton(
-                            text="Casual wear", 
-                            on_click=None, 
+                            text=option, 
+                            data=option,
+                            on_click=toggle_clothing,
                             width=300, 
                             style=ft.ButtonStyle(
-                                text_style=ft.TextStyle(size=12),
-                                side=ft.BorderSide(1, ft.colors.GREY)  
-                            )
-                        ),
-                        ft.OutlinedButton(
-                            text="Vintage pieces", 
-                            on_click=None, 
-                            width=300, 
-                            style=ft.ButtonStyle(
+                                shape=ft.RoundedRectangleBorder(radius=25),
                                 text_style=ft.TextStyle(size=12),
                                 side=ft.BorderSide(1, ft.colors.GREY)
                             )
-                        ),
-                        ft.OutlinedButton(
-                            text="Formal attire", 
-                            on_click=None, 
-                            width=300, 
-                            style=ft.ButtonStyle(
-                                text_style=ft.TextStyle(size=12),
-                                side=ft.BorderSide(1, ft.colors.GREY)
-                            )
-                        ),
-                        ft.OutlinedButton(
-                            text="Streetwear", 
-                            on_click=None, 
-                            width=300, 
-                            style=ft.ButtonStyle(
-                                text_style=ft.TextStyle(size=12),
-                                side=ft.BorderSide(1, ft.colors.GREY)
-                            )
-                        ),
-                        ft.OutlinedButton(
-                            text="Designer/Branded items", 
-                            on_click=None, 
-                            width=300, 
-                            style=ft.ButtonStyle(
-                                text_style=ft.TextStyle(size=12),
-                                side=ft.BorderSide(1, ft.colors.GREY)
-                            )
-                        ),
-                    ],
-                    alignment="center"
+                        ) for option in [
+                            "Casual wear", "Vintage pieces", "Formal attire", 
+                            "Streetwear", "Designer/Branded items"
+                        ]
+                    ]
                 ),
                 
+                ft.Container(height=20),  
+                
+                # Display selected clothing types
+                ft.Text(ref=selected_clothing, size=14, italic=True, color=ft.colors.GREY),
+
                 ft.Container(height=30),  
                 
                 # Navigation buttons

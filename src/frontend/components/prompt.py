@@ -5,7 +5,7 @@ from dotenv import load_dotenv
 from google import genai
 from google.genai import types
 
-class BottomSheet(ft.Container):
+class Prompt(ft.Container):
     def __init__(self, on_close):
         self.configure()
         self.client = self.create_client()
@@ -43,7 +43,7 @@ class BottomSheet(ft.Container):
         
         self.content = ft.Column(
             expand=True,
-            spacing=5,
+            spacing=13,
             controls=[
                 ft.Row(
                     alignment='spaceBetween',
@@ -63,9 +63,8 @@ class BottomSheet(ft.Container):
                     expand=True,
                     padding=ft.padding.only(right=15),
                     content=ft.Column(
-                        spacing=15,
+                        spacing=20,
                         controls=[
-                            ft.Text(self.formatted_address, size=10),
                             ft.Text(self.short_description, size=12),
                         ]
                     )

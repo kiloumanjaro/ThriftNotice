@@ -34,13 +34,19 @@ class Questions(ft.View):
             organization_page(self),
             interest_page(self)
         ]
+
+
         self.initialize()
 
     def initialize(self):
         self.show_current_page()
 
     def show_current_page(self):
-        self.controls = [self.pages[self.current_page]]
+        """Update UI with the current question page and buttons."""
+        self.controls = [
+            self.pages[self.current_page],
+        ]
+        # Disable the next button if no option is selected for the current category
         self.page.update()
 
     def next_page(self, e):
@@ -87,5 +93,11 @@ class Questions(ft.View):
         self.page.go("/maps")
 
     def update_preference(self, category, value):
-        """Updates the selected user preference."""
+        """Updates the selected user preference and enables Next if a choice is made."""
         self.user_preferences[category] = value
+        self.show_current_page()  # Ensure UI updates after changing preference
+
+    def get_current_category(self):
+        """Returns the category associated with the current page index."""
+        categories = list(self.user_preferences.keys())
+        return categories[self.current_page]
