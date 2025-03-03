@@ -4,15 +4,21 @@ from .budget import budget_page
 from .shopping_environment import shopping_environment_page
 from .organization import organization_page
 from .interest import interest_page
+import requests
+from dotenv import load_dotenv
+import os
+
+load_dotenv()
 
 class Questions(ft.View):
     def __init__(self, page: ft.Page): 
         super(Questions, self).__init__(route="/questions")
         self.page = page
         self.current_page = 0  
-
+        self.username = self.page.session.get("username")
         # Stores user selections for different categories
         self.user_preferences = {
+            "username": self.username,
             "clothing": None,
             "budget": None,
             "shopping_environment": None,
@@ -54,10 +60,31 @@ class Questions(ft.View):
             self.show_current_page()
 
     def go_back_to_maps(self, e):
-        
         print("User Preferences:", self.user_preferences) 
+
+        try:
+                data = self.user_preferences
+
+                users_api_url = os.getenv("USERS_PREF_API_URL") 
+
+                users_response = requests.post(users_api_url, json=data)
+                users_response = requests.get(f"{users_api_url}get_user/?username={self.username}")
+
+                if users_response.status_code == 200:
+                    new_user = users_response.json()  
+                    user_id = new_user["userid"]
+                    self.page.session.set("userid", user_id)
+                    print("Users Pref Added!")
+                    self.page.snack_bar = ft.SnackBar(ft.Text("Users pref added successfully!"), bgcolor="green")
+                else:
+                    print("Failed:", users_response.json())
+                    self.page.snack_bar = ft.SnackBar(ft.Text("Failed to add users pref"), bgcolor="red")
+            
+        except Exception as ex:
+            print("Request failed:", ex)
+            self.page.snack_bar = ft.SnackBar(ft.Text(f"Request failed: {ex}"), bgcolor="red")
+
         self.page.go("/maps")
-        self.page.update()
 
     def update_preference(self, category, value):
         """Updates the selected user preference."""

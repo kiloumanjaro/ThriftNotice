@@ -3,9 +3,7 @@ import requests
 from dotenv import load_dotenv
 import os
 
-def configure():
-    load_dotenv()
-
+load_dotenv()
 
 class Preference(ft.View):
 
@@ -15,15 +13,39 @@ class Preference(ft.View):
         self.bg = '#1c1c1c'
         self.bg1 = '#323232'
         self.initialize()
+        self.user_id = self.page.session.get("userid")
+        self.users_api_url = os.getenv("USERS_PREF_API_URL") 
+        self.get_values()
+
+    def get_values(self):
+        try:
+            
+            users_response = requests.get(f"{self.users_api_url}get_userid/?userid={self.user_id}")
+            if users_response.status_code == 200:
+                print("Users Pref Read!")
+                self.page.snack_bar = ft.SnackBar(ft.Text("Users pref read successfully!"), bgcolor="green")
+                user_data = users_response.json()
+                self.clothing_dropdown.value = user_data["clothing"] or None
+                self.budget_dropdown.value = user_data["budget"] or None
+                self.environment_dropdown.value = user_data["shoppingenvironment"] or None
+                self.organization_dropdown.value = user_data["organization"] or None
+                self.interest_dropdown.value = user_data["interest"] or None
+                self.page.update()
+
+            else:
+                print("Failed:", users_response.json())
+                self.page.snack_bar = ft.SnackBar(ft.Text("Failed to read users pref"), bgcolor="red")
+            
+        except Exception as ex:
+            print("Request failed:", ex)
+            self.page.snack_bar = ft.SnackBar(ft.Text(f"Request failed: {ex}"), bgcolor="red")
     
     def initialize(self):
         self.controls = [self.display_questionaire_container()]
     
     def go_back_to_maps(self, e):
         self.page.go("/maps")
-        #self.page.update()
 
-    
     def display_questionaire_container(self):
         
         self.clothing_dropdown = ft.Dropdown(
@@ -95,7 +117,7 @@ class Preference(ft.View):
         def submit_form(e):
             try:
                 data = {
-                    "username": self.page.session.get("username") or "Guest-101",
+                    "username": self.page.session.get("username"),
                     "clothing": self.clothing_dropdown.value,
                     "budget": self.budget_dropdown.value,
                     "shoppingenvironment": self.environment_dropdown.value,
@@ -103,16 +125,14 @@ class Preference(ft.View):
                     "interest": self.interest_dropdown.value
                 }
 
-                store_api_url = os.getenv("USERS_PREF_API_URL") 
+                users_response = requests.patch(f"{self.users_api_url}{self.user_id}/", json=data)
 
-                store_response = requests.post(store_api_url, json=data)
-
-                if store_response.status_code == 201:
-                    print("Users Pref Added!")
-                    self.page.snack_bar = ft.SnackBar(ft.Text("Users pref added successfully!"), bgcolor="green")
+                if users_response.status_code == 200:
+                    print("Users Pref Updated!")
+                    self.page.snack_bar = ft.SnackBar(ft.Text("Users pref updated successfully!"), bgcolor="green")
                 else:
-                    print("Failed:", store_response.json())
-                    self.page.snack_bar = ft.SnackBar(ft.Text("Failed to add users pref"), bgcolor="red")
+                    print("Failed:", users_response.json())
+                    self.page.snack_bar = ft.SnackBar(ft.Text("Failed to update users pref"), bgcolor="red")
             
             except Exception as ex:
                 print("Request failed:", ex)

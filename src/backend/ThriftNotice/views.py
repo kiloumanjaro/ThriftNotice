@@ -26,6 +26,27 @@ class UsersViewSet(viewsets.ModelViewSet):
     queryset = Users.objects.all() #  Get all Notice objects
     serializer_class = UsersSerializer # Use the NoticeSerializer
 
+    @action(detail=False, methods=['get'], url_path='get_user')
+    def get_user(self, request):
+        username = request.GET.get("username")
+        user = Users.objects.filter(username=username).first()
+
+        if user is None:
+            return Response({"error": "User not found"}, status=404)
+
+        return Response(UsersSerializer(user).data)
+    
+    @action(detail=False, methods=['get'], url_path='get_userid')
+    def get_userid(self, request):
+        userid = request.GET.get("userid")
+        user = Users.objects.filter(userid=userid).first()
+
+        if user is None:
+            return Response({"error": "User not found"}, status=404)
+
+        return Response(UsersSerializer(user).data)
+    
+
 class FavoriteShopViewSet(viewsets.ModelViewSet):
     queryset = FavoriteShop.objects.all() #  Get all Notice objects
     serializer_class = FavoriteShopSerializer # Use the NoticeSerializer
