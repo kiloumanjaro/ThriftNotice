@@ -29,8 +29,6 @@ class Questions(ft.View):
             interest_page(self)
         ]
 
-        # Next button (initially disabled)
-        self.next_button = ft.ElevatedButton("Next", on_click=self.next_page, disabled=True)
 
         self.initialize()
 
@@ -41,10 +39,8 @@ class Questions(ft.View):
         """Update UI with the current question page and buttons."""
         self.controls = [
             self.pages[self.current_page],
-            self.next_button  # Include the next button in the UI
         ]
         # Disable the next button if no option is selected for the current category
-        self.next_button.disabled = self.user_preferences[self.get_current_category()] is None
         self.page.update()
 
     def next_page(self, e):
@@ -71,8 +67,6 @@ class Questions(ft.View):
     def update_preference(self, category, value):
         """Updates the selected user preference and enables Next if a choice is made."""
         self.user_preferences[category] = value
-        if category == self.get_current_category():
-            self.next_button.disabled = False
         self.show_current_page()  # Ensure UI updates after changing preference
 
     def get_current_category(self):
