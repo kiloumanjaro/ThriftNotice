@@ -70,6 +70,6 @@ def main(page: ft.Page):
         page.update()
 
     page.on_route_change = router
-    page.go("/")   
+    page.go("/questions")   
 
 ft.app(main)

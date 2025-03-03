@@ -1,10 +1,19 @@
 import flet as ft
 
 def interest_page(pref_view):
-    selected_interest = ft.Ref[ft.Text]()  # Stores selected interest
+    selected_interest = ft.Ref[ft.Text]()  # Stores selected interests
+    selected_options = set()  # Tracks selected interests
 
-    def select_interest(e):
-        selected_interest.current.value = e.control.text
+    def toggle_interest(e):
+        option = e.control.data  # Retrieve option text
+        if option in selected_options:
+            selected_options.remove(option)
+        else:
+            selected_options.add(option)
+
+        # Save preferences and update UI
+        pref_view.update_preference("fashion_interests", list(selected_options))
+        selected_interest.current.value = f"Selected: {', '.join(selected_options) if selected_options else 'None'}"
         selected_interest.current.update()
 
     return ft.Container(
@@ -25,51 +34,34 @@ def interest_page(pref_view):
                     color=ft.colors.GREY  
                 ),
                 
-                ft.Container(height=20), 
+                ft.Container(height=20),  
                 
-                # Interest choices
+                # Interest choices as outlined buttons
                 ft.Column(
                     spacing=10,
+                    alignment="center",
                     controls=[
                         ft.OutlinedButton(
-                            text="Fashion trends", 
-                            on_click=select_interest, 
+                            text=option, 
+                            data=option,
+                            on_click=toggle_interest,
                             width=300, 
                             style=ft.ButtonStyle(
-                                text_style=ft.TextStyle(size=12),
-                                side=ft.BorderSide(1, ft.colors.GREY)  
-                            )
-                        ),
-                        ft.OutlinedButton(
-                            text="Sustainable clothing", 
-                            on_click=select_interest, 
-                            width=300, 
-                            style=ft.ButtonStyle(
+                                shape=ft.RoundedRectangleBorder(radius=25),
                                 text_style=ft.TextStyle(size=12),
                                 side=ft.BorderSide(1, ft.colors.GREY)
                             )
-                        ),
-                        ft.OutlinedButton(
-                            text="DIY fashion", 
-                            on_click=select_interest, 
-                            width=300, 
-                            style=ft.ButtonStyle(
-                                text_style=ft.TextStyle(size=12),
-                                side=ft.BorderSide(1, ft.colors.GREY)
-                            )
-                        ),
-                        ft.OutlinedButton(
-                            text="Designer pieces", 
-                            on_click=select_interest, 
-                            width=300, 
-                            style=ft.ButtonStyle(
-                                text_style=ft.TextStyle(size=12),
-                                side=ft.BorderSide(1, ft.colors.GREY)
-                            )
-                        ),
-                    ],
-                    alignment="center"
+                        ) for option in [
+                            "Fashion trends", "Sustainable clothing", 
+                            "DIY fashion", "Designer pieces"
+                        ]
+                    ]
                 ),
+
+                ft.Container(height=20),  
+                
+                # Display selected interests
+                ft.Text(ref=selected_interest, size=14, italic=True, color=ft.colors.GREY),
 
                 ft.Container(height=30),  
                 
