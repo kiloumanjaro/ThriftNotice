@@ -29,8 +29,10 @@ class AI(ft.View):
         self.prompt_sheet = Prompt(self.close_prompt_sheet) 
 
         def on_bottom_button_click(e):
-            response = self.get_best_store_recommendation()
-            print(response)  # This will print the response in the console
+            recommendation = self.get_best_store_recommendation()
+            if recommendation:
+                self.prompt_sheet.update_prompt(recommendation)  # Pass result to Prompt
+            self.open_prompt_sheet(e)  # Open the prompt dialog
 
         def on_preference_button_click(e):
             print("preference button clicked")  # Debugging
@@ -195,7 +197,7 @@ class AI(ft.View):
                         map.MapLatitudeLongitude(marker.coordinates.latitude * 0.999763, marker.coordinates.longitude),
                         zoom=16.6
                     )
-                    self.open_prompt_sheet(e)
+
                     return
 
             # Prevent adding a marker too close to an existing one
@@ -269,10 +271,7 @@ class AI(ft.View):
             ),
         )
 
-        self.page_2 = ft.Row(
-            alignment='end',
-            controls=[
-                ft.Container(
+        self.page_2 = ft.Container(
                     width=375,
                     bgcolor=wg,
                     content=ft.Stack(height=667, controls=
@@ -294,8 +293,6 @@ class AI(ft.View):
                                         ),
                                          self.prompt_sheet])
                 )
-            ]
-        )
         self.initialize()
 
     def create_client(self):
@@ -390,19 +387,18 @@ class AI(ft.View):
         formatted_review = self.format_store_reviews_for_llm(stores_data)
         formatted_preference = self.format_user_preference_for_llm(preference_data)
 
-        max_length = 500
+        max_length = 430
 
         response = self.client.models.generate_content(
             model="gemini-2.0-flash",
             contents=[
-                f"Out of the {formatted_review}, determine the store that best fits the preference of user {formatted_preference} (max {max_length} chars). Pick only one store and use bullets to explain why, with each bullet being one cohesive sentence. Also dont mention the user id but instead refer to a name and make sure to highlight the shop on the first sentence. Lastly, display the shop_id last.:\n\n"
+                f"Out of the {formatted_review}, determine the store that best fits the preference of user {formatted_preference} (max {max_length} chars). Pick only one store and use bullets to explain why, with each bullet being one cohesive sentence. Also dont mention the user id but instead refer to a name and make sure to highlight the shop on the first sentence. Lastly, display the shop_id inside a bracket after 3 new lines and make sure to follow 430 characters limit :\n\n"
             ],
         )
 
         # Extract text from the response
         recommendation_text = response.candidates[0].content.parts[0].text if response.candidates else "No recommendation found."
 
-        print("\n\nGenerated Response:")
         return recommendation_text
 
 

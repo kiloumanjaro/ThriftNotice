@@ -4,58 +4,61 @@ import os
 from dotenv import load_dotenv
 from google import genai
 from google.genai import types
+import re
 
 class Prompt(ft.Container):
     def __init__(self, on_close):
         self.configure()
         self.client = self.create_client()
-        
+        self.description_text = ft.Text("Description", size=11, color="#36618e")
+
         super().__init__(
             width=322,
-            height=350,
-            bgcolor="white",
-            border_radius=ft.border_radius.all(20),
+            height=280,
+            bgcolor=ft.colors.with_opacity(0.8, "#ececec"),
+            border_radius=ft.border_radius.only(top_left=15, top_right=15, bottom_left=15, bottom_right=15),
+            border=ft.border.all(0.5, "#b6b6b6"),
             margin=ft.margin.only(bottom=23, left=20),
-            padding=ft.padding.only(top=20, bottom=20, right=15, left=25),
-            bottom=-400,
+            padding=0,
+            top=-400,
             animate_position=ft.animation.Animation(400, "decelerate"),
-            shadow=ft.BoxShadow(
-                spread_radius=1,
-                blur_radius=3,
-                color=ft.colors.BLACK12,
-                offset=ft.Offset(0, 1)
-            )
         )
-        
+
         self.initialize(on_close)
-    
+
     def configure(self):
         load_dotenv()
-    
+
     def create_client(self):
         return genai.Client(api_key=os.getenv("GOOGLE_GENAI_API_KEY"))
-    
+
     def initialize(self, on_close):
-        self.shop_name = 'Shop Name'
-        self.formatted_address = '123 Vintage Lane, Suite 5, Brookville, USA'
-        self.short_description = "Nestled in the heart of the city, Timeless Treasures Thrift Shop is a hidden gem for bargain hunters and vintage lovers alike. Our shop offers a carefully curated selection of pre-loved clothing, unique home décor, rare collectibles, and secondhand books—all at unbeatable prices. Whether you're searching for a one-of-a-kind fashion statement, a nostalgic keepsake, or simply a great deal, our ever-changing inventory has something for everyone."
-        self.review_text = ft.TextField(hint_text="Write a review...", text_style=ft.TextStyle(size=12, color="gray"), border_radius=10, height=40)
         
-        self.content = ft.Column(
+        self.shop_name_text = ft.TextButton(
+                "Shop Name",
+                style=ft.ButtonStyle(
+                    text_style=ft.TextStyle(size=20, weight="bold",),
+                    padding=0,
+            )
+        )
+
+        self.address_text = ft.Text("Address", size=10)
+        
+
+        self.content = ft.Container(
+            margin=ft.margin.only(right=3, left=3, top=3, bottom=3),
+            padding=ft.padding.only(left=20, top=5, bottom=15, right=10),
+            border_radius=ft.border_radius.only(top_left=10, top_right=10, bottom_left=10, bottom_right=10),
+            bgcolor="white",
+            border=ft.border.all(1, "#c9c9c9"),
+            content=ft.Column(
             expand=True,
-            spacing=13,
+            spacing=5,
             controls=[
                 ft.Row(
                     alignment='spaceBetween',
                     controls=[
-                        ft.TextButton(
-                            self.shop_name,
-                            on_click=lambda e: self.page.go("/shop"),
-                            style=ft.ButtonStyle(
-                                text_style=ft.TextStyle(size=23, weight="bold",),
-                                padding=0,
-                        )
-                    ),
+                        self.shop_name_text,
                         ft.IconButton(ft.icons.CLOSE, on_click=on_close, icon_size=20),
                     ]
                 ),
@@ -63,39 +66,24 @@ class Prompt(ft.Container):
                     expand=True,
                     padding=ft.padding.only(right=15),
                     content=ft.Column(
-                        spacing=20,
+                        spacing=15,
                         controls=[
-                            ft.Text(self.short_description, size=12),
+                            self.description_text,
                         ]
                     )
                 ),
-                ft.Divider(height=10, color="transparent"),
-                ft.Row(
-                    controls=[
-                        ft.Container(
-                            width=220,
-                            content=self.review_text
-                        ),
-                        ft.IconButton(
-                            icon=ft.icons.SEND,
-                            icon_size=20,
-                            tooltip="Submit Review",
-                            on_click=self.submit_form
-                        )
-                    ]
-                )
             ]
         )
-    
+    )
+
     def submit_form(self, e):
         try:
             store_api_url = os.getenv("THRIFTSTORE_API_URL")
             data = {
-                "shopname": self.shop_name,
-                "review": self.review_text.value,
+                "shopname": self.shop_name_text.text,
             }
             store_response = requests.post(store_api_url, json=data)
-            
+
             if store_response.status_code == 201:
                 print("Review Added!")
                 self.page.snack_bar = ft.SnackBar(ft.Text("Review added successfully!"), bgcolor="green")
@@ -107,7 +95,7 @@ class Prompt(ft.Container):
             print("Request failed:", ex)
             self.page.snack_bar = ft.SnackBar(ft.Text(f"Request failed: {ex}"), bgcolor="red")
         self.page.update()
-    
+
     def summarize_reviews(self, text1: str, text2: str, max_length: int = 425) -> str:
         response = self.client.models.generate_content(
             model="gemini-2.0-flash",
@@ -119,22 +107,26 @@ class Prompt(ft.Container):
             )
         )
         return response.text.strip() if response and response.text else "Error: No response generated."
-    
-    def summarize_and_update(self):
-        new_review = self.review_text.value.strip()
-        if not new_review:
-            return
-        
-        summarized_text = self.summarize_reviews(self.short_description, new_review)
-        print(summarized_text)
-        self.content.controls[1].content.controls[1].value = summarized_text
-        self.content.controls[1].content.controls[1].update()
-        self.page.update()
-    
+
     def show(self):
-        self.bottom = 0
+        self.top = 15
         self.update()
-    
+
     def hide(self):
-        self.bottom = -400
+        self.top = -400
         self.update()
+
+    def extract_shop_id(self, text):
+        match = re.search(r'\[(\d+)\]', text)  # Use 'text' instead of 'self.text'
+        if match:
+            return int(match.group(1))  # Convert matched ID to integer
+        return None  # Return None if no match is found
+
+    def update_prompt(self, message):
+        """Update the displayed text in the Prompt."""
+        self.description_text.value = message
+        shop_id = self.extract_shop_id(self.description_text.value)  # Fix: added 'self.'
+        self.update()
+
+    
+
