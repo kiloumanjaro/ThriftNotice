@@ -102,7 +102,6 @@ class Maps(ft.View):
         marker_layer_ref = ft.Ref[map.MarkerLayer]()
         self.marker_data = {}  # Dictionary to store marker id and coordinates
         self.marker_counter = 1  # Counter to assign unique IDs
-
         def get_initial_map_markers(e):
             """Fetches map markers from API, adds them to marker_layer."""
             locations_api_url = os.getenv("LOCATIONS_API_URL") # API URL from environment
@@ -125,15 +124,30 @@ class Maps(ft.View):
                 for location in locations_data: # Loop through API locations
                     latitude = location.get('latitude') # Get latitude, handle missing key
                     longitude = location.get('longitude') # Get longitude, handle missing key
+                    shopname = location.get('shopname') # Get shopname
 
                     if latitude is not None and longitude is not None: # Check for valid coordinates
                         try:
                             latitude = float(latitude) # Convert latitude to float
                             longitude = float(longitude) # Convert longitude to float
                             marker = map.Marker( # Create a new map marker
-                                content=ft.Icon(ft.icons.LOCATION_ON, color=ft.cupertino_colors.DESTRUCTIVE_RED, size=25), # Marker style
+                                content=ft.Stack(
+                                    [
+                                        ft.Container( # Container for text to control width and offset
+                                            ft.Text(shopname, style=ft.TextThemeStyle.BODY_SMALL, no_wrap=True), # Shop name text, no wrap
+                                            alignment=ft.alignment.top_center, # Align text to top center
+                                        ),
+                                        ft.Container( # Container for icon to position below text
+                                            content=ft.Icon(ft.icons.LOCATION_ON, color=ft.CupertinoColors.DESTRUCTIVE_RED, size=25), # Marker style, corrected CupertinoColors
+                                            alignment=ft.alignment.center, # Align icon to bottom center
+                                        ),
+                                    ],
+                                ),
+                                height=50, # Adjust height as needed
+                                width=75, # Adjust width as needed
+                                alignment=ft.alignment.top_center, # Ensure marker aligns from top-center
                                 coordinates=map.MapLatitudeLongitude(latitude, longitude), # Set marker coordinates
-                                data={"shopid": location['shopid']} # Store shop ID in marker data
+                                data={'shopid' : location['shopid'], 'shopname' : location['shopname']} # Store shop ID in marker data
                             )
                             marker_layer_ref.current.markers.append(marker) # Add marker to marker layer
 
@@ -147,51 +161,61 @@ class Maps(ft.View):
 
             else: # API call failed
                 print(f"Error fetching map locations: {response.status_code} - {response.text}") # API error info
-
+                                                    
         def handle_tap(e: map.MapTapEvent):
             coordinates = (e.coordinates.latitude, e.coordinates.longitude)
 
             # Check if the tapped location is near an existing marker
             for marker in marker_layer_ref.current.markers:
                 marker_coords = (marker.coordinates.latitude, marker.coordinates.longitude)
-                
+
                 if is_within_radius(marker_coords, coordinates, radius=30):  # Use radius for easier detection
-                    
+
                     # Reset all markers to default size
                     for m in marker_layer_ref.current.markers:
-                        m.content = ft.Icon(ft.icons.LOCATION_ON, color=ft.cupertino_colors.DESTRUCTIVE_RED, size=25)
-
+                        m.content = ft.Stack(
+                            [
+                                ft.Container(  # Container for text to control width and offset
+                                    ft.Text(m.data.get('shopname', 'New Marker'), style=ft.TextThemeStyle.BODY_SMALL, no_wrap=True),  # Shop name text, no wrap, default to 'New Marker' if no shopname
+                                    alignment=ft.alignment.top_center,  # Align text to top center
+                                ),
+                                ft.Container(  # Container for icon to position below text
+                                    content=ft.Icon(ft.icons.LOCATION_ON, color=ft.CupertinoColors.DESTRUCTIVE_RED, size=25),  # Marker style, corrected CupertinoColors
+                                    alignment=ft.alignment.center,  # Align icon to bottom center
+                                ),
+                            ],
+                        )
                     # Enlarge the selected marker
-                    marker.content = ft.Icon(ft.icons.LOCATION_ON, color="blue", size=40)  
+                    marker.content = ft.Icon(ft.icons.LOCATION_ON, color="blue", size=40)
                     marker_layer_ref.current.update()
 
-                    cebu.center_on(map.MapLatitudeLongitude((marker.coordinates.latitude)*0.999763, (marker.coordinates.longitude)), zoom=16.6)
+                    cebu.center_on(map.MapLatitudeLongitude((marker.coordinates.latitude) * 0.999763, (marker.coordinates.longitude)), zoom=16.6)
 
                     self.open_bottom_sheet(e)
                     return
-            
+
             # Prevent placing a new marker if it's too close to an existing one
             for marker_id, coord in self.marker_data.items():
-                if is_within_radius(coord, coordinates, radius=30):  
+                if is_within_radius(coord, coordinates, radius=30):
                     print(f"Too close to marker ID {marker_id}, cannot place here!")
-                    return  
+                    return
 
             # Assign a unique ID and store the new marker
             marker_id = self.marker_counter
             self.marker_counter += 1
             self.marker_data[marker_id] = coordinates
 
-            # Add new marker
+            # Add new marker - **Include data here**
             marker_layer_ref.current.markers.append(
                 map.Marker(
                     content=ft.Icon(ft.icons.LOCATION_ON, color=ft.cupertino_colors.DESTRUCTIVE_RED, size=25),
                     coordinates=e.coordinates,
+                    data={'shopname': 'New Marker'} # Add a default shopname for new markers
                 )
             )
             marker_layer_ref.current.update()
 
-            print(f"Added marker ID: {marker_id} at {coordinates}")  
-
+            print(f"Added marker ID: {marker_id} at {coordinates}")
 
         cebu = map.Map(
             expand=True,
