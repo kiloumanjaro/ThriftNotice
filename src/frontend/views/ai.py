@@ -18,6 +18,7 @@ class AI(ft.View):
         super().__init__(route="/ai")
         self.client = self.create_client()
         self.page = page
+        self.user_id = self.page.session.get("userid")
         # Define color scheme (only those in use)
         wg = '#f8f9ff'
         fg1 = '#5f82a6'
@@ -333,14 +334,17 @@ class AI(ft.View):
         return formatted_review
 
     def fetch_preference(self):
-        """Fetch user preferences from an API"""
+        """Fetch preferences for the current user from an API"""
         try:
             preference_api_url = os.getenv("USERS_PREF_API_URL")  # API endpoint
             response = requests.get(preference_api_url)
             if response.status_code == 200:
                 data = response.json()  # Convert JSON response to Python object
-                print("Fetched user preferences:", data)  # Debugging output
-                return data
+                
+                # Automatically filter by self.user_id
+                filtered_pref = next((pref for pref in data if pref.get("userid") == self.user_id), None)
+                return filtered_pref
+            
             else:
                 print("Failed to fetch user preference:", response.status_code, response.text)
                 return None
@@ -349,46 +353,53 @@ class AI(ft.View):
             print("Error fetching data:", e)
             return None
 
+
     def format_user_preference_for_llm(self, preference_data):
-        """Format user preference for LLM input"""
-        if not preference_data:
-            return "No user preference available."
+            """Format user preference for LLM input."""
+            if not preference_data:
+                return "No user preference available."
+            
+            # Ensure preference_data is a list for uniform processing
+            if isinstance(preference_data, dict):
+                preference_data = [preference_data]
+            
+            formatted_preference = "Here are the available user preferences:\n\n"
+            for entry in preference_data:
+                userid = entry.get("userid", "N/A")
+                username = entry.get("username", "N/A")
+                clothing = entry.get("clothing", "N/A")
+                shoppingenvironment = entry.get("shoppingenvironment", "N/A")
+                budget = entry.get("budget", "N/A")
+                organization = entry.get("organization", "N/A")
+                interest = entry.get("interest", "N/A")
+                
+                formatted_preference += (
+                    f"- User ID {userid} ({username}): prefers {clothing}, shops in a {shoppingenvironment} environment, "
+                    f"has a budget of {budget}, prefers {organization} organization, and is interested in {interest}."
+                )
+            
+            print("Formatted user preferences:", formatted_preference)  # Debugging output
+            return formatted_preference
 
-        formatted_preference = "Here are the available user preferences:\n\n"
-        for entry in preference_data:
-            clothing = entry.get("clothing", "N/A")
-            shoppingenvironment = entry.get("shoppingenvironment", "N/A")
-            budget = entry.get("budget", "N/A")
-            organization = entry.get("organization", "N/A")
-            interest = entry.get("interest", "N/A")
-            username = entry.get("username", "N/A")
-            formatted_preference += (
-                f"- {username}: likes {clothing} and hopes to shop in {shoppingenvironment} "
-                f"with a {budget} and a setting that can be described as {organization}. "
-                f"Lastly, the user is interested in {interest}.\n"
-            )
-
-        print("Formatted user preferences:", formatted_preference)  # Debugging output
-        return formatted_preference
     def get_best_store_recommendation(self):
         """Get the best store recommendation based on user preference"""
-        stores_data = self.fetch_reviews()
+        #stores_data = self.fetch_reviews()
         preference_data = self.fetch_preference()
 
-        formatted_review = self.format_store_reviews_for_llm(stores_data)
+        #formatted_review = self.format_store_reviews_for_llm(stores_data)
         formatted_preference = self.format_user_preference_for_llm(preference_data)
 
         max_length = 500
-
+        '''
         response = self.client.models.generate_content(
             model="gemini-2.0-flash",
             contents=[
                 f"Out of the {formatted_review}, determine the store that best fits the preference of user {formatted_preference} (max {max_length} chars). Pick only one store:\n\n"
             ],
         )
-
+        
         return response
-
+'''
 
     def initialize(self):
         self.controls = [self.display_map_container()]
