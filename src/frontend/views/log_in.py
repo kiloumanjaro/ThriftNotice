@@ -21,7 +21,7 @@ class Log_in(ft.View):
 
 
         self.profile_icon = ft.Container(
-            content=ft.Icon(name=ft.icons.FACE, size=200, color="black"),
+            content=ft.Icon(name=ft.icons.LOCK_PERSON, size=200, color="#1c1c1c"),
             bgcolor="white"
         )
 
@@ -63,7 +63,7 @@ class Log_in(ft.View):
                     ft.Divider(height=30, color="transparent"),
                     ft.Container(
                         padding=ft.padding.only(left=30, right=30),
-                        content=ft.Text("THRIFT NOTICE IS AN AMAZING APP!", size=28, text_align="center", color="White")
+                        content=ft.Text("Your notice to start thrifting!", size=28, text_align="center", color="White")
                     )
                         
                 ]    
@@ -95,7 +95,7 @@ class Log_in(ft.View):
         self.login_button = ft.ElevatedButton(
             text="Log in",
             on_click=lambda e: submit_button(0, e),
-            width=180, 
+            width=190, 
             height=47, 
             style=ft.ButtonStyle(
                 bgcolor=self.bg1,  # Background color
@@ -107,9 +107,9 @@ class Log_in(ft.View):
         )
 
         self.signup_button = ft.ElevatedButton(
-            text="Sign up?",
+            text="Sign up",
             on_click=lambda e: submit_button(1, e),
-            width=120, 
+            width=110, 
             height=47, 
             style=ft.ButtonStyle(
                 bgcolor=self.fg,  # Background color

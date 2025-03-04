@@ -21,7 +21,7 @@ class Profile(ft.View):
 
         # Profile Icon
         self.profile_icon = ft.Container(
-            content=ft.Icon(name=ft.icons.FACE, size=200, color="black"),
+            content=ft.Icon(name=ft.icons.FACE, size=200, color="#1c1c1c"),
             bgcolor="white"
         )
 
