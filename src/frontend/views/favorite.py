@@ -1,4 +1,9 @@
 import flet as ft
+import requests
+from dotenv import load_dotenv
+import os
+
+load_dotenv()
 
 class Favorite(ft.View):
     def __init__(self, page: ft.Page):
@@ -61,61 +66,122 @@ class Favorite(ft.View):
             padding=ft.padding.symmetric(horizontal=0),
             content=ft.Column(expand=True, scroll="always", controls=[]),  # Ensure scrollbar is always visibl
         )
+        favorite_shop_url = os.getenv("FAVORITE_API_URL")
+        favorite_response = requests.get(f"{favorite_shop_url}?userid={self.page.session.get("userid")}")
 
-        for i in range(4):
-            details_container = ft.Container(
-                visible=False,
-                content=ft.Column(
-                    controls=[
-                        ft.Text("Sample Address", size=12, color="black", italic=True),
-                    ],
-                ),
-                padding=ft.padding.only(left=15, right=20, top=0, bottom=15),
-                bgcolor=self.bg1,
-                border_radius=5
-            )
-
-            shop_item = ft.Container(
-                bgcolor=self.bg1,
-                border_radius=10,
-                padding=ft.padding.symmetric(vertical=3, horizontal=10),
-                margin=ft.margin.symmetric(vertical=3, horizontal=15),
-            )
-
-            shop_header = ft.Container(
-                height=40,
-                bgcolor=self.bg1,  
-                border_radius=8,
-                padding=ft.padding.only(left=15, right=3, top=3, bottom=3),
-            )
-
-            # Shop title text (so we can modify its color dynamically)
-            shop_text = ft.Text(f"Shop {i+1}", size=13, color="white")
-
-            # Create toggle button with updated reference
-            icon_button = self.create_toggle_button(details_container, shop_item, shop_header, shop_text)
-
-            shop_header.content = ft.Row(
-                controls=[
-                    shop_text,  # Forces text to the left
-                    ft.Container(
-                        content=icon_button,
-                        alignment=ft.alignment.center_right,  # Ensures button is fully to the right
+        if favorite_response.status_code == 200:
+            favorite_data = favorite_response.json()
+            
+            for favorite_shops in favorite_data:
+                i = 0
+                shop_address = favorite_shops["formattedaddress"]
+                details_container = ft.Container(
+                    visible=False,
+                    content=ft.Column(
+                        controls=[
+                            ft.Text(shop_address, size=12, color="black", italic=True),
+                        ],
                     ),
-                ],
-                alignment="spaceBetween",
-            )
+                    padding=ft.padding.only(left=15, right=20, top=0, bottom=15),
+                    bgcolor=self.bg1,
+                    border_radius=5
+                )
 
-            shop_item.content = ft.Column(
-                controls=[
-                    shop_header,  
-                    details_container,
-                ],
-                spacing=0,
-            )
+                shop_item = ft.Container(
+                    bgcolor=self.bg1,
+                    border_radius=10,
+                    padding=ft.padding.symmetric(vertical=3, horizontal=10),
+                    margin=ft.margin.symmetric(vertical=3, horizontal=15),
+                )
 
-            container.content.controls.append(shop_item)
+                shop_header = ft.Container(
+                    height=40,
+                    bgcolor=self.bg1,  
+                    border_radius=8,
+                    padding=ft.padding.only(left=15, right=3, top=3, bottom=3),
+                )
 
+                # Shop title text (so we can modify its color dynamically)
+                shop_text = ft.Text(f"Shop {i+1}", size=13, color="white")
+                i+=1
+                # Create toggle button with updated reference
+                icon_button = self.create_toggle_button(details_container, shop_item, shop_header, shop_text)
+
+                shop_header.content = ft.Row(
+                    controls=[
+                        shop_text,  # Forces text to the left
+                        ft.Container(
+                            content=icon_button,
+                            alignment=ft.alignment.center_right,  # Ensures button is fully to the right
+                        ),
+                    ],
+                    alignment="spaceBetween",
+                )
+
+                shop_item.content = ft.Column(
+                    controls=[
+                        shop_header,  
+                        details_container,
+                    ],
+                    spacing=0,
+                )
+
+                container.content.controls.append(shop_item)
+        else:
+            for i in range(4):
+                details_container = ft.Container(
+                    visible=False,
+                    content=ft.Column(
+                        controls=[
+                            ft.Text("Add a favorite shop first!", size=12, color="black", italic=True),
+                        ],
+                    ),
+                    padding=ft.padding.only(left=15, right=20, top=0, bottom=15),
+                    bgcolor=self.bg1,
+                    border_radius=5
+                )
+
+                shop_item = ft.Container(
+                    bgcolor=self.bg1,
+                    border_radius=10,
+                    padding=ft.padding.symmetric(vertical=3, horizontal=10),
+                    margin=ft.margin.symmetric(vertical=3, horizontal=15),
+                )
+
+                shop_header = ft.Container(
+                    height=40,
+                    bgcolor=self.bg1,  
+                    border_radius=8,
+                    padding=ft.padding.only(left=15, right=3, top=3, bottom=3),
+                )
+
+                # Shop title text (so we can modify its color dynamically)
+                shop_text = ft.Text(f"Shop {i+1}", size=13, color="white")
+        
+                # Create toggle button with updated reference
+                icon_button = self.create_toggle_button(details_container, shop_item, shop_header, shop_text)
+
+                shop_header.content = ft.Row(
+                    controls=[
+                        shop_text,  # Forces text to the left
+                        ft.Container(
+                            content=icon_button,
+                            alignment=ft.alignment.center_right,  # Ensures button is fully to the right
+                        ),
+                    ],
+                    alignment="spaceBetween",
+                )
+
+                shop_item.content = ft.Column(
+                    controls=[
+                        shop_header,  
+                        details_container,
+                    ],
+                    spacing=0,
+                )
+
+                container.content.controls.append(shop_item)
+                
         return container
     def display_shop_container(self):
         return ft.Column(
