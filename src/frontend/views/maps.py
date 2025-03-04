@@ -205,7 +205,7 @@ class Maps(ft.View):
             self.marker_counter += 1
             self.marker_data[marker_id] = coordinates
 
-            '''
+            
             # Add new marker
             marker_layer_ref.current.markers.append(
                 map.Marker(
@@ -217,7 +217,7 @@ class Maps(ft.View):
             marker_layer_ref.current.update()
 
             print(f"Added marker ID: {marker_id} at {coordinates}")  
-            '''
+            
 
         cebu = map.Map(
             expand=True,

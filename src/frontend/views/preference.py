@@ -12,9 +12,9 @@ class Preference(ft.View):
         self.page = page
         self.bg = '#1c1c1c'
         self.bg1 = '#323232'
-        self.initialize()
         self.user_id = self.page.session.get("userid")
-        self.users_api_url = os.getenv("USERS_PREF_API_URL") 
+        self.users_api_url = os.getenv("USERS_PREF_API_URL")
+        self.user_data = None 
         self.get_values()
 
     def get_values(self):
@@ -24,14 +24,9 @@ class Preference(ft.View):
             if users_response.status_code == 200:
                 print("Users Pref Read!")
                 self.page.snack_bar = ft.SnackBar(ft.Text("Users pref read successfully!"), bgcolor="green")
-                user_data = users_response.json()
-                self.clothing_dropdown.value = user_data["clothing"] or None
-                self.budget_dropdown.value = user_data["budget"] or None
-                self.environment_dropdown.value = user_data["shoppingenvironment"] or None
-                self.organization_dropdown.value = user_data["organization"] or None
-                self.interest_dropdown.value = user_data["interest"] or None
-                self.page.update()
-
+                self.user_data = users_response.json()
+                print(self.user_data)
+                self.initialize()
             else:
                 print("Failed:", users_response.json())
                 self.page.snack_bar = ft.SnackBar(ft.Text("Failed to read users pref"), bgcolor="red")
@@ -39,8 +34,10 @@ class Preference(ft.View):
         except Exception as ex:
             print("Request failed:", ex)
             self.page.snack_bar = ft.SnackBar(ft.Text(f"Request failed: {ex}"), bgcolor="red")
-    
+        self.page.update()
+        
     def initialize(self):
+        self.page.update() 
         self.controls = [self.display_questionaire_container()]
     
     def go_back_to_maps(self, e):
@@ -53,6 +50,7 @@ class Preference(ft.View):
             hint_text="Select your clothing style",
             width=291,
             text_style=ft.TextStyle(size=11, color="gray"),
+            value = self.user_data["clothing"] or None,
             options=[
                 ft.dropdown.Option("Casual wear"),
                 ft.dropdown.Option("Vintage pieces"),
@@ -66,7 +64,8 @@ class Preference(ft.View):
             border_color="transparent",
             hint_text="What is your preferred price range per item?",
             width=291,
-            hint_style=ft.TextStyle(size=11, color="black"),
+            text_style=ft.TextStyle(size=11, color="black"),
+            value = self.user_data["budget"] or None,
             options=[
                 ft.dropdown.Option("Below 50"),
                 ft.dropdown.Option("50-150"),
@@ -75,12 +74,13 @@ class Preference(ft.View):
                 ft.dropdown.Option("500+"),
             ]
         )
-        
+
         self.environment_dropdown = ft.Dropdown(
             border_color="transparent",
             hint_text="Do you prefer stores with air conditioning?",
             width=291,
-            hint_style=ft.TextStyle(size=11, color="black"),
+            text_style=ft.TextStyle(size=11, color="black"),
+            value = self.user_data["shoppingenvironment"] or None,
             options=[
                 ft.dropdown.Option("Yes"),
                 ft.dropdown.Option("No"),
@@ -93,6 +93,7 @@ class Preference(ft.View):
             hint_text="Do you enjoy thrift stores that are:",
             width=291,
             text_style=ft.TextStyle(size=11, color="gray"),
+            value = self.user_data["organization"] or None,
             options=[
                 ft.dropdown.Option("Open spaced and free-flowing"),
                 ft.dropdown.Option("Well-organized and categorized"),
@@ -106,6 +107,7 @@ class Preference(ft.View):
             hint_text="Are you interested in stores that specialize in:",
             width=291,
             text_style=ft.TextStyle(size=11, color="gray"),
+            value = self.user_data["interest"] or None,
             options=[
                 ft.dropdown.Option("Sustainable and eco-friendly fashion"),
                 ft.dropdown.Option("Rare or collectors items"),
@@ -117,7 +119,6 @@ class Preference(ft.View):
         def submit_form(e):
             try:
                 data = {
-                    "username": self.page.session.get("username"),
                     "clothing": self.clothing_dropdown.value,
                     "budget": self.budget_dropdown.value,
                     "shoppingenvironment": self.environment_dropdown.value,
