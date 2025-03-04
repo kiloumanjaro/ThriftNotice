@@ -2,10 +2,18 @@ import flet as ft
 from components.prompt import Prompt
 import flet.map as map
 import math
+from dotenv import load_dotenv
 import os
 import requests
 
+
+def configure():
+    load_dotenv()
+
 class AI(ft.View):
+
+ 
+
     def __init__(self, page: ft.Page):
         super().__init__(route="/ai")
         self.page = page
@@ -18,10 +26,84 @@ class AI(ft.View):
         self.marker_counter = 1
         self.prompt_sheet = Prompt(self.close_prompt_sheet) 
 
+        def fetch_reviews(e):
+                try:
+                    store_api_url = os.getenv("THRIFTSTORE_API_URL")  # API endpoint
+                    response = requests.get(store_api_url)
+
+                    if response.status_code == 200:
+                        stores_data = response.json()  # Convert JSON response to Python object
+                        return stores_data
+                    else:
+                        print("Failed to fetch store reviews:", response.text)
+                        return None
+                    
+                except Exception as e:
+                    print("Error fetching data:", e)
+                    return None
+
+        def format_store_reviews_for_llm(stores_data):
+            if not stores_data:
+                return "No store reviews available."
+
+            formatted_review = "Here are the available stores and their reviews:\n\n"
+            for entry in stores_data:
+                shop_name = entry.get("ShopName", "Unknown Store")
+                review = entry.get("Review", "No review available")
+                formatted_review += f"- {shop_name}: {review}\n"
+
+            return formatted_review
+
+        def fetch_preference(e):
+                try:
+                    preference_api_url = os.getenv("USERS_PREF_API_URL")  # API endpoint
+                    response = requests.get(preference_api_url)
+
+                    if response.status_code == 200:
+                        preference_data = response.json()  # Convert JSON response to Python object
+                        return preference_data
+                    else:
+                        print("Failed to fetch user preference:", response.text)
+                        return None
+                    
+                except Exception as e:
+                    print("Error fetching data:", e)
+                    return None
+
+        def format_user_preference_for_llm(preference_data):
+            if not preference_data:
+                return "No user preference available."
+
+            formatted_preference = "Here are the available user preferences:\n\n"
+            for entry in preference_data:
+                clothing = entry.get("clothing", "N/A")
+                shoppingenvironment = entry.get("shoppingenvironment", "N/A")
+                budget = entry.get("budget", "N/A")
+                organization = entry.get("organization", "N/A")
+                interest = entry.get("interest", "N/A")
+                username = entry.get("username", "N/A")
+                formatted_preference += f"- {username}: likes {clothing} and hopes to shop in {shoppingenvironment} with a {budget} and a setting that can be descroned as {organization}. Lastly the user is interested on {interest}\n"
+
+            return formatted_preference
+
+        def get_best_store_recommendation():
+            stores_data = fetch_reviews()
+            preference_data = fetch_preference()
+            formatted_review = format_store_reviews_for_llm(stores_data)
+            formatted_preference = format_user_preference_for_llm(preference_data)
+            max_length=500
+
+            response = self.client.models.generate_content(
+                model="gemini-2.0-flash",
+                contents=[f"Out of the {formatted_review}, determine the store that best fit the preference of user {formatted_preference} (max {max_length} chars):\n\n"],
+            )
+            
+            return response
+
 
         def on_bottom_button_click(e):
-            print("search button clicked")  # Debugging
-
+            print("search button clicked"), # Debugging
+            on_click=get_best_store_recommendation,
 
 
         def on_preference_button_click(e):
@@ -298,6 +380,8 @@ class AI(ft.View):
 
     def close_prompt_sheet(self, e):
         self.prompt_sheet.hide()
+
+  
 
     def display_map_container(self):
         return ft.Container(
