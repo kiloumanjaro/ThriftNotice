@@ -1,6 +1,9 @@
 import flet as ft
 import requests
+from dotenv import load_dotenv
 import os
+
+load_dotenv()
 
 class Shop(ft.View):
     def __init__(self, page: ft.Page, shop_id):
@@ -47,7 +50,7 @@ class Shop(ft.View):
                 print(f"Error fetching shop data: {response.status_code} - {response.text}")
                 return None
         except ValueError: # Handle case where shop_id_value cannot be converted to integer
-            print(f"Error: Shop ID '{shop_id_value}' is not a valid integer.")
+            print(f"Error: Shop ID '{self.shop_id}' is not a valid integer.")
             return None
         except requests.exceptions.RequestException as e:
             print(f"Request exception: {e}")
@@ -55,6 +58,30 @@ class Shop(ft.View):
 
     def toggle_favorite(self, e):
         self.is_favorite = not self.is_favorite
+
+        if(self.is_favorite):
+            data = {
+                "userid": self.page.session.get("userid"),
+                "shopid": self.shop_id,
+            }
+
+            favorite_url = os.getenv("FAVORITE_API_URL")
+            response = requests.post(favorite_url, json=data)
+
+            if response.status_code == 201:
+                print("Favorite shop added!")
+            else:
+                print("Favorite shop was not added!")
+        else:
+
+            favorite_url = os.getenv("FAVORITE_API_URL")
+            response = requests.delete(f"{favorite_url}delete_favorite_shop/?userid={self.page.session.get("userid")}&shopid={self.shop_id}")
+
+            if response.status_code == 200:
+                print("Favorite shop removed!")
+            else:
+                print("Favorite shop was not removed!")
+
         self.favorite_button.icon = ft.icons.FAVORITE_BORDER if not self.is_favorite else ft.icons.FAVORITE
         self.favorite_button.icon_color = "#323232" if not self.is_favorite else "red"
         self.favorite_button.update()
