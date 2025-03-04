@@ -1,29 +1,62 @@
 import flet as ft
+import requests
+import os
 
 class Shop(ft.View):
-    def __init__(self, page: ft.Page):
+    def __init__(self, page: ft.Page, shop_id):
         super(Shop, self).__init__(route="/shop", padding=0, bgcolor='white')
         self.page = page
-        self.shop_name = "Shop Name"
-        self.formatted_address = "123 Vintage Lane, Suite 5, Brookville, USA"
-        self.short_description = (
-            "Nestled in the heart of the city, Timeless Treasures Thrift Shop is a hidden gem for bargain hunters and "
-            "vintage lovers alike. Our shop offers a carefully curated selection of pre-loved clothing, unique home décor, "
-            "rare collectibles, and secondhand books—all at unbeatable prices. Whether you're searching for a one-of-a-kind "
-            "fashion statement, a nostalgic keepsake, or simply a great deal, our ever-changing inventory has something for everyone."
-        )
-        self.reviews = ["Great shop!", "Nice collection!", "Affordable and unique items."]
+        self.shop_id = shop_id[0]
+        self.shop_name = None
+        self.formatted_address = None
+        self.short_description = None
+        self.reviews = [f"Great shop {self.shop_id}!", "Nice collection!", "Affordable and unique items."] # Reviews are still placeholders as per instruction
         self.is_favorite = False
 
         self.initialize()
 
     def initialize(self):
+        self.fetch_shop_data(self.shop_id)
         self.controls = [self.display_shop_container()]
+
+    def fetch_shop_data(self, shop_id):
+        api_url = os.getenv("THRIFTSTORE_API_URL")  # Base API URL for thriftstore data
+        if not api_url:
+            print("THRIFTSTORE_API_URL environment variable is not set.")
+            return None
+
+        api_endpoint = f"{api_url}"  # Use base URL to fetch all stores
+
+        try:
+
+            response = requests.get(api_endpoint)
+            if response.status_code == 200:
+                all_shops_data = response.json()  # Get list of all shops
+
+                for shop_data in all_shops_data:  # Loop through all shops in the API response
+                    if int(shop_data.get('shopid')) == int(self.shop_id):  # Compare with integer shop_id
+                        self.shop_name = shop_data.get('shopname')
+                        self.formatted_address = shop_data.get('formattedaddress')
+                        self.short_description = shop_data.get('shortdescription')
+                        return shop_data  # Return the shop data if shop_id matches
+
+                print(f"Shop ID {shop_id} (integer: {self.shop_id}) not found in API response.") # Use both original and integer shop_id in print
+                return None # Shop ID not found
+
+            else:
+                print(f"Error fetching shop data: {response.status_code} - {response.text}")
+                return None
+        except ValueError: # Handle case where shop_id_value cannot be converted to integer
+            print(f"Error: Shop ID '{shop_id_value}' is not a valid integer.")
+            return None
+        except requests.exceptions.RequestException as e:
+            print(f"Request exception: {e}")
+            return None
 
     def toggle_favorite(self, e):
         self.is_favorite = not self.is_favorite
-        self.favorite_button.icon = ft.icons.FAVORITE if self.is_favorite else ft.icons.FAVORITE
-        self.favorite_button.icon_color = "red" if self.is_favorite else "#323232"
+        self.favorite_button.icon = ft.icons.FAVORITE_BORDER if not self.is_favorite else ft.icons.FAVORITE
+        self.favorite_button.icon_color = "#323232" if not self.is_favorite else "red"
         self.favorite_button.update()
         self.page.update()
 
@@ -33,13 +66,13 @@ class Shop(ft.View):
 
     def display_shop_container(self):
         self.favorite_button = ft.IconButton(
-            icon=ft.icons.FAVORITE,
+            icon=ft.icons.FAVORITE_BORDER,
             icon_size=20,
             icon_color="#323232",
             on_click=self.toggle_favorite,
         )
 
-        self.review_items = [
+        self.review_items = [ # Reviews are still placeholders as per instruction
             ft.Container(
                 bgcolor="#f8f9ff",
                 padding=8,
@@ -68,7 +101,7 @@ class Shop(ft.View):
                         content=ft.Container(
                             alignment=ft.alignment.center,
                             content=ft.Image(
-                                src="placeholder.png",
+                                src="placeholder.png", # Still placeholder image
                                 width=380,
                                 height=280,
                                 fit=ft.ImageFit.COVER,
@@ -85,8 +118,8 @@ class Shop(ft.View):
                         content=ft.Column(
                             expand=True,
                             controls=[
-                                ft.Text(self.shop_name, size=23, weight="bold", color="black"),
-                                ft.Text(self.formatted_address, size=10, color="black"),
+                                ft.Text(self.shop_name or 'N/A', size=23, weight="bold", color="black"), # Use fetched shop_name or 'N/A'
+                                ft.Text(self.formatted_address or 'N/A', size=10, color="black"), # Use fetched formatted_address or 'N/A'
                                 ft.Divider(height=5, color="transparent"),
                                 ft.Text("Community Reviews", size=10, color="black"),
                                 ft.Container(

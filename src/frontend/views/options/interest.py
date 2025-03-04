@@ -1,19 +1,12 @@
 import flet as ft
 
 def interest_page(pref_view):
-    selected_interest = ft.Ref[ft.Text]()  # Stores selected interests
-    selected_options = set()  # Tracks selected interests
+    # Reference for displaying selected budget
+    selected_interest = ft.Ref[ft.Text]()
 
-    def toggle_interest(e):
-        option = e.control.data  # Retrieve option text
-        if option in selected_options:
-            selected_options.remove(option)
-        else:
-            selected_options.add(option)
-
-        # Save preferences and update UI
-        pref_view.update_preference("fashion_interests", list(selected_options))
-        selected_interest.current.value = f"Selected: {', '.join(selected_options) if selected_options else 'None'}"
+    def select_interest(e):
+        pref_view.update_preference("interest", e.control.data)  # Save preference
+        selected_interest.current.value = f"Selected: {e.control.data}"
         selected_interest.current.update()
 
     return ft.Container(
@@ -44,7 +37,7 @@ def interest_page(pref_view):
                         ft.OutlinedButton(
                             text=option, 
                             data=option,
-                            on_click=toggle_interest,
+                            on_click=select_interest,
                             width=300, 
                             style=ft.ButtonStyle(
                                 shape=ft.RoundedRectangleBorder(radius=25),

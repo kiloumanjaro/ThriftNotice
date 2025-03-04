@@ -17,6 +17,15 @@ def shopping_environment_page(pref_view):
         selected_option.current.value = f"Selected: {e.control.data}"
         selected_option.current.update()
 
+def shopping_environment_page(pref_view):
+    # Reference for displaying selected budget
+    selected_shopping_env = ft.Ref[ft.Text]()
+
+    def select_shopping_env(e):
+        pref_view.update_preference("shoppingenvironment", e.control.data)  # Save preference
+        selected_shopping_env.current.value = f"Selected: {e.control.data}"
+        selected_shopping_env.current.update()
+
     return ft.Container(
         expand=True,
         padding=ft.padding.symmetric(horizontal=20),
@@ -44,21 +53,26 @@ def shopping_environment_page(pref_view):
                         ft.OutlinedButton(
                             text=option,
                             data=option,
-                            on_click=select_option,
+                            on_click=select_shopping_env,
                             width=300,
                             style=ft.ButtonStyle(
                                 shape=ft.RoundedRectangleBorder(radius=25),
                                 text_style=ft.TextStyle(size=12),  
                                 side=ft.BorderSide(1, ft.colors.GREY)  
                             )
-                        ) for option in shopping_options
+                        ) for option in [
+                                "Cozy and personal",
+                                "Trendy and vibrant",
+                                "Minimalist and modern",
+                                "Rustic and vintage"
+                        ]
                     ]
                 ),
 
                 ft.Container(height=20),  
                 
                 # Display selected option
-                ft.Text(ref=selected_option, size=14, italic=True, color=ft.colors.GREY),
+                ft.Text(ref=selected_shopping_env, size=14, italic=True, color=ft.colors.GREY),
                 
                 ft.Container(height=30), 
                 

@@ -21,7 +21,7 @@ class Questions(ft.View):
             "username": self.username,
             "clothing": None,
             "budget": None,
-            "shopping_environment": None,
+            "shoppingenvironment": None,
             "organization": None,
             "interest": None
         }
@@ -70,7 +70,6 @@ class Questions(ft.View):
 
         try:
                 data = self.user_preferences
-
                 users_api_url = os.getenv("USERS_PREF_API_URL") 
 
                 users_response = requests.post(users_api_url, json=data)

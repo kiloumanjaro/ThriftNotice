@@ -1,19 +1,12 @@
 import flet as ft
 
 def clothing_page(pref_view):
-    selected_clothing = ft.Ref[ft.Text]()  # Stores selected clothing types
-    selected_options = set()  # Tracks selected options
+    # Reference for displaying selected budget
+    selected_clothing = ft.Ref[ft.Text]()
 
-    def toggle_clothing(e):
-        option = e.control.data  # Retrieve option text
-        if option in selected_options:
-            selected_options.remove(option)
-        else:
-            selected_options.add(option)
-
-        # Save preferences and update UI
-        pref_view.update_preference("clothing_types", list(selected_options))
-        selected_clothing.current.value = f"Selected: {', '.join(selected_options) if selected_options else 'None'}"
+    def select_clothing(e):
+        pref_view.update_preference("clothing", e.control.data)  # Save preference
+        selected_clothing.current.value = f"Selected: {e.control.data}"
         selected_clothing.current.update()
 
     return ft.Container(
@@ -44,7 +37,7 @@ def clothing_page(pref_view):
                         ft.OutlinedButton(
                             text=option, 
                             data=option,
-                            on_click=toggle_clothing,
+                            on_click=select_clothing,
                             width=300, 
                             style=ft.ButtonStyle(
                                 shape=ft.RoundedRectangleBorder(radius=25),
