@@ -1,4 +1,9 @@
 import flet as ft
+import requests
+from dotenv import load_dotenv
+import os
+
+load_dotenv()
 
 class Profile(ft.View):
     def __init__(self, page: ft.Page): 
@@ -12,6 +17,7 @@ class Profile(ft.View):
         self.bg1 = '#323232'
         self.fg='#98e2f6'
         self.bgcolor = self.bg
+        self.users_api_url = os.getenv("USERS_PREF_API_URL") 
 
         # Profile Icon
         self.profile_icon = ft.Container(
@@ -65,9 +71,40 @@ class Profile(ft.View):
         )
 
         def submit_button(choice, e):
-            self.page.session.set("username", self.name_input.value)
-            print(self.page.session.get("username"))
-            (self.page.go("/questions") if choice == 1 else self.page.go("/maps"))
+            response = requests.get(f"{self.users_api_url}get_user/?username={self.name_input.value}")
+            if response.status_code == 200:
+                response_data = response.json()
+                username = response_data["username"]
+
+                if self.name_input.value == username:
+                    self.name_input.value = None
+                    self.page.update()
+            else:
+                self.page.session.set("username", self.name_input.value)
+                if choice == 1:
+                    self.page.go("/questions") 
+                else:
+                    try:
+                        data = {"username": self.name_input.value}
+                        
+                        response = requests.post(self.users_api_url, json=data)
+                        response = requests.get(f"{self.users_api_url}get_user/?username={self.name_input.value}")
+
+                        if response.status_code == 200: 
+                            new_user = response.json()  
+                            user_id = new_user["userid"]
+                            self.page.session.set("userid", user_id)
+                            print("Users Pref Added!")
+                            self.page.snack_bar = ft.SnackBar(ft.Text("Users pref added successfully!"), bgcolor="green")
+                        else:
+                            print("Error:", response.json())
+                            self.page.snack_bar = ft.SnackBar(ft.Text("Failed to add users pref"), bgcolor="red")
+
+                    except Exception as ex:
+                        print("Request failed:", ex)
+                        self.page.snack_bar = ft.SnackBar(ft.Text(f"Request failed: {ex}"), bgcolor="red")
+
+                    self.page.go("/maps")
 
         self.proceed_button = ft.ElevatedButton(
             text="Proceed",
