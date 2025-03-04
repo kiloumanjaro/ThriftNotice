@@ -67,13 +67,13 @@ class Favorite(ft.View):
             content=ft.Column(expand=True, scroll="always", controls=[]),  # Ensure scrollbar is always visibl
         )
         favorite_shop_url = os.getenv("FAVORITE_API_URL")
-        favorite_response = requests.get(f"{favorite_shop_url}?userid={self.page.session.get("userid")}")
+        favorite_response = requests.get(f"{favorite_shop_url}get_favorite_shops/?userid={self.page.session.get("userid")}")
 
         if favorite_response.status_code == 200:
+            print("Accessed")
             favorite_data = favorite_response.json()
-            
+            i = 0
             for favorite_shops in favorite_data:
-                i = 0
                 shop_address = favorite_shops["formattedaddress"]
                 details_container = ft.Container(
                     visible=False,
@@ -102,7 +102,7 @@ class Favorite(ft.View):
                 )
 
                 # Shop title text (so we can modify its color dynamically)
-                shop_text = ft.Text(f"Shop {i+1}", size=13, color="white")
+                shop_text = ft.Text(f"{i+1}. {favorite_shops["shopname"]}", size=13, color="white")
                 i+=1
                 # Create toggle button with updated reference
                 icon_button = self.create_toggle_button(details_container, shop_item, shop_header, shop_text)

@@ -65,6 +65,19 @@ class FavoriteShopViewSet(viewsets.ModelViewSet):
         shopid = favorite_shops.values_list('shopid', flat=True)
 
         # Query the Shop table to get addresses
-        shops = ThriftStores.objects.filter(shopid_in=shopid).values('formattedaddress')
+        shops = ThriftStores.objects.filter(shopid__in=shopid).values('shopname', 'formattedaddress')
 
         return Response(list(shops))
+    
+    @action(detail=False, methods=['delete'], url_path='delete_favorite_shop')
+    def delete_favorite_shop(self, request):
+        userid = request.GET.get("userid")
+        shopid = request.GET.get("shopid")
+
+        # Try to find and delete the favorite shop entry
+        deleted_count, _ = FavoriteShop.objects.filter(userid=userid, shopid=shopid).delete()
+
+        if deleted_count == 0:
+            return Response({"error": "No matching favorite shop found"}, status=404)
+
+        return Response({"message": "Favorite shop deleted successfully"}, status=200)
