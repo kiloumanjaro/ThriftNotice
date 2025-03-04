@@ -113,7 +113,25 @@ class BottomSheet(ft.Container):
         except Exception as ex:
             print("Request failed:", ex)
             self.page.snack_bar = ft.SnackBar(ft.Text(f"Request failed: {ex}"), bgcolor="red")
-        self.page.update()
+    
+        try:
+            review_api_url = os.getenv("USERS_REVIEW_API_URL")
+            data = {
+                "shopid": self.current_shop_id,
+                "review": self.review_text.value,
+            }
+            response = requests.post(review_api_url, json=data)
+
+            if response.status_code == 201:
+                print("Review Added to Review Table!")
+                self.page.snack_bar = ft.SnackBar(ft.Text("Review added successfully!"), bgcolor="green")
+                self.summarize_and_update()
+            else:
+                print("Failed to add to review table:", store_response.json())
+                self.page.snack_bar = ft.SnackBar(ft.Text("Failed to add review"), bgcolor="red")
+        except Exception as ex:
+            print("Request failed to review table:", ex)
+            self.page.snack_bar = ft.SnackBar(ft.Text(f"Request failed to review table: {ex}"), bgcolor="red")
 
     def summarize_reviews(self, text1: str, text2: str, max_length: int = 425) -> str:
         response = self.client.models.generate_content(

@@ -21,7 +21,7 @@ def budget_page(pref_view):
                 ft.Text("Let's thrift!", size=20, weight="bold", text_align="center"),
                 ft.Container(height=20),
                 ft.Text(
-                    "What's your ideal price range for that fabulous find?", 
+                    "What is your preferred price range per item?", 
                     size=14, 
                     text_align="center", 
                     color=ft.colors.GREY  
@@ -44,7 +44,7 @@ def budget_page(pref_view):
                                 text_style=ft.TextStyle(size=12),
                                 side=ft.BorderSide(1, ft.colors.GREY)
                             )
-                        ) for option in ["Below $10", "$10 - $50", "$50 - $100", "Above $100"]
+                        ) for option in ["Below ₱50", "₱50 - ₱150", "₱150 - ₱300", "₱300 - ₱500", "₱500+"]
                     ]
                 ),
 

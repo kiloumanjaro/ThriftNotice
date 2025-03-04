@@ -38,7 +38,7 @@ def shopping_environment_page(pref_view):
                 ft.Text("Experience your ideal shopping experience!", size=20, weight="bold", text_align="center"),
                 ft.Container(height=20),
                 ft.Text(
-                    "How would you like your store environment to feel?", 
+                    "Do you prefer stores with air conditioning?", 
                     size=14, 
                     text_align="center", 
                     color=ft.colors.GREY
@@ -61,10 +61,9 @@ def shopping_environment_page(pref_view):
                                 side=ft.BorderSide(1, ft.colors.GREY)  
                             )
                         ) for option in [
-                                "Cozy and personal",
-                                "Trendy and vibrant",
-                                "Minimalist and modern",
-                                "Rustic and vintage"
+                                "Yes",
+                                "No",
+                                "No preference",
                         ]
                     ]
                 ),

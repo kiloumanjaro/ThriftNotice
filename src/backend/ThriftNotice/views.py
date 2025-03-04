@@ -3,8 +3,8 @@ from django.shortcuts import render
 # Create your views here.
 # ThriftNotice/views.py
 from rest_framework import viewsets
-from .models import ThriftStores, Users, FavoriteShop
-from .serializers import ThriftStoreSerializer, UsersSerializer, FavoriteShopSerializer
+from .models import ThriftStores, Users, FavoriteShop, UsersReview
+from .serializers import ThriftStoreSerializer, UsersSerializer, FavoriteShopSerializer, UsersReviewSerializer
 from rest_framework.decorators import action # Import the @action decorator
 from rest_framework.response import Response
 from rest_framework import status
@@ -81,3 +81,18 @@ class FavoriteShopViewSet(viewsets.ModelViewSet):
             return Response({"error": "No matching favorite shop found"}, status=404)
 
         return Response({"message": "Favorite shop deleted successfully"}, status=200)
+
+class UsersReviewViewSet(viewsets.ModelViewSet):
+    queryset = UsersReview.objects.all() #  Get all Notice objects
+    serializer_class = UsersReviewSerializer # Use the NoticeSerializer
+
+    @action(detail=False, methods=['get'], url_path='get_reviews')
+    def get_reviews(self, request):
+        shopid = request.GET.get("shopid")
+        reviews = UsersReview.objects.filter(shopid=shopid)
+
+        if not reviews.exists():
+            return Response({"error": "no reviews found"}, status=404)
+
+        return Response(UsersReviewSerializer(reviews, many = True).data)
+        

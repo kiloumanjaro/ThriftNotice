@@ -15,7 +15,7 @@ class Preference(ft.View):
         self.user_id = self.page.session.get("userid")
         self.users_api_url = os.getenv("USERS_PREF_API_URL")
         self.user_data = None 
-        self.get_values()
+        self.initialize()
 
     def get_values(self):
         try:
@@ -26,7 +26,6 @@ class Preference(ft.View):
                 self.page.snack_bar = ft.SnackBar(ft.Text("Users pref read successfully!"), bgcolor="green")
                 self.user_data = users_response.json()
                 print(self.user_data)
-                self.initialize()
             else:
                 print("Failed:", users_response.json())
                 self.page.snack_bar = ft.SnackBar(ft.Text("Failed to read users pref"), bgcolor="red")
@@ -37,7 +36,7 @@ class Preference(ft.View):
         self.page.update()
         
     def initialize(self):
-        self.page.update() 
+        self.get_values()
         self.controls = [self.display_questionaire_container()]
     
     def go_back_to_maps(self, e):
@@ -67,11 +66,12 @@ class Preference(ft.View):
             text_style=ft.TextStyle(size=11, color="black"),
             value = self.user_data["budget"] or None,
             options=[
-                ft.dropdown.Option("Below 50"),
-                ft.dropdown.Option("50-150"),
-                ft.dropdown.Option("150-300"),
-                ft.dropdown.Option("300-500"),
-                ft.dropdown.Option("500+"),
+                
+                ft.dropdown.Option("Below ₱50"),
+                ft.dropdown.Option("₱50 - ₱150"),
+                ft.dropdown.Option("₱150 - ₱300"),
+                ft.dropdown.Option("₱300 - ₱500"),
+                ft.dropdown.Option("₱500+"),
             ]
         )
 

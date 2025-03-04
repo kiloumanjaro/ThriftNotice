@@ -21,7 +21,7 @@ def organization_page(pref_view):
                 ft.Text("Sorting Preferences", size=20, weight="bold", text_align="center"),
                 ft.Container(height=20), 
                 ft.Text(
-                    "How do you prefer the clothes to be organized?", 
+                    "Do you enjoy thrift stores that are:", 
                     size=14, 
                     color=ft.colors.GREY,
                     text_align="center"
@@ -44,7 +44,8 @@ def organization_page(pref_view):
                                 text_style=ft.TextStyle(size=12),
                                 side=ft.BorderSide(1, ft.colors.GREY)
                             )
-                        ) for option in ["By color", "By category", "By season", "No specific organization"]
+                        ) for option in ["Open spaced and free-flowing", "Well-organized and categorized", 
+                                         "More of a “treasure hunt” style", "No preference"]
                     ]
                 ),
 

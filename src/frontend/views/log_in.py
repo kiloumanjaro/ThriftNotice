@@ -5,10 +5,10 @@ import os
 
 load_dotenv()
 
-class Profile(ft.View):
+class Log_in(ft.View):
     def __init__(self, page: ft.Page): 
-        super(Profile, self).__init__(
-            route="/profile", horizontal_alignment="center",
+        super(Log_in, self).__init__(
+            route="/log_in", horizontal_alignment="center",
             vertical_alignment="center", padding=0,
         )
         self.page = page
@@ -19,7 +19,7 @@ class Profile(ft.View):
         self.bgcolor = self.bg
         self.users_api_url = os.getenv("USERS_PREF_API_URL") 
 
-        # Profile Icon
+
         self.profile_icon = ft.Container(
             content=ft.Icon(name=ft.icons.FACE, size=200, color="black"),
             bgcolor="white"
@@ -63,7 +63,7 @@ class Profile(ft.View):
                     ft.Divider(height=30, color="transparent"),
                     ft.Container(
                         padding=ft.padding.only(left=30, right=30),
-                        content=ft.Text("Would you like AI to assist you?", size=28, text_align="center", color="White")
+                        content=ft.Text("THRIFT NOTICE IS AN AMAZING APP!", size=28, text_align="center", color="White")
                     )
                         
                 ]    
@@ -71,63 +71,49 @@ class Profile(ft.View):
         )
 
         def submit_button(choice, e):
-            response = requests.get(f"{self.users_api_url}get_user/?username={self.name_input.value}")
-            if response.status_code == 200:
-                response_data = response.json()
-                username = response_data["username"]
+            
+            if choice == 0:
+                response = requests.get(f"{self.users_api_url}get_user/?username={self.name_input.value}")
+                if response.status_code == 200:
+                    response_data = response.json()
+                    print(response_data)
+                    username = response_data["username"]
 
-                if self.name_input.value == username:
+                    if self.name_input.value == username:
+                        user_id = response_data["userid"]
+                        self.page.session.set("userid", user_id)
+                        self.page.session.set("username", self.name_input.value)
+                        self.page.go("/maps")
+                        self.page.update()
+                else:
+                    self.name_input.hint_text = "INCORRECT USERNAME"
                     self.name_input.value = None
                     self.page.update()
             else:
-                self.page.session.set("username", self.name_input.value)
-                if choice == 1:
-                    self.page.go("/questions") 
-                else:
-                    try:
-                        data = {"username": self.name_input.value}
-                        
-                        response = requests.post(self.users_api_url, json=data)
-                        response = requests.get(f"{self.users_api_url}get_user/?username={self.name_input.value}")
-                        
-                        if response.status_code == 200: 
-                            new_user = response.json()  
-                            user_id = new_user["userid"]
-                            self.page.session.set("userid", user_id)
-                            print("Users Pref Added!")
-                            self.page.snack_bar = ft.SnackBar(ft.Text("Users pref added successfully!"), bgcolor="green")
-                        else:
-                            print("Error:", response.json())
-                            self.page.snack_bar = ft.SnackBar(ft.Text("Failed to add users pref"), bgcolor="red")
+                page.go("/profile")
 
-                    except Exception as ex:
-                        print("Request failed:", ex)
-                        self.page.snack_bar = ft.SnackBar(ft.Text(f"Request failed: {ex}"), bgcolor="red")
-
-                    self.page.go("/maps")
-
-        self.proceed_button = ft.ElevatedButton(
-            text="Proceed",
-            on_click=lambda e: submit_button(1, e),
-            width=190, 
+        self.login_button = ft.ElevatedButton(
+            text="Log in",
+            on_click=lambda e: submit_button(0, e),
+            width=180, 
             height=47, 
             style=ft.ButtonStyle(
-                bgcolor=self.fg,  # Background color
-                color="black",  # Text color
+                bgcolor=self.bg1,  # Background color
+                color="white",  # Text color
                 elevation=0,  # Remove shadow effect
                 shape=ft.RoundedRectangleBorder(radius=20),
                 text_style=ft.TextStyle(size=13)
             )
         )
 
-        self.skip_button = ft.ElevatedButton(
-            text="Skip",
-            on_click=lambda e: submit_button(0, e),
-            width=110, 
+        self.signup_button = ft.ElevatedButton(
+            text="Sign up?",
+            on_click=lambda e: submit_button(1, e),
+            width=120, 
             height=47, 
             style=ft.ButtonStyle(
-                bgcolor=self.bg1,  # Background color
-                color="white",  # Text color
+                bgcolor=self.fg,  # Background color
+                color="black",  # Text color
                 elevation=0,  # Remove shadow effect
                 shape=ft.RoundedRectangleBorder(radius=20),
                 text_style=ft.TextStyle(size=13)
@@ -150,8 +136,8 @@ class Profile(ft.View):
                             alignment=ft.alignment.center,  # Centering the buttons horizontally
                             content=ft.Row(
                                 controls=[
-                                    self.skip_button,
-                                    self.proceed_button
+                                    self.signup_button,
+                                    self.login_button,
                                 ],
                                 alignment=ft.MainAxisAlignment.CENTER  # Ensures horizontal centering
                             )

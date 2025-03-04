@@ -21,7 +21,7 @@ def interest_page(pref_view):
                 ft.Text("Fuel your fashion interest!", size=20, weight="bold", text_align="center"),
                 ft.Container(height=20),
                 ft.Text(
-                    "What sparks your fashion curiosity?", 
+                    "Are you interested in stores that specialize in:", 
                     size=14, 
                     text_align="center", 
                     color=ft.colors.GREY  
@@ -45,8 +45,8 @@ def interest_page(pref_view):
                                 side=ft.BorderSide(1, ft.colors.GREY)
                             )
                         ) for option in [
-                            "Fashion trends", "Sustainable clothing", 
-                            "DIY fashion", "Designer pieces"
+                            "Sustainable and eco-friendly fashion", "Rare or collectors items", 
+                            "High-end secondhand fashion", "Budget-friendly bulk buys",
                         ]
                     ]
                 ),
