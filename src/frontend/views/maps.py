@@ -124,7 +124,7 @@ class Maps(ft.View):
                 for location in locations_data: # Loop through API locations
                     latitude = location.get('latitude') # Get latitude, handle missing key
                     longitude = location.get('longitude') # Get longitude, handle missing key
-                    shopname = location.get('shopname') # Get shopname
+                    shopname = (str(location.get('shopname'))).split(' ')[0] # Get shopname
 
                     if latitude is not None and longitude is not None: # Check for valid coordinates
                         try:
@@ -147,9 +147,9 @@ class Maps(ft.View):
                                 width=75, # Adjust width as needed
                                 alignment=ft.alignment.top_center, # Ensure marker aligns from top-center
                                 coordinates=map.MapLatitudeLongitude(latitude, longitude), # Set marker coordinates
-                                data={'shopid' : location['shopid'], 'shopname' : location['shopname']} # Store shop ID in marker data
+                                data={'shopid' : location['shopid'], 'shopname' : location['shopname'], 'formattedaddress' : location['formattedaddress'], 'shortdescription' : location['shortdescription']} # Store shop ID in marker data
                             )
-                            #marker_layer_ref.current.markers.append(marker) # Add marker to marker layer
+                            marker_layer_ref.current.markers.append(marker) # Add marker to marker layer
 
                         except (ValueError, TypeError) as e: # Handle coordinate conversion errors
                             print(f"Error: Invalid coords for shop {location.get('shopid')}: {e}")
@@ -191,7 +191,7 @@ class Maps(ft.View):
 
                     cebu.center_on(map.MapLatitudeLongitude((marker.coordinates.latitude) * 0.999763, (marker.coordinates.longitude)), zoom=16.6)
 
-                    self.open_bottom_sheet(e)
+                    self.open_bottom_sheet(e, marker.data) # This should deliver the data from the marker, which shall be used to update the informatio in the bottom sheet.
                     return
 
             # Prevent placing a new marker if it's too close to an existing one
@@ -399,8 +399,8 @@ class Maps(ft.View):
             self.display_map_container(),
         ]   
 
-    def open_bottom_sheet(self, e):
-        self.bottom_sheet.show()
+    def open_bottom_sheet(self, e, marker_data):
+        self.bottom_sheet.show(marker_data) # Pass marker_data to the modified show method
 
     def close_bottom_sheet(self, e):
         self.bottom_sheet.hide()
