@@ -18,6 +18,7 @@ from views.about import About
 from views.profile import Profile
 from views.shop import Shop  # Import the Shop view
 from views.ai import AI
+from views.log_in import Log_in
 
 def main(page: ft.Page):
     page.theme_mode = ft.ThemeMode.LIGHT
@@ -74,10 +75,15 @@ def main(page: ft.Page):
             ai.padding = 0
             page.views.append(ai)
 
+        elif current_route == "/log_in":
+            log_in = Log_in(page)
+            log_in.padding = 0
+            page.views.append(log_in)
+
         page.update()
 
     page.on_route_change = router
-    page.go(page.route)
+    page.go("/")
 
 from urllib.parse import urlparse, parse_qs
 
