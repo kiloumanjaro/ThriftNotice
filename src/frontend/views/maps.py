@@ -109,7 +109,7 @@ class Maps(ft.View):
 
             if response.status_code == 200: # API call successful
                 locations_data = response.json() # Parse JSON response
-                print(f"Locations Data from API: {locations_data}") # Debug: print API data
+                #print(f"Locations Data from API: {locations_data}") # Debug: print API data
 
                 # --- Ensure marker_layer_ref is valid ---
                 if marker_layer_ref.current is None: # Check if marker_layer_ref is initialized
@@ -157,7 +157,7 @@ class Maps(ft.View):
                         print(f"Skipping shop {location.get('shopid')}: Missing lat/long.")
 
                 marker_layer_ref.current.update() # Update map to show markers
-                print("Initial map markers loaded using marker_layer_ref.") # Confirmation msg
+                #print("Initial map markers loaded using marker_layer_ref.") # Confirmation msg
 
             else: # API call failed
                 print(f"Error fetching map locations: {response.status_code} - {response.text}") # API error info
