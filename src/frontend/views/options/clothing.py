@@ -21,7 +21,7 @@ def clothing_page(pref_view):
                 ft.Text("Help us help you.", size=20, weight="bold", text_align="center"),
                 ft.Container(height=20),
                 ft.Text(
-                    "Which type of clothing catches your eye today?", 
+                    "Select your clothing style", 
                     size=14, 
                     text_align="center", 
                     color=ft.colors.GREY  
