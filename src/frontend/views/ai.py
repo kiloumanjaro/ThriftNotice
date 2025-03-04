@@ -309,7 +309,6 @@ class AI(ft.View):
 
             if response.status_code == 200:
                 data = response.json()  # Convert JSON response to Python object
-                print("Fetched store reviews:", data)  # Debugging output
                 return data
             else:
                 print("Failed to fetch store reviews:", response.status_code, response.text)
@@ -326,8 +325,8 @@ class AI(ft.View):
 
         formatted_review = "Here are the available stores and their reviews:\n\n"
         for entry in stores_data:
-            shop_name = entry.get("ShopName", "Unknown Store")
-            review = entry.get("Review", "No review available")
+            shop_name = entry.get("shopname", "Unknown Store")
+            review = entry.get("review", "No review available")
             formatted_review += f"- {shop_name}: {review}\n"
 
         print("Formatted store reviews:", formatted_review)  # Debugging output
@@ -383,23 +382,28 @@ class AI(ft.View):
 
     def get_best_store_recommendation(self):
         """Get the best store recommendation based on user preference"""
-        #stores_data = self.fetch_reviews()
+        stores_data = self.fetch_reviews()
         preference_data = self.fetch_preference()
 
-        #formatted_review = self.format_store_reviews_for_llm(stores_data)
+        formatted_review = self.format_store_reviews_for_llm(stores_data)
         formatted_preference = self.format_user_preference_for_llm(preference_data)
 
         max_length = 500
-        '''
+
         response = self.client.models.generate_content(
             model="gemini-2.0-flash",
             contents=[
                 f"Out of the {formatted_review}, determine the store that best fits the preference of user {formatted_preference} (max {max_length} chars). Pick only one store:\n\n"
             ],
         )
-        
-        return response
-'''
+
+        # Extract text from the response
+        recommendation_text = response.candidates[0].content.parts[0].text if response.candidates else "No recommendation found."
+
+        print("\n\nGenerated Response:")
+        return recommendation_text
+
+
 
     def initialize(self):
         self.controls = [self.display_map_container()]
