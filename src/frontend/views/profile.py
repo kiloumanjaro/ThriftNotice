@@ -89,7 +89,7 @@ class Profile(ft.View):
                         
                         response = requests.post(self.users_api_url, json=data)
                         response = requests.get(f"{self.users_api_url}get_user/?username={self.name_input.value}")
-
+                        
                         if response.status_code == 200: 
                             new_user = response.json()  
                             user_id = new_user["userid"]

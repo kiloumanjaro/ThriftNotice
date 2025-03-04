@@ -19,6 +19,7 @@ class Shop(ft.View):
         self.initialize()
 
     def initialize(self):
+        self.fetch_reviews()
         self.fetch_shop_data(self.shop_id)
         self.controls = [self.display_shop_container()]
 
@@ -31,10 +32,9 @@ class Shop(ft.View):
         api_endpoint = f"{api_url}"  # Use base URL to fetch all stores
 
         try:
-
-            response = requests.get(api_endpoint)
-            if response.status_code == 200:
-                all_shops_data = response.json()  # Get list of all shops
+            response_one = requests.get(api_endpoint)
+            if response_one.status_code == 200:
+                all_shops_data = response_one.json()  # Get list of all shops
 
                 for shop_data in all_shops_data:  # Loop through all shops in the API response
                     if int(shop_data.get('shopid')) == int(self.shop_id):  # Compare with integer shop_id
@@ -47,7 +47,7 @@ class Shop(ft.View):
                 return None # Shop ID not found
 
             else:
-                print(f"Error fetching shop data: {response.status_code} - {response.text}")
+                print(f"Error fetching shop data: {response_one.status_code} - {response_one.text}")
                 return None
         except ValueError: # Handle case where shop_id_value cannot be converted to integer
             print(f"Error: Shop ID '{self.shop_id}' is not a valid integer.")
@@ -55,7 +55,19 @@ class Shop(ft.View):
         except requests.exceptions.RequestException as e:
             print(f"Request exception: {e}")
             return None
+        
+    def fetch_reviews(self):
+        review_api_url = os.getenv("USERS_REVIEW_API_URL")
+        response = requests.get(f"{review_api_url}get_reviews/?shopid={self.shop_id}")
 
+        if response.status_code == 200:
+            all_reviews = response.json()
+            print(all_reviews)
+            new_reviews = [review["review"] for review in all_reviews]
+            self.reviews = new_reviews
+        else:
+            print("Could not find any reviews")
+        
     def toggle_favorite(self, e):
         self.is_favorite = not self.is_favorite
 
