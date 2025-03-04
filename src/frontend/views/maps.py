@@ -149,7 +149,7 @@ class Maps(ft.View):
                                 coordinates=map.MapLatitudeLongitude(latitude, longitude), # Set marker coordinates
                                 data={'shopid' : location['shopid'], 'shopname' : location['shopname']} # Store shop ID in marker data
                             )
-                            marker_layer_ref.current.markers.append(marker) # Add marker to marker layer
+                            #marker_layer_ref.current.markers.append(marker) # Add marker to marker layer
 
                         except (ValueError, TypeError) as e: # Handle coordinate conversion errors
                             print(f"Error: Invalid coords for shop {location.get('shopid')}: {e}")
@@ -205,7 +205,8 @@ class Maps(ft.View):
             self.marker_counter += 1
             self.marker_data[marker_id] = coordinates
 
-            # Add new marker - **Include data here**
+            '''
+            # Add new marker
             marker_layer_ref.current.markers.append(
                 map.Marker(
                     content=ft.Icon(ft.icons.LOCATION_ON, color=ft.cupertino_colors.DESTRUCTIVE_RED, size=25),
@@ -215,7 +216,8 @@ class Maps(ft.View):
             )
             marker_layer_ref.current.update()
 
-            print(f"Added marker ID: {marker_id} at {coordinates}")
+            print(f"Added marker ID: {marker_id} at {coordinates}")  
+            '''
 
         cebu = map.Map(
             expand=True,

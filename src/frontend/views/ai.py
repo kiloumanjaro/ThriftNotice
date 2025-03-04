@@ -2,10 +2,18 @@ import flet as ft
 from components.prompt import Prompt
 import flet.map as map
 import math
+from dotenv import load_dotenv
 import os
 import requests
 
+
+def configure():
+    load_dotenv()
+
 class AI(ft.View):
+
+ 
+
     def __init__(self, page: ft.Page):
         super().__init__(route="/ai")
         self.page = page
@@ -18,27 +26,196 @@ class AI(ft.View):
         self.marker_counter = 1
         self.prompt_sheet = Prompt(self.close_prompt_sheet) 
 
+        def fetch_reviews(e):
+                try:
+                    store_api_url = os.getenv("THRIFTSTORE_API_URL")  # API endpoint
+                    response = requests.get(store_api_url)
+
+                    if response.status_code == 200:
+                        stores_data = response.json()  # Convert JSON response to Python object
+                        return stores_data
+                    else:
+                        print("Failed to fetch store reviews:", response.text)
+                        return None
+                    
+                except Exception as e:
+                    print("Error fetching data:", e)
+                    return None
+
+        def format_store_reviews_for_llm(stores_data):
+            if not stores_data:
+                return "No store reviews available."
+
+            formatted_review = "Here are the available stores and their reviews:\n\n"
+            for entry in stores_data:
+                shop_name = entry.get("ShopName", "Unknown Store")
+                review = entry.get("Review", "No review available")
+                formatted_review += f"- {shop_name}: {review}\n"
+
+            return formatted_review
+
+        def fetch_preference(e):
+                try:
+                    preference_api_url = os.getenv("USERS_PREF_API_URL")  # API endpoint
+                    response = requests.get(preference_api_url)
+
+                    if response.status_code == 200:
+                        preference_data = response.json()  # Convert JSON response to Python object
+                        return preference_data
+                    else:
+                        print("Failed to fetch user preference:", response.text)
+                        return None
+                    
+                except Exception as e:
+                    print("Error fetching data:", e)
+                    return None
+
+        def format_user_preference_for_llm(preference_data):
+            if not preference_data:
+                return "No user preference available."
+
+            formatted_preference = "Here are the available user preferences:\n\n"
+            for entry in preference_data:
+                clothing = entry.get("clothing", "N/A")
+                shoppingenvironment = entry.get("shoppingenvironment", "N/A")
+                budget = entry.get("budget", "N/A")
+                organization = entry.get("organization", "N/A")
+                interest = entry.get("interest", "N/A")
+                username = entry.get("username", "N/A")
+                formatted_preference += f"- {username}: likes {clothing} and hopes to shop in {shoppingenvironment} with a {budget} and a setting that can be descroned as {organization}. Lastly the user is interested on {interest}\n"
+
+            return formatted_preference
+
+        def get_best_store_recommendation():
+            stores_data = fetch_reviews()
+            preference_data = fetch_preference()
+            formatted_review = format_store_reviews_for_llm(stores_data)
+            formatted_preference = format_user_preference_for_llm(preference_data)
+            max_length=500
+
+            response = self.client.models.generate_content(
+                model="gemini-2.0-flash",
+                contents=[f"Out of the {formatted_review}, determine the store that best fit the preference of user {formatted_preference} (max {max_length} chars):\n\n"],
+            )
+            
+            return response
+
 
         def on_bottom_button_click(e):
-            print("Bottom button clicked")  # Debugging
+            print("search button clicked"), # Debugging
+            on_click=get_best_store_recommendation,
+
+
+        def on_preference_button_click(e):
+            print("preference button clicked")  # Debugging
+            self.page.go("/preference")
+
+        def on_home_button_click(e):
+            print("home button clicked")  # Debugging
             self.page.go("/maps")
 
-        self.bottom_button = ft.Container(
-            margin=ft.margin.only(top=540),
-            width=50,
-            height=50,
-            bgcolor="#323232",
-            border_radius=50,
-            alignment=ft.alignment.center,
-            border=ft.border.all(3, "#98e2f6"),  # Add a 2px white border
-            content=ft.IconButton(
-                icon=ft.icons.HOME,
-                icon_size=23,
-                icon_color="white",
-                on_click=on_bottom_button_click  # Move on_click here
-            ),
+
+        self.bottom_button = ft.Stack(
+            alignment=ft.alignment.center,  # Ensures both containers are centered
+            controls=[
+                ft.Container(
+                    width=75,  # Slightly bigger background
+                    height=75,
+                    bgcolor=ft.colors.with_opacity(0.8, "#ececec"),
+                    border_radius=50,
+                    border=ft.border.all(0.5, "#b6b6b6"),
+                    shadow=ft.BoxShadow(
+                        spread_radius=2,
+                        blur_radius=10,
+                        color=ft.colors.BLACK38,
+                        offset=ft.Offset(2, 4),
+                    ),
+                ),
+                ft.Container(
+                    width=60,
+                    height=60,
+                    bgcolor="#323232",
+                    border_radius=50,
+                    border=ft.border.all(3, "#c9c9c9"),
+                    alignment=ft.alignment.center,  # Center alignment
+                    content=ft.IconButton(
+                        icon=ft.icons.SEARCH,
+                        icon_size=25,
+                        icon_color="white",
+                        on_click=on_bottom_button_click
+                    ),
+
+                ),
+            ]
         )
 
+        self.home_button = ft.Stack(
+            alignment=ft.alignment.center,  # Ensures both containers are centered
+            controls=[
+                ft.Container(
+                    width=62,  # Slightly bigger background
+                    height=62,
+                    bgcolor=ft.colors.with_opacity(0.8, "#ececec"),
+                    border_radius=50,
+                    border=ft.border.all(0.5, "#b6b6b6"),
+                    shadow=ft.BoxShadow(
+                        spread_radius=2,
+                        blur_radius=10,
+                        color=ft.colors.BLACK38,
+                        offset=ft.Offset(2, 4),
+                    ),
+                ),
+                ft.Container(
+                    width=48,
+                    height=48,
+                    bgcolor="#323232",
+                    border_radius=50,
+                    border=ft.border.all(2, "#b6b6b6"),
+                    alignment=ft.alignment.center,  # Center alignment
+                    content=ft.IconButton(
+                        icon=ft.icons.HOME,
+                        icon_size=19,
+                        icon_color="white",
+                        on_click=on_home_button_click
+                    ),
+
+                ),
+            ]
+        )
+        
+        self.preferences_button = ft.Stack(
+            alignment=ft.alignment.center,  # Ensures both containers are centered
+            controls=[
+                ft.Container(
+                    width=62,  # Slightly bigger background
+                    height=62,
+                    bgcolor=ft.colors.with_opacity(0.8, "#ececec"),
+                    border_radius=50,
+                    border=ft.border.all(0.5, "#b6b6b6"),
+                    shadow=ft.BoxShadow(
+                        spread_radius=2,
+                        blur_radius=10,
+                        color=ft.colors.BLACK38,
+                        offset=ft.Offset(2, 4),
+                    ),
+                ),
+                ft.Container(
+                    width=48,
+                    height=48,
+                    bgcolor="#323232",
+                    border_radius=50,
+                    border=ft.border.all(2, "#b6b6b6"),
+                    alignment=ft.alignment.center,  # Center alignment
+                    content=ft.IconButton(
+                        icon=ft.icons.SETTINGS,
+                        icon_size=19,
+                        icon_color="white",
+                        on_click=on_preference_button_click
+                    ),
+
+                ),
+            ]
+        )
 
         def is_within_radius(coord1, coord2, radius):
             lat1, lon1 = coord1
@@ -174,9 +351,20 @@ class AI(ft.View):
                     bgcolor=wg,
                     content=ft.Stack(height=667, controls=
                                      [first_page_contents, 
-                                        ft.Row(
-                                        alignment=ft.MainAxisAlignment.CENTER,
-                                        controls=[self.bottom_button],  # Wrap in a list
+                                        ft.Container(
+                                        left=143,
+                                        top=500,
+                                        content=self.bottom_button,  # Wrap in a list
+                                        ),
+                                        ft.Container(
+                                            left=58,
+                                            top=506,
+                                            content=self.home_button,  # Wrap in a list
+                                        ),
+                                        ft.Container(
+                                            left=240,
+                                            top=506,
+                                            content=self.preferences_button,  # Wrap in a list
                                         ),
                                          self.prompt_sheet])
                 )
@@ -192,6 +380,8 @@ class AI(ft.View):
 
     def close_prompt_sheet(self, e):
         self.prompt_sheet.hide()
+
+  
 
     def display_map_container(self):
         return ft.Container(
