@@ -15,6 +15,7 @@ class Maps(ft.View):
         fg='#98e2f6'
         wg='#f8f9ff'
         fg1='#5f82a6'
+        
 
         def is_within_radius(coord1, coord2, radius):  # Radius in meters
             lat1, lon1 = coord1
@@ -271,23 +272,25 @@ class Maps(ft.View):
                     ),
                     ft.Divider(height=7, color="transparent"),
                     ft.Container(
-                    width=320,  # Slightly bigger than map container
-                    height=543,
-                    border_radius=21,  # Ensures a rounded border
-                    #bgcolor=ft.colors.BLACK,  # Border color
-                    shadow=ft.BoxShadow(
-                        blur_radius=3,  # Controls the blur effect
-                        spread_radius=0,  # Controls the shadow spread
-                        color=ft.colors.BLACK45,  # Adjust opacity as needed
-                    ),
-                    padding=1,  # Space for border thickness
-                        content=ft.Container(
-                        content=cebu,
-                        width=580,
-                        height=541,
-                        border_radius=20,  # Ensures rounded corners inside
-                        clip_behavior=ft.ClipBehavior.HARD_EDGE,  # Ensures map stays within rounded shape     
-                        )
+                        bgcolor=ft.colors.with_opacity(0.8, "#ececec"),
+                        border_radius=ft.border_radius.only(top_left=18, top_right=18, bottom_left=18, bottom_right=18),
+                        border=ft.border.all(0.5, "#b6b6b6"), 
+                            content=ft.Container(
+                            margin=ft.margin.only(right=5, left=5, top=5, bottom=5),
+                            border=ft.border.all(1, "#c9c9c9"),
+                            width=320,  # Slightly bigger than map container
+                            height=543,
+                            border_radius=13,  # Ensures a rounded border
+                            #bgcolor=ft.colors.BLACK,  # Border color
+                            padding=1,  # Space for border thickness
+                                content=ft.Container(
+                                content=cebu,
+                                width=580,
+                                height=541,
+                                border_radius=10,  # Ensures rounded corners inside
+                                clip_behavior=ft.ClipBehavior.HARD_EDGE,  # Ensures map stays within rounded shape     
+                                )
+                            )
                     )
                 ]
             ),
