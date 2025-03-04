@@ -35,9 +35,13 @@ class Users(models.Model):
 
 class FavoriteShop(models.Model):
     userid = models.ForeignKey(Users, on_delete=models.CASCADE, db_column='userid')  
-    shopid = models.ForeignKey(ThriftStores, on_delete=models.CASCADE, db_column='shopid')
+    shopid = models.ForeignKey(ThriftStores, on_delete=models.CASCADE, db_column='shopID')
 
     class Meta:
         db_table = 'favorite_shops'
         unique_together = (('userid', 'shopid'))
         db_table_comment = 'A table storing favorite shops for each user.'
+
+class Reviews(models.Model):
+    shopid = models.ForeignKey(ThriftStores, on_delete=models.CASCADE, db_column='shopid')
+    review              = models.TextField      (db_column='review')              

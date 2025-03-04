@@ -15,7 +15,7 @@ class Preference(ft.View):
         self.user_id = self.page.session.get("userid")
         self.users_api_url = os.getenv("USERS_PREF_API_URL")
         self.user_data = None 
-        self.initialize()
+        self.get_values()
 
     def get_values(self):
         try:
@@ -25,7 +25,8 @@ class Preference(ft.View):
                 print("Users Pref Read!")
                 self.page.snack_bar = ft.SnackBar(ft.Text("Users pref read successfully!"), bgcolor="green")
                 self.user_data = users_response.json()
-
+                print(self.user_data)
+                self.initialize()
             else:
                 print("Failed:", users_response.json())
                 self.page.snack_bar = ft.SnackBar(ft.Text("Failed to read users pref"), bgcolor="red")
@@ -33,9 +34,10 @@ class Preference(ft.View):
         except Exception as ex:
             print("Request failed:", ex)
             self.page.snack_bar = ft.SnackBar(ft.Text(f"Request failed: {ex}"), bgcolor="red")
-    
+        self.page.update()
+        
     def initialize(self):
-        self.get_values()
+        self.page.update() 
         self.controls = [self.display_questionaire_container()]
     
     def go_back_to_maps(self, e):
@@ -57,7 +59,7 @@ class Preference(ft.View):
                 ft.dropdown.Option("Designer/Branded items"),
             ]
         )
-                        
+        
         self.budget_dropdown = ft.Dropdown(
             border_color="transparent",
             hint_text="What is your preferred price range per item?",
@@ -72,7 +74,7 @@ class Preference(ft.View):
                 ft.dropdown.Option("500+"),
             ]
         )
-        
+
         self.environment_dropdown = ft.Dropdown(
             border_color="transparent",
             hint_text="Do you prefer stores with air conditioning?",
