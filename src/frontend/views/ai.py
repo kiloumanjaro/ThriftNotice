@@ -325,12 +325,14 @@ class AI(ft.View):
 
         formatted_review = "Here are the available stores and their reviews:\n\n"
         for entry in stores_data:
+            shop_id = entry.get("shopid", "Unknown ID")
             shop_name = entry.get("shopname", "Unknown Store")
             review = entry.get("review", "No review available")
-            formatted_review += f"- {shop_name}: {review}\n"
+            formatted_review += f"- [{shop_id}] {shop_name}: {review}\n"
 
         print("Formatted store reviews:", formatted_review)  # Debugging output
         return formatted_review
+
 
     def fetch_preference(self):
         """Fetch preferences for the current user from an API"""
@@ -393,7 +395,7 @@ class AI(ft.View):
         response = self.client.models.generate_content(
             model="gemini-2.0-flash",
             contents=[
-                f"Out of the {formatted_review}, determine the store that best fits the preference of user {formatted_preference} (max {max_length} chars). Pick only one store:\n\n"
+                f"Out of the {formatted_review}, determine the store that best fits the preference of user {formatted_preference} (max {max_length} chars). Pick only one store and use bullets to explain why, with each bullet being one cohesive sentence. Also dont mention the user id but instead refer to a name and make sure to highlight the shop on the first sentence. Lastly, display the shop_id last.:\n\n"
             ],
         )
 
