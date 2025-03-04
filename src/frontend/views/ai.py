@@ -20,25 +20,120 @@ class AI(ft.View):
 
 
         def on_bottom_button_click(e):
-            print("Bottom button clicked")  # Debugging
+            print("search button clicked")  # Debugging
+
+
+
+        def on_preference_button_click(e):
+            print("preference button clicked")  # Debugging
+            self.page.go("/preference")
+
+        def on_home_button_click(e):
+            print("home button clicked")  # Debugging
             self.page.go("/maps")
 
-        self.bottom_button = ft.Container(
-            margin=ft.margin.only(top=540),
-            width=50,
-            height=50,
-            bgcolor="#323232",
-            border_radius=50,
-            alignment=ft.alignment.center,
-            border=ft.border.all(3, "#98e2f6"),  # Add a 2px white border
-            content=ft.IconButton(
-                icon=ft.icons.HOME,
-                icon_size=23,
-                icon_color="white",
-                on_click=on_bottom_button_click  # Move on_click here
-            ),
+
+        self.bottom_button = ft.Stack(
+            alignment=ft.alignment.center,  # Ensures both containers are centered
+            controls=[
+                ft.Container(
+                    width=75,  # Slightly bigger background
+                    height=75,
+                    bgcolor=ft.colors.with_opacity(0.8, "#ececec"),
+                    border_radius=50,
+                    border=ft.border.all(0.5, "#b6b6b6"),
+                    shadow=ft.BoxShadow(
+                        spread_radius=2,
+                        blur_radius=10,
+                        color=ft.colors.BLACK38,
+                        offset=ft.Offset(2, 4),
+                    ),
+                ),
+                ft.Container(
+                    width=60,
+                    height=60,
+                    bgcolor="#323232",
+                    border_radius=50,
+                    border=ft.border.all(3, "#c9c9c9"),
+                    alignment=ft.alignment.center,  # Center alignment
+                    content=ft.IconButton(
+                        icon=ft.icons.SEARCH,
+                        icon_size=25,
+                        icon_color="white",
+                        on_click=on_bottom_button_click
+                    ),
+
+                ),
+            ]
         )
 
+        self.home_button = ft.Stack(
+            alignment=ft.alignment.center,  # Ensures both containers are centered
+            controls=[
+                ft.Container(
+                    width=62,  # Slightly bigger background
+                    height=62,
+                    bgcolor=ft.colors.with_opacity(0.8, "#ececec"),
+                    border_radius=50,
+                    border=ft.border.all(0.5, "#b6b6b6"),
+                    shadow=ft.BoxShadow(
+                        spread_radius=2,
+                        blur_radius=10,
+                        color=ft.colors.BLACK38,
+                        offset=ft.Offset(2, 4),
+                    ),
+                ),
+                ft.Container(
+                    width=48,
+                    height=48,
+                    bgcolor="#323232",
+                    border_radius=50,
+                    border=ft.border.all(2, "#b6b6b6"),
+                    alignment=ft.alignment.center,  # Center alignment
+                    content=ft.IconButton(
+                        icon=ft.icons.HOME,
+                        icon_size=19,
+                        icon_color="white",
+                        on_click=on_home_button_click
+                    ),
+
+                ),
+            ]
+        )
+        
+        self.preferences_button = ft.Stack(
+            alignment=ft.alignment.center,  # Ensures both containers are centered
+            controls=[
+                ft.Container(
+                    width=62,  # Slightly bigger background
+                    height=62,
+                    bgcolor=ft.colors.with_opacity(0.8, "#ececec"),
+                    border_radius=50,
+                    border=ft.border.all(0.5, "#b6b6b6"),
+                    shadow=ft.BoxShadow(
+                        spread_radius=2,
+                        blur_radius=10,
+                        color=ft.colors.BLACK38,
+                        offset=ft.Offset(2, 4),
+                    ),
+                ),
+                ft.Container(
+                    width=48,
+                    height=48,
+                    bgcolor="#323232",
+                    border_radius=50,
+                    border=ft.border.all(2, "#b6b6b6"),
+                    alignment=ft.alignment.center,  # Center alignment
+                    content=ft.IconButton(
+                        icon=ft.icons.SETTINGS,
+                        icon_size=19,
+                        icon_color="white",
+                        on_click=on_preference_button_click
+                    ),
+
+                ),
+            ]
+        )
 
         def is_within_radius(coord1, coord2, radius):
             lat1, lon1 = coord1
@@ -174,9 +269,20 @@ class AI(ft.View):
                     bgcolor=wg,
                     content=ft.Stack(height=667, controls=
                                      [first_page_contents, 
-                                        ft.Row(
-                                        alignment=ft.MainAxisAlignment.CENTER,
-                                        controls=[self.bottom_button],  # Wrap in a list
+                                        ft.Container(
+                                        left=143,
+                                        top=500,
+                                        content=self.bottom_button,  # Wrap in a list
+                                        ),
+                                        ft.Container(
+                                            left=58,
+                                            top=506,
+                                            content=self.home_button,  # Wrap in a list
+                                        ),
+                                        ft.Container(
+                                            left=240,
+                                            top=506,
+                                            content=self.preferences_button,  # Wrap in a list
                                         ),
                                          self.prompt_sheet])
                 )
