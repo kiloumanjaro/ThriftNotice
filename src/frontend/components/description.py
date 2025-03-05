@@ -125,7 +125,6 @@ class BottomSheet(ft.Container):
             if response.status_code == 201:
                 print("\nReview Added to Review Table!")
                 self.page.snack_bar = ft.SnackBar(ft.Text("Review added successfully!"), bgcolor="green")
-                self.summarize_and_update()
             else:
                 print("Failed to add to review table:", store_response.json())
                 self.page.snack_bar = ft.SnackBar(ft.Text("Failed to add review"), bgcolor="red")
