@@ -132,10 +132,10 @@ class BottomSheet(ft.Container):
             print("Request failed to review table:", ex)
             self.page.snack_bar = ft.SnackBar(ft.Text(f"Request failed to review table: {ex}"), bgcolor="red")
 
-    def summarize_reviews(self, text1: str, text2: str, max_length: int = 425) -> str:
+    def summarize_reviews(self, text1: str, text2: str, max_length: int = 400) -> str:
         response = self.client.models.generate_content(
             model="gemini-2.0-flash",
-            contents=[f"Summarize these reviews into one concise and engaging review (max {max_length} chars):\n\n"
+            contents=[f"Summarize these reviews into one concise and engaging review (max {max_length} chars and minimum of 350):\n\n"
                       f"Review 1: {text1}\n\nReview 2: {text2}"],
             config=types.GenerateContentConfig(
                 max_output_tokens=500,
