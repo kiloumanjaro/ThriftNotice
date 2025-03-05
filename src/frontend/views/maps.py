@@ -135,7 +135,7 @@ class Maps(ft.View):
                                 content=ft.Stack(
                                     [
                                         ft.Container( # Container for text to control width and offset
-                                            ft.Text(shopname, style=ft.TextThemeStyle.BODY_SMALL, no_wrap=True), # Shop name text, no wrap
+                                            ft.Text(shopname, style=ft.TextStyle(size=10), no_wrap=True), # Shop name text, no wrap
                                             alignment=ft.alignment.top_center, # Align text to top center
                                         ),
                                         ft.Container( # Container for icon to position below text
@@ -170,7 +170,7 @@ class Maps(ft.View):
             for marker in marker_layer_ref.current.markers:
                 marker_coords = (marker.coordinates.latitude, marker.coordinates.longitude)
 
-                if is_within_radius(marker_coords, coordinates, radius=30):  # Use radius for easier detection
+                if is_within_radius(marker_coords, coordinates, radius=60):  # Use radius for easier detection
 
                     # Reset all markers to default size
                     for m in marker_layer_ref.current.markers:
@@ -197,7 +197,7 @@ class Maps(ft.View):
 
             # Prevent placing a new marker if it's too close to an existing one
             for marker_id, coord in self.marker_data.items():
-                if is_within_radius(coord, coordinates, radius=30):
+                if is_within_radius(coord, coordinates, radius=20):
                     print(f"Too close to marker ID {marker_id}, cannot place here!")
                     return
 
@@ -274,6 +274,7 @@ class Maps(ft.View):
                     ft.Divider(height=7, color="transparent"),
                     ft.Container(
                         bgcolor=ft.colors.with_opacity(0.8, "#ececec"),
+                        margin=ft.margin.only(right=12),
                         border_radius=ft.border_radius.only(top_left=18, top_right=18, bottom_left=18, bottom_right=18),
                         border=ft.border.all(0.5, "#b6b6b6"), 
                             content=ft.Container(

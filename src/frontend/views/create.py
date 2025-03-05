@@ -50,8 +50,7 @@ class Create(ft.View):
                 # Geocode the address
                 geocode_response = requests.post(os.getenv("GEOCODE_API_URL"), json={"address": self.address.value})
 
-                print("Raw response status:", geocode_response.status_code)
-                print("Raw response text:", geocode_response.text)  # <--- Print raw response
+                print("\nRaw response text:", geocode_response.text)  # <--- Print raw response
 
                 if geocode_response.status_code == 200:
                     geocode_data = geocode_response.json()
@@ -86,14 +85,14 @@ class Create(ft.View):
                 store_response = requests.post(store_api_url, json=data)
 
                 if store_response.status_code == 201:
-                    print("Store Added!")
+                    print("\nStore Added!")
                     self.page.snack_bar = ft.SnackBar(ft.Text("Store added successfully!"), bgcolor="green")
                 else:
-                    print("Failed:", store_response.json())
+                    print("\nFailed:", store_response.json())
                     self.page.snack_bar = ft.SnackBar(ft.Text("Failed to add store"), bgcolor="red")
 
             except Exception as ex:
-                print("Request failed:", ex)
+                print("\nRequest failed:", ex)
                 self.page.snack_bar = ft.SnackBar(ft.Text(f"Request failed: {ex}"), bgcolor="red")
 
             self.page.update()
