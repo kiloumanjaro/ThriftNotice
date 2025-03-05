@@ -22,7 +22,7 @@ class Preference(ft.View):
             
             users_response = requests.get(f"{self.users_api_url}get_userid/?userid={self.user_id}")
             if users_response.status_code == 200:
-                print("Users Pref Read!")
+                print("\nUsers Preference Read!")
                 self.page.snack_bar = ft.SnackBar(ft.Text("Users pref read successfully!"), bgcolor="green")
                 self.user_data = users_response.json()
                 print(self.user_data)

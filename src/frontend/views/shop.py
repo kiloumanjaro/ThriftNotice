@@ -81,18 +81,18 @@ class Shop(ft.View):
             response = requests.post(favorite_url, json=data)
 
             if response.status_code == 201:
-                print("Favorite shop added!")
+                print("\nFavorite shop added!")
             else:
-                print("Favorite shop was not added!")
+                print("\nFavorite shop was not added!")
         else:
 
             favorite_url = os.getenv("FAVORITE_API_URL")
             response = requests.delete(f"{favorite_url}delete_favorite_shop/?userid={self.page.session.get("userid")}&shopid={self.shop_id}")
 
             if response.status_code == 200:
-                print("Favorite shop removed!")
+                print("\nFavorite shop removed!")
             else:
-                print("Favorite shop was not removed!")
+                print("\nFavorite shop was not removed!")
 
         self.favorite_button.icon = ft.icons.FAVORITE_BORDER if not self.is_favorite else ft.icons.FAVORITE
         self.favorite_button.icon_color = "#323232" if not self.is_favorite else "red"

@@ -86,7 +86,7 @@ class Log_in(ft.View):
                         self.page.go("/maps")
                         self.page.update()
                 else:
-                    self.name_input.hint_text = "INCORRECT USERNAME"
+                    self.name_input.label = "Account not found"
                     self.name_input.value = None
                     self.page.update()
             else:

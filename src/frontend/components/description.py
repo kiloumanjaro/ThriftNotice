@@ -104,7 +104,7 @@ class BottomSheet(ft.Container):
             store_response = requests.post(store_api_url, json=data)
 
             if store_response.status_code == 201:
-                print("Review Added!")
+                print("\nReview Added!")
                 self.page.snack_bar = ft.SnackBar(ft.Text("Review added successfully!"), bgcolor="green")
                 self.summarize_and_update()
             else:
@@ -123,7 +123,7 @@ class BottomSheet(ft.Container):
             response = requests.post(review_api_url, json=data)
 
             if response.status_code == 201:
-                print("Review Added to Review Table!")
+                print("\nReview Added to Review Table!")
                 self.page.snack_bar = ft.SnackBar(ft.Text("Review added successfully!"), bgcolor="green")
                 self.summarize_and_update()
             else:

@@ -79,7 +79,7 @@ class Questions(ft.View):
                     new_user = users_response.json()  
                     user_id = new_user["userid"]
                     self.page.session.set("userid", user_id)
-                    print("Users Pref Added!")
+                    print("Users Preference Added!\n")
                     self.page.snack_bar = ft.SnackBar(ft.Text("Users pref added successfully!"), bgcolor="green")
                 else:
                     print("Failed:", users_response.json())

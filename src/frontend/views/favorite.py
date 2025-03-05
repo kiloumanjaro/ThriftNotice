@@ -23,7 +23,7 @@ class Favorite(ft.View):
 
     def go_back_to_maps(self, e):
         self.page.go("/maps")
-        self.page.update()
+ 
 
     def toggle_details(self, e, details_container, shop_item, shop_header, icon_button, shop_text):
         details_container.visible = not details_container.visible

@@ -35,11 +35,9 @@ class AI(ft.View):
             self.open_prompt_sheet(e)  # Open the prompt dialog
 
         def on_preference_button_click(e):
-            print("preference button clicked")  # Debugging
             self.page.go("/preference")
 
         def on_home_button_click(e):
-            print("home button clicked")  # Debugging
             self.page.go("/maps")
 
 
@@ -320,7 +318,7 @@ class AI(ft.View):
         if not stores_data:
             return "No store reviews available."
 
-        formatted_review = "Here are the available stores and their reviews:\n\n"
+        formatted_review = "Here are the available stores and their reviews:\n"
         for entry in stores_data:
             shop_id = entry.get("shopid", "Unknown ID")
             shop_name = entry.get("shopname", "Unknown Store")

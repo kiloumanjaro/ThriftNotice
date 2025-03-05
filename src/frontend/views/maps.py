@@ -201,6 +201,7 @@ class Maps(ft.View):
                     print(f"Too close to marker ID {marker_id}, cannot place here!")
                     return
 
+            '''
             # Assign a unique ID and store the new marker
             marker_id = self.marker_counter
             self.marker_counter += 1
@@ -218,7 +219,7 @@ class Maps(ft.View):
             marker_layer_ref.current.update()
 
             print(f"Added marker ID: {marker_id} at {coordinates}")  
-            
+            '''
 
         cebu = map.Map(
             expand=True,

@@ -20,6 +20,11 @@ from views.shop import Shop  # Import the Shop view
 from views.ai import AI
 from views.log_in import Log_in
 
+if os.name == "nt":  # Windows
+    os.system("cls")
+else:  # macOS and Linux
+    os.system("clear")
+
 def main(page: ft.Page):
     page.theme_mode = ft.ThemeMode.LIGHT
     page.window.width = 375
