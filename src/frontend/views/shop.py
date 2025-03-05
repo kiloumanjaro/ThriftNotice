@@ -71,28 +71,55 @@ class Shop(ft.View):
     def toggle_favorite(self, e):
         self.is_favorite = not self.is_favorite
 
-        if(self.is_favorite):
-            data = {
-                "userid": self.page.session.get("userid"),
-                "shopid": self.shop_id,
-            }
+        print("--- toggle_favorite START ---") # Debug: Function entry
+        print(f"Shop ID: {self.shop_id}") # Debug: Shop ID
+        print(f"Current is_favorite: {self.is_favorite}") # Debug: Favorite state
+        print(f"Page Session (before get userid): {self.page.session}") # Debug: Full session *before* userid retrieval
 
-            favorite_url = os.getenv("FAVORITE_API_URL")
-            response = requests.post(favorite_url, json=data)
+        userid = self.page.session.get("userid")
 
-            if response.status_code == 201:
-                print("Favorite shop added!")
+        print(f"User ID from session: {userid}") # Debug: Retrieved userid
+
+        if not userid:
+            print("blrgheee: User ID not found in session. Cannot toggle favorite.") # Original error message
+            print("--- toggle_favorite END (userid missing) ---") # Debug: Function exit - missing userid
+            return
+
+        favorite_url = os.getenv("FAVORITE_API_URL")
+        if not favorite_url:
+            print("Error: FAVORITE_API_URL environment variable is not set for toggle_favorite.") # Debug: missing env var
+            print("--- toggle_favorite END (missing API URL) ---") # Debug: Function exit - missing API URL
+            return
+
+        data = {
+            "userid": userid, # Use the retrieved userid
+            "shopid": self.shop_id,
+        }
+
+        try: # Wrap API call in try-except for robustness
+            if self.is_favorite:
+                print("Adding to favorites...") # Debug: Adding favorite
+                response = requests.post(favorite_url, json=data)
             else:
-                print("Favorite shop was not added!")
-        else:
+                print("Removing from favorites...") # Debug: Removing favorite
+                response = requests.delete(f"{favorite_url}delete_favorite_shop/?userid={userid}&shopid={self.shop_id}") # Use retrieved userid
 
-            favorite_url = os.getenv("FAVORITE_API_URL")
-            response = requests.delete(f"{favorite_url}delete_favorite_shop/?userid={self.page.session.get("userid")}&shopid={self.shop_id}")
+            response.raise_for_status() # Raise HTTPError for bad responses
 
-            if response.status_code == 200:
-                print("Favorite shop removed!")
+            if response.status_code == 201 or response.status_code == 200: # Handle both 201 (POST) and 200 (DELETE) success
+                action_message = "added" if self.is_favorite else "removed"
+                print(f"Favorite shop {action_message} successfully! Status Code: {response.status_code}") # Debug: API success
             else:
-                print("Favorite shop was not removed!")
+                print(f"Warning: Favorite shop action failed. Status Code: {response.status_code}, Response: {response.text}") # Debug: API failure - status code
+        except requests.exceptions.RequestException as e:
+            print(f"Request exception during favorite toggle: {e}") # Debug: Request exception
+        except json.JSONDecodeError as e: # Handle JSONDecodeError
+            print(f"JSON decode error during favorite toggle: {e}") # Debug: JSON decode error
+        except Exception as e: # Catch any other exceptions
+            print(f"An unexpected error occurred during favorite toggle: {e}") # Debug: Unexpected error
+        finally:
+            print("--- toggle_favorite END ---") # Debug: Function exit (normal or error)
+
 
         self.favorite_button.icon = ft.icons.FAVORITE_BORDER if not self.is_favorite else ft.icons.FAVORITE
         self.favorite_button.icon_color = "#323232" if not self.is_favorite else "red"

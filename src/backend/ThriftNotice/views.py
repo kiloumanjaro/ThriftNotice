@@ -1,86 +1,100 @@
 from django.shortcuts import render
-
-# Create your views here.
-# ThriftNotice/views.py
 from rest_framework import viewsets
 from .models import ThriftStores, Users, FavoriteShop, UsersReview
 from .serializers import ThriftStoreSerializer, UsersSerializer, FavoriteShopSerializer, UsersReviewSerializer
-from rest_framework.decorators import action # Import the @action decorator
+from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework import status
 
 class ThriftStoreViewSet(viewsets.ModelViewSet):
-    queryset = ThriftStores.objects.all() #  Get all Notice objects
-    serializer_class = ThriftStoreSerializer # Use the NoticeSerializer
+    queryset = ThriftStores.objects.all()
+    serializer_class = ThriftStoreSerializer
 
-    @action(detail=False, methods=['get'], url_path='map-locations') # Define a new action
+    def _wrap_response(self, data, status_code=status.HTTP_200_OK, error=None):
+        """Consistent response wrapper."""
+        response_data = {"data": data} if data is not None else {"data": None}
+        if error:
+            response_data["error"] = error
+        return Response(response_data, status=status_code)
+
+    @action(detail=False, methods=['get'], url_path='map-locations')
     def map_locations(self, request):
-        """
-        Custom action to retrieve only latitude and longitude for map display.
-        URL will be: /api/thriftstores/map-locations/ (because detail=False)
-        """
-        queryset = self.queryset.values('latitude', 'longitude', 'shopid', 'shopname', 'formattedaddress', 'shortdescription') # Efficiently select lat/long, andshopid, and Shopname
-        return Response(list(queryset), status=status.HTTP_200_OK)
-    
-class UsersViewSet(viewsets.ModelViewSet):
-    queryset = Users.objects.all() #  Get all Notice objects
-    serializer_class = UsersSerializer # Use the NoticeSerializer
+        queryset = ThriftStores.objects.all()
+        serializer = ThriftStoreSerializer(queryset, many=True) # Use serializer for list
+        return self._wrap_response(serializer.data)
 
-    @action(detail=False, methods=['get'], url_path='get_user')
-    def get_user(self, request):
+
+class UsersViewSet(viewsets.ModelViewSet):
+    queryset = Users.objects.all()
+    serializer_class = UsersSerializer
+
+    def _wrap_response(self, data, status_code=status.HTTP_200_OK, error=None):
+        """Consistent response wrapper."""
+        response_data = {"data": data} if data is not None else {"data": None}
+        if error:
+            response_data["error"] = error
+        return Response(response_data, status=status_code)
+
+    @action(detail=False, methods=['get'], url_path='user') # Consistent URL path
+    def get_user_by_username(self, request): # More descriptive action name
         username = request.GET.get("username")
         user = Users.objects.filter(username=username).first()
 
         if user is None:
-            return Response({"error": "User not found"}, status=404)
+            return self._wrap_response(None, status_code=status.HTTP_404_NOT_FOUND, error="User not found")
 
-        return Response(UsersSerializer(user).data)
-    
-    @action(detail=False, methods=['get'], url_path='get_userid')
-    def get_userid(self, request):
+        serializer = UsersSerializer(user)
+        return self._wrap_response(serializer.data)
+
+    @action(detail=False, methods=['get'], url_path='user-id') # Consistent URL path
+    def get_user_by_id(self, request): # More descriptive action name
         userid = request.GET.get("userid")
         user = Users.objects.filter(userid=userid).first()
 
         if user is None:
-            return Response({"error": "User not found"}, status=404)
+            return self._wrap_response(None, status_code=status.HTTP_404_NOT_FOUND, error="User not found")
 
-        return Response(UsersSerializer(user).data)
-    
+        serializer = UsersSerializer(user)
+        return self._wrap_response(serializer.data)
+
 
 class FavoriteShopViewSet(viewsets.ModelViewSet):
-    queryset = FavoriteShop.objects.all() #  Get all Notice objects
-    serializer_class = FavoriteShopSerializer # Use the NoticeSerializer
+    queryset = FavoriteShop.objects.all()
+    serializer_class = FavoriteShopSerializer
 
-    @action(detail=False, methods=['get'], url_path='get_favorite_shops')
-    def get_favorite_shops(self, request):
+    def _wrap_response(self, data, status_code=status.HTTP_200_OK, error=None):
+        """Consistent response wrapper."""
+        response_data = {"data": data} if data is not None else {"data": None}
+        if error:
+            response_data["error"] = error
+        return Response(response_data, status=status_code)
+
+
+    @action(detail=False, methods=['get'], url_path='favorite-shops') # Consistent URL path
+    def get_favorite_shops_by_user(self, request): # More descriptive action name
         userid = request.GET.get("userid")
-
-        # Find all favorite shops for the given userid
         favorite_shops = FavoriteShop.objects.filter(userid=userid)
 
         if not favorite_shops.exists():
-            return Response({"error": "No favorite shops found for this user"}, status=404)
+            return self._wrap_response(None, status_code=status.HTTP_404_NOT_FOUND, error="No favorite shops found for this user")
 
-        # Extract all shop IDs from the favorites
-        shopid = favorite_shops.values_list('shopid', flat=True)
+        shop_ids = favorite_shops.values_list('shopid', flat=True)
+        shops = ThriftStores.objects.filter(shopid__in=shop_ids)
+        serializer = ThriftStoreSerializer(shops, many=True) # Use serializer for list
 
-        # Query the Shop table to get addresses
-        shops = ThriftStores.objects.filter(shopid__in=shopid).values('shopname', 'formattedaddress')
+        return self._wrap_response(serializer.data)
 
-        return Response(list(shops))
-    
-    @action(detail=False, methods=['delete'], url_path='delete_favorite_shop')
+    @action(detail=False, methods=['delete'], url_path='favorite-shop') # Consistent URL path
     def delete_favorite_shop(self, request):
         userid = request.GET.get("userid")
         shopid = request.GET.get("shopid")
 
-        # Try to find and delete the favorite shop entry
         deleted_count, _ = FavoriteShop.objects.filter(userid=userid, shopid=shopid).delete()
 
         if deleted_count == 0:
-            return Response({"error": "No matching favorite shop found"}, status=404)
+            return self._wrap_response(None, status_code=status.HTTP_404_NOT_FOUND, error="No matching favorite shop found")
 
-        return Response({"message": "Favorite shop deleted successfully"}, status=200)
+        return self._wrap_response({"message": "Favorite shop deleted successfully"}) # Data can be a dict or list
 
 class UsersReviewViewSet(viewsets.ModelViewSet):
     queryset = UsersReview.objects.all() #  Get all Notice objects

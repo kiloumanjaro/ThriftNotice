@@ -4,6 +4,8 @@ import flet.map as map
 import math
 import os
 import requests
+import json
+import hashlib
 
 class Maps(ft.View):
     def __init__(self, page: ft.Page):
@@ -15,7 +17,6 @@ class Maps(ft.View):
         fg='#98e2f6'
         wg='#f8f9ff'
         fg1='#5f82a6'
-        
 
         def is_within_radius(coord1, coord2, radius):  # Radius in meters
             lat1, lon1 = coord1
@@ -28,7 +29,7 @@ class Maps(ft.View):
 
             a = math.sin(delta_phi / 2) ** 2 + math.cos(phi1) * math.cos(phi2) * math.sin(delta_lambda / 2) ** 2
             c = 2 * math.atan2(math.sqrt(a), math.sqrt(1 - a))
-            
+
             distance = R * c  # Distance in meters
             return distance < radius  # Returns True if inside restricted radius
 
@@ -47,7 +48,7 @@ class Maps(ft.View):
                     ft.IconButton(ft.icons.SEARCH, on_click=self.toggle_search, icon_color=fg1),
                     ft.TextField(
                         hint_text=" Search",
-                        text_style=ft.TextStyle(size=14, color="gray"), 
+                        text_style=ft.TextStyle(size=14, color="gray"),
                         bgcolor="white",
                         border=None,
                         border_radius=25,
@@ -103,76 +104,121 @@ class Maps(ft.View):
         marker_layer_ref = ft.Ref[map.MarkerLayer]()
         self.marker_data = {}  # Dictionary to store marker id and coordinates
         self.marker_counter = 1  # Counter to assign unique IDs
+
         def get_initial_map_markers(e):
             """Fetches map markers from API, adds them to marker_layer."""
-            locations_api_url = os.getenv("LOCATIONS_API_URL") # API URL from environment
-            response = requests.get(locations_api_url) # Fetch data from API
+            locations_api_url = os.getenv("LOCATIONS_API_URL")  # API URL from environment
 
-            if response.status_code == 200: # API call successful
-                locations_data = response.json() # Parse JSON response
-                #print(f"Locations Data from API: {locations_data}") # Debug: print API data
+            stored_data_hash = self.page.session.get("db_state_hash") # Retrieve stored hash
+            stored_marker_layer = self.page.session.get("marker_layer") # Retrieve stored marker layer
 
-                # --- Ensure marker_layer_ref is valid ---
-                if marker_layer_ref.current is None: # Check if marker_layer_ref is initialized
+            if stored_data_hash and stored_marker_layer: # Check if both hash and marker layer are stored
+                print("Stored marker layer found. Checking database state...")
+                response = requests.get(locations_api_url) # Fetch current data to check hash
+                if response.status_code == 200:
+                    current_data_hash = hashlib.sha256(response.content).hexdigest()
+                    if current_data_hash == stored_data_hash:
+                        print("Database state unchanged, loading stored marker layer.")
+                        marker_layer_ref.current.markers = stored_marker_layer # Load stored marker layer
+                        marker_layer_ref.current.update()
+                        return # Skip API data fetch and marker creation
+                    else:
+                        print("Database state changed. Fetching new markers from API.")
+                else:
+                    print(f"Warning: Could not verify database state. Fetching new markers anyway. API error: {response.status_code}")
+
+
+            response = requests.get(locations_api_url)  # Fetch data from API if no stored layer or hash mismatch
+
+            if response.status_code == 200:  # API call successful
+                try:
+                    locations_data = response.json()  # Parse JSON response
+                    current_data_hash = hashlib.sha256(response.content).hexdigest() # Generate hash of the current data
+
+                except json.JSONDecodeError:
+                    print(f"Error decoding JSON from API response: {response.text}")
+                    print(f"Status code: {response.status_code}")
+                    return
+
+                except Exception as ex: # Catch other potential errors during API processing
+                    print(f"An error occurred during API processing: {ex}")
+                    return
+
+                print(f"Locations Data from API: {locations_data}")
+                print(f"Type of locations_data: {type(locations_data)}")
+
+                if marker_layer_ref.current is None:
                     print("Error: marker_layer_ref.current is None. Map init issue.")
                     return
-                if not hasattr(marker_layer_ref.current, 'markers'): # Check if markers list exists
+                if not hasattr(marker_layer_ref.current, 'markers'):
                     print("Error: marker_layer_ref.current.markers not initialized.")
                     return
 
-                marker_layer_ref.current.markers.clear() # Clear existing markers on map
+                marker_layer_ref.current.markers.clear()  # Clear existing markers
+                new_markers = [] # List to hold newly created markers
 
-                for location in locations_data: # Loop through API locations
-                    latitude = location.get('latitude') # Get latitude, handle missing key
-                    longitude = location.get('longitude') # Get longitude, handle missing key
-                    shopname = (str(location.get('shopname'))).split(' ')[0] # Get shopname
+                if isinstance(locations_data, dict) and 'data' in locations_data:
+                    location_list = locations_data.get('data')
+                    if isinstance(location_list, list):
+                        for location in location_list:
+                            if isinstance(location, dict):
+                                latitude = location.get('latitude')
+                                longitude = location.get('longitude')
+                                shopname = (str(location.get('shopname', ''))).split(' ')[0]
 
-                    if latitude is not None and longitude is not None: # Check for valid coordinates
-                        try:
-                            latitude = float(latitude) # Convert latitude to float
-                            longitude = float(longitude) # Convert longitude to float
-                            marker = map.Marker( # Create a new map marker
-                                content=ft.Stack(
-                                    [
-                                        ft.Container( # Container for text to control width and offset
-                                            ft.Text(shopname, style=ft.TextThemeStyle.BODY_SMALL, no_wrap=True), # Shop name text, no wrap
-                                            alignment=ft.alignment.top_center, # Align text to top center
-                                        ),
-                                        ft.Container( # Container for icon to position below text
-                                            content=ft.Icon(ft.icons.LOCATION_ON, color=ft.CupertinoColors.DESTRUCTIVE_RED, size=25), # Marker style, corrected CupertinoColors
-                                            alignment=ft.alignment.center, # Align icon to bottom center
-                                        ),
-                                    ],
-                                ),
-                                height=50, # Adjust height as needed
-                                width=75, # Adjust width as needed
-                                alignment=ft.alignment.top_center, # Ensure marker aligns from top-center
-                                coordinates=map.MapLatitudeLongitude(latitude, longitude), # Set marker coordinates
-                                data={'shopid' : location['shopid'], 'shopname' : location['shopname'], 'formattedaddress' : location['formattedaddress'], 'shortdescription' : location['shortdescription']} # Store shop ID in marker data
-                            )
-                            marker_layer_ref.current.markers.append(marker) # Add marker to marker layer
+                                if latitude is not None and longitude is not None:
+                                    try:
+                                        latitude = float(latitude)
+                                        longitude = float(longitude)
+                                        marker = map.Marker(
+                                            content=ft.Stack(
+                                                [
+                                                    ft.Container(  # Container for text to control width and offset
+                                                        ft.Text(shopname, style=ft.TextThemeStyle.BODY_SMALL, no_wrap=True),  # Shop name text, no wrap
+                                                        alignment=ft.alignment.top_center,  # Align text to top center
+                                                    ),
+                                                    ft.Container(  # Container for icon to position below text
+                                                        content=ft.Icon(ft.icons.LOCATION_ON, color=ft.CupertinoColors.DESTRUCTIVE_RED, size=25),  # Marker style, corrected CupertinoColors
+                                                        alignment=ft.alignment.center,  # Align icon to bottom center
+                                                    ),
+                                                ],
+                                            ),
+                                            height=50,  # Adjust height as needed
+                                            width=75,  # Adjust width as needed
+                                            alignment=ft.alignment.top_center,  # Ensure marker aligns from top-center
+                                            coordinates=map.MapLatitudeLongitude(latitude, longitude),  # Set marker coordinates
+                                            data={'shopid': location.get('shopid'), 'shopname': location.get('shopname'), 'formattedaddress': location.get('formattedaddress'), 'shortdescription': location.get('shortdescription')}  # Store shop ID in marker data
+                                        )
+                                        new_markers.append(marker) # Append new marker to the list
 
-                        except (ValueError, TypeError) as e: # Handle coordinate conversion errors
-                            print(f"Error: Invalid coords for shop {location.get('shopid')}: {e}")
-                    else: # Skip location with missing coordinates
-                        print(f"Skipping shop {location.get('shopid')}: Missing lat/long.")
+                                    except (ValueError, TypeError) as e:
+                                        print(f"Error: Invalid coords for shop {location.get('shopid')}: {e}")
+                                else:
+                                    print(f"Skipping shop {location.get('shopid')}: Missing lat/long for shop {location.get('shopid')}")
+                            else:
+                                print(f"Warning: Location data item is not a dictionary: {location}")
+                    else:
+                        print(f"Warning: locations_data['data'] is not a list as expected: {location_list}")
 
-                marker_layer_ref.current.update() # Update map to show markers
-                #print("Initial map markers loaded using marker_layer_ref.") # Confirmation msg
+                else:
+                    print(f"Warning: locations_data is not a dictionary with 'data' key, or not a dictionary at all: {locations_data}")
 
-            else: # API call failed
-                print(f"Error fetching map locations: {response.status_code} - {response.text}") # API error info
-                                                    
+                marker_layer_ref.current.markers.extend(new_markers) # Extend the marker layer with the new markers
+                self.page.session.set("marker_layer", marker_layer_ref.current.markers) # Store the marker layer in session
+                self.page.session.set("db_state_hash", current_data_hash) # Update hash
+                marker_layer_ref.current.update()
+
+            else:
+                print(f"Error fetching map locations: {response.status_code} - {response.text}")
+
         def handle_tap(e: map.MapTapEvent):
             coordinates = (e.coordinates.latitude, e.coordinates.longitude)
 
-            # Check if the tapped location is near an existing marker
             for marker in marker_layer_ref.current.markers:
                 marker_coords = (marker.coordinates.latitude, marker.coordinates.longitude)
 
-                if is_within_radius(marker_coords, coordinates, radius=30):  # Use radius for easier detection
+                if is_within_radius(marker_coords, coordinates, radius=30):
 
-                    # Reset all markers to default size
                     for m in marker_layer_ref.current.markers:
                         m.content = ft.Stack(
                             [
@@ -186,73 +232,39 @@ class Maps(ft.View):
                                 ),
                             ],
                         )
-                    # Enlarge the selected marker
                     marker.content = ft.Icon(ft.icons.LOCATION_ON, color="blue", size=40)
                     marker_layer_ref.current.update()
 
                     cebu.center_on(map.MapLatitudeLongitude((marker.coordinates.latitude) * 0.999763, (marker.coordinates.longitude)), zoom=16.6)
 
-                    self.open_bottom_sheet(e, marker.data) # This should deliver the data from the marker, which shall be used to update the informatio in the bottom sheet.
+                    self.open_bottom_sheet(e, marker.data)
                     return
 
-            # Prevent placing a new marker if it's too close to an existing one
             for marker_id, coord in self.marker_data.items():
                 if is_within_radius(coord, coordinates, radius=30):
                     print(f"Too close to marker ID {marker_id}, cannot place here!")
                     return
 
-            # Assign a unique ID and store the new marker
-            marker_id = self.marker_counter
-            self.marker_counter += 1
-            self.marker_data[marker_id] = coordinates
-
-            
-            # Add new marker
-            marker_layer_ref.current.markers.append(
-                map.Marker(
-                    content=ft.Icon(ft.icons.LOCATION_ON, color=ft.cupertino_colors.DESTRUCTIVE_RED, size=25),
-                    coordinates=e.coordinates,
-                    data={'shopname': 'New Marker'} # Add a default shopname for new markers
-                )
-            )
-            marker_layer_ref.current.update()
-
-            print(f"Added marker ID: {marker_id} at {coordinates}")  
-            
 
         cebu = map.Map(
             expand=True,
             initial_zoom=14.5,
-            initial_center=map.MapLatitudeLongitude(10.3055, 123.8938), 
+            initial_center=map.MapLatitudeLongitude(10.3055, 123.8938),
             interaction_configuration=map.MapInteractionConfiguration(
                 flags=map.MapInteractiveFlag.ALL
             ),
-            # on_init=lambda e: (print(f"Initialized Map"), get_initial_map_markers),
             on_init=get_initial_map_markers,
             on_tap=handle_tap,
             on_secondary_tap=handle_tap,
             on_long_press=handle_tap,
             layers=[
                 map.TileLayer(
-                    url_template="https://tile.openstreetmap.org/{z}/{x}/{y}.png", 
+                    url_template="https://tile.openstreetmap.org/{z}/{x}/{y}.png",
                     on_image_error=lambda e: print("TileLayer Error"),
                 ),
                 map.MarkerLayer(
                     ref=marker_layer_ref,
-                    markers=[
-                        map.Marker(
-                            content=ft.Icon(ft.Icons.LOCATION_ON),
-                            coordinates=map.MapLatitudeLongitude(30, 15),
-                        ),
-                        map.Marker(
-                            content=ft.Icon(ft.Icons.LOCATION_ON),
-                            coordinates=map.MapLatitudeLongitude(10, 10),
-                        ),
-                        map.Marker(
-                            content=ft.Icon(ft.Icons.LOCATION_ON),
-                            coordinates=map.MapLatitudeLongitude(25, 45),
-                        ),
-                    ],
+                    markers=[], # Markers are now loaded dynamically
                 ),
             ]
         )
@@ -274,34 +286,33 @@ class Maps(ft.View):
                     ft.Container(
                         bgcolor=ft.colors.with_opacity(0.8, "#ececec"),
                         border_radius=ft.border_radius.only(top_left=18, top_right=18, bottom_left=18, bottom_right=18),
-                        border=ft.border.all(0.5, "#b6b6b6"), 
-                            content=ft.Container(
+                        border=ft.border.all(0.5, "#b6b6b6"),
+                        content=ft.Container(
                             margin=ft.margin.only(right=5, left=5, top=5, bottom=5),
                             border=ft.border.all(1, "#c9c9c9"),
                             width=320,  # Slightly bigger than map container
                             height=543,
                             border_radius=13,  # Ensures a rounded border
-                            #bgcolor=ft.colors.BLACK,  # Border color
                             padding=1,  # Space for border thickness
-                                content=ft.Container(
+                            content=ft.Container(
                                 content=cebu,
                                 width=580,
                                 height=541,
                                 border_radius=10,  # Ensures rounded corners inside
-                                clip_behavior=ft.ClipBehavior.HARD_EDGE,  # Ensures map stays within rounded shape     
-                                )
+                                clip_behavior=ft.ClipBehavior.HARD_EDGE,  # Ensures map stays within rounded shape
                             )
+                        )
                     )
                 ]
             ),
             on_click=self.close_search,  # Detect clicks outside search bar
         )
- 
-        self.page_1 = ft.Container( 
+
+        self.page_1 = ft.Container(
             bgcolor=bg,
             border_radius=0,
             padding=ft.padding.only(left=50, top=60, right=150),
-            content=ft.Column(  
+            content=ft.Column(
                 controls=[
                     circle,
                     ft.Divider(height=10, color="transparent"),
@@ -321,7 +332,7 @@ class Maps(ft.View):
                         text="Assistant",
                         icon=ft.icons.AUTO_AWESOME_OUTLINED,
                         on_click=lambda e: self.page.go("/ai"),
-                        
+
                         style=ft.ButtonStyle(
                             color=wg,
                             icon_color=wg,
@@ -358,7 +369,7 @@ class Maps(ft.View):
                             padding=ft.padding.all(10)
                         )
                     ),
-                    
+
                     ft.Divider(height=20, color="transparent"),
                     ft.TextButton(
                         text="Sign Out",
@@ -395,15 +406,15 @@ class Maps(ft.View):
                 )
             ]
         )
-        self.initialize() 
+        self.initialize()
 
     def initialize(self):
         self.controls = [
             self.display_map_container(),
-        ]   
+        ]
 
     def open_bottom_sheet(self, e, marker_data):
-        self.bottom_sheet.show(marker_data) # Pass marker_data to the modified show method
+        self.bottom_sheet.show(marker_data)  # Pass marker_data to the modified show method
 
     def close_bottom_sheet(self, e):
         self.bottom_sheet.hide()
@@ -453,7 +464,7 @@ class Maps(ft.View):
             self.bottom_sheet.hide()
             self.page_2.update()
             self.is_shrunk = True  # Mark as shrunk
-    
+
     def restore(self, e):
         self.page_2.controls[0].width = 375
         self.page_2.controls[0].scale = ft.transform.Scale(
@@ -475,9 +486,9 @@ class Maps(ft.View):
 
     def display_map_container(self):
         return ft.Container(
-            expand=True, 
-            bgcolor='green', 
-            border_radius=0, 
+            expand=True,
+            bgcolor='green',
+            border_radius=0,
             content=ft.Stack(
                 expand=True,
                 controls=[
@@ -486,5 +497,3 @@ class Maps(ft.View):
                 ]
             )
         )
-
-

@@ -2,6 +2,7 @@ import flet as ft
 import requests
 from dotenv import load_dotenv
 import os
+import json # Import json module for JSONDecodeError
 
 load_dotenv()
 
@@ -14,12 +15,12 @@ class Favorite(ft.View):
         self.fg1 = '#5f82a6'
         self.bg1 = '#323232'
         self.page = page
-        self.shop_container = self.create_shop()
+        self.shop_container = self.create_shop_container() # Renamed to create_shop_container
         self.initialize()
         self.bgcolor = self.bg
 
     def initialize(self):
-        self.controls = [self.display_shop_container()]
+        self.controls = [self.display_view()] # Renamed to display_view
 
     def go_back_to_maps(self, e):
         self.page.go("/maps")
@@ -36,7 +37,7 @@ class Favorite(ft.View):
 
         details_container.bgcolor = new_bgcolor
         shop_item.bgcolor = new_bgcolor
-        shop_header.bgcolor = new_bgcolor  
+        shop_header.bgcolor = new_bgcolor
 
         # Update the shop text color
         shop_text.color = text_color
@@ -46,7 +47,7 @@ class Favorite(ft.View):
 
     def create_toggle_button(self, details_container, shop_item, shop_header, shop_text):
         icon_button = ft.IconButton(
-            icon=ft.icons.ARROW_DROP_UP,  
+            icon=ft.icons.ARROW_DROP_UP,
             icon_color="white",
             style=ft.ButtonStyle(
                 bgcolor="transparent",
@@ -60,130 +61,173 @@ class Favorite(ft.View):
         icon_button.on_click = toggle_details_handler
         return icon_button
 
-    def create_shop(self):
+    def fetch_favorite_shops(self): # Separated API call to fetch_favorite_shops
+        favorite_shop_url = os.getenv("FAVORITE_API_URL")
+        if not favorite_shop_url:
+            print("Error: FAVORITE_API_URL environment variable is not set for fetching favorites.") # Debug: missing env var
+            return None
+
+        try:
+            print(f"Fetching favorite shops for user ID: {self.page.session.get("userid")}...") # Debug: log fetch attempt
+            # Corrected URL path to /api/favoriteshop/favorite-shops/
+            favorite_response = requests.get(f"{favorite_shop_url}favorite-shops/?userid={self.page.session.get("userid")}")
+            favorite_response.raise_for_status() # Raise HTTPError for bad responses
+            response_data = favorite_response.json() # Capture json data
+            print(f"API Response Data: {response_data}") # Debug: API response
+
+            if not isinstance(response_data, dict) or 'data' not in response_data or not isinstance(response_data['data'], list):
+                print("Warning: Invalid API response format or missing 'data' key.") # Debug: data validation warning
+                return None
+
+            return response_data['data'] # Return the list of favorite shops
+
+        except requests.exceptions.RequestException as e:
+            print(f"Request exception during favorite shops fetch: {e}") # Debug: request exception
+            return None
+        except json.JSONDecodeError as e: # Handle JSONDecodeError
+            print(f"JSON decode error during favorite shops fetch: {e}") # Debug: JSON decode error
+            return None
+        except Exception as e: # Catch any other exceptions
+            print(f"An unexpected error occurred during favorite shops fetch: {e}") # Debug: unexpected error
+            return None
+
+    def create_shop_item_ui(self, favorite_shop, index): # Encapsulated UI creation for shop item
+        shop_address = favorite_shop.get("formattedaddress", "N/A") # Use .get() with default
+        shop_name = favorite_shop.get("shopname", f"Shop {index + 1}") # Use .get() with default
+
+        details_container = ft.Container(
+            visible=False,
+            content=ft.Column(
+                controls=[
+                    ft.Text(shop_address, size=12, color="black", italic=True),
+                ],
+            ),
+            padding=ft.padding.only(left=15, right=20, top=0, bottom=15),
+            bgcolor=self.bg1,
+            border_radius=5
+        )
+
+        shop_item = ft.Container(
+            bgcolor=self.bg1,
+            border_radius=10,
+            padding=ft.padding.symmetric(vertical=3, horizontal=10),
+            margin=ft.margin.symmetric(vertical=3, horizontal=15),
+        )
+
+        shop_header = ft.Container(
+            height=40,
+            bgcolor=self.bg1,
+            border_radius=8,
+            padding=ft.padding.only(left=15, right=3, top=3, bottom=3),
+        )
+
+        # Shop title text (so we can modify its color dynamically)
+        shop_text = ft.Text(f"{index+1}. {shop_name}", size=13, color="white")
+
+        # Create toggle button with updated reference
+        icon_button = self.create_toggle_button(details_container, shop_item, shop_header, shop_text)
+
+        shop_header.content = ft.Row(
+            controls=[
+                shop_text, # Forces text to the left
+                ft.Container(
+                    content=icon_button,
+                    alignment=ft.alignment.center_right, # Ensures button is fully to the right
+                ),
+            ],
+            alignment="spaceBetween",
+        )
+
+        shop_item.content = ft.Column(
+            controls=[
+                shop_header,
+                details_container,
+            ],
+            spacing=0,
+        )
+        return shop_item
+
+    def create_shop_container(self): # Renamed and refactored create_shop to create_shop_container
         container = ft.Container(
             expand=True,
             padding=ft.padding.symmetric(horizontal=0),
-            content=ft.Column(expand=True, scroll="always", controls=[]),  # Ensure scrollbar is always visibl
+            content=ft.Column(expand=True, scroll="always", controls=[]),  # Ensure scrollbar is always visible
         )
-        favorite_shop_url = os.getenv("FAVORITE_API_URL")
-        favorite_response = requests.get(f"{favorite_shop_url}get_favorite_shops/?userid={self.page.session.get("userid")}")
 
-        if favorite_response.status_code == 200:
-            print("Accessed")
-            favorite_data = favorite_response.json()
-            i = 0
-            for favorite_shops in favorite_data:
-                shop_address = favorite_shops["formattedaddress"]
-                details_container = ft.Container(
-                    visible=False,
-                    content=ft.Column(
-                        controls=[
-                            ft.Text(shop_address, size=12, color="black", italic=True),
-                        ],
-                    ),
-                    padding=ft.padding.only(left=15, right=20, top=0, bottom=15),
-                    bgcolor=self.bg1,
-                    border_radius=5
-                )
+        favorite_data = self.fetch_favorite_shops() # Fetch favorite shops using the new method
 
-                shop_item = ft.Container(
-                    bgcolor=self.bg1,
-                    border_radius=10,
-                    padding=ft.padding.symmetric(vertical=3, horizontal=10),
-                    margin=ft.margin.symmetric(vertical=3, horizontal=15),
-                )
-
-                shop_header = ft.Container(
-                    height=40,
-                    bgcolor=self.bg1,  
-                    border_radius=8,
-                    padding=ft.padding.only(left=15, right=3, top=3, bottom=3),
-                )
-
-                # Shop title text (so we can modify its color dynamically)
-                shop_text = ft.Text(f"{i+1}. {favorite_shops["shopname"]}", size=13, color="white")
-                i+=1
-                # Create toggle button with updated reference
-                icon_button = self.create_toggle_button(details_container, shop_item, shop_header, shop_text)
-
-                shop_header.content = ft.Row(
-                    controls=[
-                        shop_text,  # Forces text to the left
-                        ft.Container(
-                            content=icon_button,
-                            alignment=ft.alignment.center_right,  # Ensures button is fully to the right
-                        ),
-                    ],
-                    alignment="spaceBetween",
-                )
-
-                shop_item.content = ft.Column(
-                    controls=[
-                        shop_header,  
-                        details_container,
-                    ],
-                    spacing=0,
-                )
-
-                container.content.controls.append(shop_item)
+        if favorite_data and isinstance(favorite_data, list): # Check if data is valid and is a list
+            print("Favorite shops data fetched successfully!") # Debug: success message
+            if not favorite_data: # Check if favorite_data list is empty
+                container.content.controls.extend([self.create_placeholder_item_ui(i) for i in range(4)]) # Display placeholders if no favorites
+            else:
+                for i, favorite_shop in enumerate(favorite_data): # Iterate through valid data
+                    if isinstance(favorite_shop, dict): # Validate each item is a dict
+                        shop_item = self.create_shop_item_ui(favorite_shop, i) # Create shop item UI
+                        container.content.controls.append(shop_item) # Append to container
+                    else:
+                        print(f"Warning: favorite_shop item is not a dictionary: {favorite_shop}") # Debug: non-dict shop_item
         else:
-            for i in range(4):
-                details_container = ft.Container(
-                    visible=False,
-                    content=ft.Column(
-                        controls=[
-                            ft.Text("Add a favorite shop first!", size=12, color="black", italic=True),
-                        ],
-                    ),
-                    padding=ft.padding.only(left=15, right=20, top=0, bottom=15),
-                    bgcolor=self.bg1,
-                    border_radius=5
-                )
+            print("Warning: No favorite shops data fetched or invalid data format.") # Debug: no data or invalid format
+            container.content.controls.extend([self.create_placeholder_item_ui(i) for i in range(4)]) # Display placeholders if fetch fails or data is invalid
 
-                shop_item = ft.Container(
-                    bgcolor=self.bg1,
-                    border_radius=10,
-                    padding=ft.padding.symmetric(vertical=3, horizontal=10),
-                    margin=ft.margin.symmetric(vertical=3, horizontal=15),
-                )
-
-                shop_header = ft.Container(
-                    height=40,
-                    bgcolor=self.bg1,  
-                    border_radius=8,
-                    padding=ft.padding.only(left=15, right=3, top=3, bottom=3),
-                )
-
-                # Shop title text (so we can modify its color dynamically)
-                shop_text = ft.Text(f"Shop {i+1}", size=13, color="white")
-        
-                # Create toggle button with updated reference
-                icon_button = self.create_toggle_button(details_container, shop_item, shop_header, shop_text)
-
-                shop_header.content = ft.Row(
-                    controls=[
-                        shop_text,  # Forces text to the left
-                        ft.Container(
-                            content=icon_button,
-                            alignment=ft.alignment.center_right,  # Ensures button is fully to the right
-                        ),
-                    ],
-                    alignment="spaceBetween",
-                )
-
-                shop_item.content = ft.Column(
-                    controls=[
-                        shop_header,  
-                        details_container,
-                    ],
-                    spacing=0,
-                )
-
-                container.content.controls.append(shop_item)
-                
         return container
-    def display_shop_container(self):
+
+    def create_placeholder_item_ui(self, index): # Encapsulated placeholder UI creation
+        details_container = ft.Container(
+            visible=False,
+            content=ft.Column(
+                controls=[
+                    ft.Text("Add a favorite shop first!", size=12, color="black", italic=True),
+                ],
+            ),
+            padding=ft.padding.only(left=15, right=20, top=0, bottom=15),
+            bgcolor=self.bg1,
+            border_radius=5
+        )
+
+        shop_item = ft.Container(
+            bgcolor=self.bg1,
+            border_radius=10,
+            padding=ft.padding.symmetric(vertical=3, horizontal=10),
+            margin=ft.margin.symmetric(vertical=3, horizontal=15),
+        )
+
+        shop_header = ft.Container(
+            height=40,
+            bgcolor=self.bg1,
+            border_radius=8,
+            padding=ft.padding.only(left=15, right=3, top=3, bottom=3),
+        )
+
+        # Shop title text (so we can modify its color dynamically)
+        shop_text = ft.Text(f"Shop {index+1}", size=13, color="white")
+
+        # Create toggle button with updated reference
+        icon_button = self.create_toggle_button(details_container, shop_item, shop_header, shop_text)
+
+        shop_header.content = ft.Row(
+            controls=[
+                shop_text, # Forces text to the left
+                ft.Container(
+                    content=icon_button,
+                    alignment=ft.alignment.center_right, # Ensures button is fully to the right
+                ),
+            ],
+            alignment="spaceBetween",
+        )
+
+        shop_item.content = ft.Column(
+            controls=[
+                shop_header,
+                details_container,
+            ],
+            spacing=0,
+        )
+        return shop_item
+
+
+    def display_view(self): # Renamed display_shop_container to display_view
         return ft.Column(
             height=700,
             scroll="auto",  # Allow scrolling for this section
@@ -214,14 +258,14 @@ class Favorite(ft.View):
                     content=ft.Icon(ft.icons.STORE, color="white", size=180)  # Large favorite icon
                 ),
                 ft.Container(
-                    height=323,  
+                    height=323,
                     content=ft.Stack(
                         expand=True,
                         controls=[
-                            self.shop_container,  
+                            self.shop_container,
                             # Floating Action Button
                             ft.FloatingActionButton(
-                                
+
                                 bottom=2, right=20,
                                 icon=ft.icons.ADD,
                                 on_click=lambda e: self.page.go("/maps"),
