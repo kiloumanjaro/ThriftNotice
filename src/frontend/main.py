@@ -107,4 +107,9 @@ class Uri:
         return Uri(route)
 
 
-ft.app(main)
+try:
+    print("Launching app...")
+    ft.app(target=main)
+except Exception as e:
+    print("Startup error:", e)
+    input("Press Enter to exit...")
