@@ -1,23 +1,6 @@
-<!-- Improved compatibility of back to top link: See: https://github.com/othneildrew/Best-README-Template/pull/73 -->
+<h1 align="center">Thrift Notice 💸</h1>
 <a id="readme-top"></a>
-<!--
-*** Thanks for checking out the Best-README-Template. If you have a suggestion
-*** that would make this better, please fork the repo and create a pull request
-*** or simply open an issue with the tag "enhancement".
-*** Don't forget to give the project a star!
-*** Thanks again! Now go create something AMAZING! :D
--->
 
-
-
-<!-- PROJECT SHIELDS -->
-<!--
-*** I'm using markdown "reference style" links for readability.
-*** Reference links are enclosed in brackets [ ] instead of parentheses ( ).
-*** See the bottom of this document for the declaration of the reference variables
-*** for contributors-url, forks-url, etc. This is an optional, concise syntax you may use.
-*** https://www.markdownguide.org/basic-syntax/#reference-style-links
--->
 [![Contributors][contributors-shield]][contributors-url]
 [![Forks][forks-shield]][forks-url]
 [![Stargazers][stars-shield]][stars-url]
@@ -25,142 +8,156 @@
 [![project_license][license-shield]][license-url]
 [![LinkedIn][linkedin-shield]][linkedin-url]
 
-
-
 <!-- PROJECT LOGO -->
-<br />
 <div align="center">
   <a href="https://github.com/kiloumanjaro/ThriftNotice">
-    <img src="images/logo.png" alt="Logo" width="80" height="80">
+    <img src="images/logo.png" alt="Logo" width="200" height="200">
   </a>
-
-<h3 align="center">Thrift Notice</h3>
-
+  <br />
   <p align="center">
+    <br />
     This is your notice to start thrifting!
     <br />
-    <a href="https://github.com/kiloumanjaro/ThriftNotice"><strong>Explore the docs»</strong></a>
-    <br /> <!--TO DO: Google Docs of Rationale, Scope, etc.-->
     <br />
-    <a href="https://github.com/kiloumanjaro/ThriftNotice">View Demo</a>
-    &middot; <!--TO DO: Demo-->
+    <p align="center">
+      <a href="#"><img alt="Status" src="https://img.shields.io/badge/status-Beta-yellow?style=flat&color=yellow" /></a>
+      <a href="https://www.figma.com/file/ViBW8GbUgkTMmK6a80h8X1/Read-You?node-id=7028%3A23673"><img alt="Figma" src="https://img.shields.io/badge/Figma-ThriftNotice-FE5196?logo=figma&style=flat" /></a>
+      <a href="https://www.python.org"><img alt="Python Versions" src="https://img.shields.io/badge/python-3.12%2B-blue?logo=python&logoColor=white" /></a>
+      <a href="https://github.com/kiloumanjaro/ThriftNotice/commits/main"><img alt="Last commit" src="https://proxy.cyb3rko.de/shields/github/last-commit/cyb3rko/flashdim?color=coral&logo=git&logoColor=white"/</a>
+    </p>
     <a href="https://github.com/kiloumanjaro/ThriftNotice/issues/new?labels=bug&template=bug-report---.md">Report Bug</a>
-    &middot; <!--TO DO: Add Bug and Issue Template for Original Repo-->
+    &middot;
     <a href="https://github.com/kiloumanjaro/ThriftNotice/issues/new?labels=enhancement&template=feature-request---.md">Request Feature</a>
   </p>
 </div>
-
-
 
 <!-- TABLE OF CONTENTS -->
 <details>
   <summary>Table of Contents</summary>
   <ol>
     <li>
-      <a href="#about-the-project">About The Project</a>
+      <a href="#%EF%B8%8F-project-overview">🗺️ Project Overview</a>
       <ul>
-        <li><a href="#built-with">Built With</a></li>
+        <li><a href="#-built-with">📚 Built With</a></li>
       </ul>
     </li>
+    <li><a href="#-screenshots">📱 Screenshots</a></li>
     <li>
-      <a href="#getting-started">Getting Started</a>
+      <a href="#-getting-started">💻 Getting Started</a>
       <ul>
-        <li><a href="#prerequisites">Prerequisites</a></li>
-        <li><a href="#installation">Installation</a></li>
+        <li><a href="#-prerequisites">🔧 Prerequisites</a></li>
+        <li><a href="#%EF%B8%8F-installation">🛠️ Installation</a></li>
+        <li><a href="#%EF%B8%8F-running-the-application">▶️ Running the Application</a></li>
       </ul>
     </li>
-    <li><a href="#usage">Usage</a></li>
-    <li><a href="#roadmap">Roadmap</a></li>
-    <li><a href="#contributing">Contributing</a></li>
-    <li><a href="#license">License</a></li>
-    <li><a href="#contact">Contact</a></li>
-    <li><a href="#acknowledgments">Acknowledgments</a></li>
+    <li><a href="#-notes">📝 Notes</a></li>
+    <li><a href="#-contributing">📬 Contributing</a></li>
+    <li><a href="#%EF%B8%8F-license">⚖️ License</a></li>
   </ol>
 </details>
 
-
-
-<!-- ABOUT THE PROJECT -->
-## About The Project
+<!-- PROJECT OVERVIEW -->
+## 🗺️ Project Overview
 
 This project aims to develop an application that locates ukay-ukay/pop-ups by retrieving relevant location details from Google's API, and display them in a map using a geocoding API. It also uses AI to summarize reviews and match a user to a shop depending on their preference on certain categories related to thrifting.
 
-### Built With
+### 📚 Built With
 
-* [![Python][Python]][Python-url]
-* [![Django][Django]][Django-url]
-* [![Supabase][Supabase]][Supabase-url]
+[![Python][Python]][Python-url]
+[![Django][Django]][Django-url]
+[![Supabase][Supabase]][Supabase-url]
 
-
-<!-- GETTING STARTED -->
-<!--TO DO: Add Installation Instructions-->
-## Getting Started
-
-This is an example of how you may give instructions on setting up your project locally.
-To get a local copy up and running follow these simple example steps.
-
-### Prerequisites
-
-This is an example of how to list things you need to use the software and how to install them.
-* npm
-  ```sh
-  npm install npm@latest -g
-  ```
-
-### Installation
-
-1. Get a free API Key at [https://example.com](https://example.com)
-2. Clone the repo
-   ```sh
-   git clone https://github.com/kiloumanjaro/ThriftNotice.git
-   ```
-3. Install NPM packages
-   ```sh
-   npm install
-   ```
-4. Enter your API in `config.js`
-   ```js
-   const API_KEY = 'ENTER YOUR API';
-   ```
-5. Change git remote url to avoid accidental pushes to base project
-   ```sh
-   git remote set-url origin kiloumanjaro/ThriftNotice
-   git remote -v # confirm the changes
-   ```
-
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
-
-
-
-<!-- USAGE EXAMPLES -->
-## Usage
+<!-- SCREENSHOTS -->
+## 📱 Screenshots & Features
 
 Use this space to show useful examples of how a project can be used. Additional screenshots, code examples and demos work well in this space. You may also link to more resources.
 
 _For more examples, please refer to the [Documentation](https://example.com)_
 
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
+<!-- GETTING STARTED -->
+## 💻 Getting Started
+
+Follow these steps to get ThriftNotice running on your local machine.
+
+### 🔧 Prerequisites
+
+- Python 3.12 or higher
+- Poetry (Python package manager)
+- Git
 
 
+### 🛠️ Installation
 
-<!-- ROADMAP -->
-## Roadmap
+#### 1. Clone the Repository
+```sh
+git clone https://github.com/kiloumanjaro/ThriftNotice.git
+cd ThriftNotice
+```
 
-- [ ] Feature 1
-- [ ] Feature 2
-- [ ] Feature 3
-    - [ ] Nested Feature
+#### 2. Install Dependencies with Poetry
+```sh
+# Install project dependencies
+poetry install
+```
 
-See the [open issues](https://github.com/kiloumanjaro/ThriftNotice/issues) for a full list of proposed features (and known issues).
+#### 3. Environment Setup
+```bash
+# Copy the environment template
+cp .env.example .env
+```
 
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
+Edit the `.env` file with your configuration (API keys, database URL, etc.)
 
+#### 4. Database Setup
+
+Create and activate a virtual environment:
+```sh
+# Create a virtual environment named "backend"
+python -m venv backend
+
+# On Windows:
+backend\\Scripts\\activate
+
+# On macOS/Linux:
+source backend/bin/activate
+```
+
+Install backend dependencies:
+```sh
+pip install -r requirements.txt
+```
+
+Apply database migrations:
+```sh
+cd backend
+python manage.py migrate
+cd ..
+```
+
+### ▶️ Running the Application
+
+#### Run the Frontend
+```sh
+cd frontend
+poetry run flet run
+```
+
+#### Run the Backend
+In a new terminal (or after stopping the frontend):
+```sh
+cd backend
+python manage.py runserver
+```
+
+## 📝 Notes
+
+- Make sure to run the backend and frontend in separate terminal windows if you want both running simultaneously
+- The backend server typically runs on `http://127.0.0.1:8000/`
+- Ensure your `.env` file is properly configured before running the application
 
 
 <!-- CONTRIBUTING -->
-## Contributing
-
-Contributions are what make the open source community such an amazing place to learn, inspire, and create. Any contributions you make are **greatly appreciated**.
+## 📬 Contributing
 
 If you have a suggestion that would make this better, please fork the repo and create a pull request. You can also simply open an issue with the tag "enhancement".
 Don't forget to give the project a star! Thanks again!
@@ -171,9 +168,7 @@ Don't forget to give the project a star! Thanks again!
 4. Push to the Branch (`git push origin feature/AmazingFeature`)
 5. Open a Pull Request
 
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
-
-### Top contributors:
+### 📢 Contributors
 
 <a href="https://github.com/kiloumanjaro/ThriftNotice/graphs/contributors">
   <img src="https://contrib.rocks/image?repo=kiloumanjaro/ThriftNotice" alt="contrib.rocks image" />
@@ -182,35 +177,9 @@ Don't forget to give the project a star! Thanks again!
 
 
 <!-- LICENSE -->
-## License
+## ⚖️ License
 
 Distributed under the project_license. See `LICENSE.txt` for more information.
-
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
-
-
-
-<!-- CONTACT -->
-## Contact
-
-Your Name - [@twitter_handle](https://twitter.com/twitter_handle) - email@email_client.com
-
-Project Link: [https://github.com/kiloumanjaro/ThriftNotice](https://github.com/kiloumanjaro/ThriftNotice)
-
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
-
-
-
-<!-- ACKNOWLEDGMENTS -->
-## Acknowledgments
-
-* []()
-* []()
-* []()
-
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
-
-
 
 <!-- MARKDOWN LINKS & IMAGES -->
 <!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
