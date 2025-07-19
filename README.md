@@ -72,19 +72,19 @@ This project aims to develop an application that locates ukay-ukay/pop-ups by re
 
 ## 📱 Screenshots & Features
 <div align="center">
-  <img src="https://raw.githubusercontent.com/kiloumanjaro/ThriftNotice/main/images/screenshots/startup.png" width="19.2%" alt="startup" />
-  <img src="https://raw.githubusercontent.com/kiloumanjaro/ThriftNotice/main/images/screenshots/assist.png" width="19.2%" alt="assist" />
-  <img src="https://raw.githubusercontent.com/kiloumanjaro/ThriftNotice/main/images/screenshots/preferences.png" width="19.2%" alt="preferences" />
-  <img src="https://raw.githubusercontent.com/kiloumanjaro/ThriftNotice/main/images/screenshots/map.png" width="19.2%" alt="map" />
-  <img src="https://raw.githubusercontent.com/kiloumanjaro/ThriftNotice/main/images/screenshots/review.png" width="19.2%" alt="review" />
+  <img src="https://raw.githubusercontent.com/kiloumanjaro/ThriftNotice/main/images/screenshots/startup.png" width="19.6%" alt="startup" />
+  <img src="https://raw.githubusercontent.com/kiloumanjaro/ThriftNotice/main/images/screenshots/assist.png" width="19.6%" alt="assist" />
+  <img src="https://raw.githubusercontent.com/kiloumanjaro/ThriftNotice/main/images/screenshots/preferences.png" width="19.6%" alt="preferences" />
+  <img src="https://raw.githubusercontent.com/kiloumanjaro/ThriftNotice/main/images/screenshots/map.png" width="19.6%" alt="map" />
+  <img src="https://raw.githubusercontent.com/kiloumanjaro/ThriftNotice/main/images/screenshots/review.png" width="19.6%" alt="review" />
 </div>
 
 <div align="center">
-  <img src="https://raw.githubusercontent.com/kiloumanjaro/ThriftNotice/main/images/screenshots/shop.png" width="19.2%" alt="shop" />
-  <img src="https://raw.githubusercontent.com/kiloumanjaro/ThriftNotice/main/images/screenshots/favorites.png" width="19.2%" alt="favorites" />
-  <img src="https://raw.githubusercontent.com/kiloumanjaro/ThriftNotice/main/images/screenshots/tabs.png" width="19.2%" alt="tabs" />
-  <img src="https://raw.githubusercontent.com/kiloumanjaro/ThriftNotice/main/images/screenshots/modify.png" width="19.2%" alt="modify" />
-  <img src="https://raw.githubusercontent.com/kiloumanjaro/ThriftNotice/main/images/screenshots/create.png" width="19.2%" alt="create" />
+  <img src="https://raw.githubusercontent.com/kiloumanjaro/ThriftNotice/main/images/screenshots/shop.png" width="19.6%" alt="shop" />
+  <img src="https://raw.githubusercontent.com/kiloumanjaro/ThriftNotice/main/images/screenshots/favorites.png" width="19.6%" alt="favorites" />
+  <img src="https://raw.githubusercontent.com/kiloumanjaro/ThriftNotice/main/images/screenshots/tabs.png" width="19.6%" alt="tabs" />
+  <img src="https://raw.githubusercontent.com/kiloumanjaro/ThriftNotice/main/images/screenshots/modify.png" width="19.6%" alt="modify" />
+  <img src="https://raw.githubusercontent.com/kiloumanjaro/ThriftNotice/main/images/screenshots/create.png" width="19.6%" alt="create" />
 </div>
 
 _For more examples, please refer to the [Documentation](https://example.com)_
