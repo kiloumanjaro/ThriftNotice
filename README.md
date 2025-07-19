@@ -5,13 +5,13 @@
 [![Forks][forks-shield]][forks-url]
 [![Stargazers][stars-shield]][stars-url]
 [![Issues][issues-shield]][issues-url]
-[![project_license][license-shield]][license-url]
+[![GitHub](https://img.shields.io/github/license/kiloumanjaro/ThriftNotice?style=for-the-badge)](https://github.com/kiloumanjaro/ThriftNotice/blob/main/LICENSE)
 [![LinkedIn][linkedin-shield]][linkedin-url]
 
 <!-- PROJECT LOGO -->
 <div align="center">
   <a href="https://github.com/kiloumanjaro/ThriftNotice">
-    <img src="images/logo.png" alt="Logo" width="200" height="200">
+    <img src="images/icon.png" alt="Logo" width="20%" height="20%">
   </a>
   <br />
   <p align="center">
@@ -41,13 +41,13 @@
         <li><a href="#-built-with">📚 Built With</a></li>
       </ul>
     </li>
-    <li><a href="#-screenshots">📱 Screenshots</a></li>
+    <li><a href="#-screenshots--features">📱 Screenshots</a></li>
     <li>
       <a href="#-getting-started">💻 Getting Started</a>
       <ul>
         <li><a href="#-prerequisites">🔧 Prerequisites</a></li>
         <li><a href="#%EF%B8%8F-installation">🛠️ Installation</a></li>
-        <li><a href="#%EF%B8%8F-running-the-application">▶️ Running the Application</a></li>
+        <li><a href="#%EF%B8%8F-running-the-application">▶️ Running</a></li>
       </ul>
     </li>
     <li><a href="#-notes">📝 Notes</a></li>
@@ -70,7 +70,16 @@ This project aims to develop an application that locates ukay-ukay/pop-ups by re
 <!-- SCREENSHOTS -->
 ## 📱 Screenshots & Features
 
-Use this space to show useful examples of how a project can be used. Additional screenshots, code examples and demos work well in this space. You may also link to more resources.
+  <img src="https://raw.githubusercontent.com/kiloumanjaro/ThriftNotice/main/images/screenshots/startup.png" width="19.2%" alt="startup" />
+  <img src="https://raw.githubusercontent.com/kiloumanjaro/ThriftNotice/main/images/screenshots/assist.png" width="19.2%" alt="assist" />
+  <img src="https://raw.githubusercontent.com/kiloumanjaro/ThriftNotice/main/images/screenshots/preferences.png" width="19.2%" alt="preferences" />
+  <img src="https://raw.githubusercontent.com/kiloumanjaro/ThriftNotice/main/images/screenshots/map.png" width="19.2%" alt="map" />
+  <img src="https://raw.githubusercontent.com/kiloumanjaro/ThriftNotice/main/images/screenshots/review.png" width="19.2%" alt="review" />
+  <img src="https://raw.githubusercontent.com/kiloumanjaro/ThriftNotice/main/images/screenshots/shop.png" width="19.2%" alt="shop" />
+  <img src="https://raw.githubusercontent.com/kiloumanjaro/ThriftNotice/main/images/screenshots/favorites.png" width="19.2%" alt="favorites" />
+  <img src="https://raw.githubusercontent.com/kiloumanjaro/ThriftNotice/main/images/screenshots/tabs.png" width="19.2%" alt="tabs" />
+  <img src="https://raw.githubusercontent.com/kiloumanjaro/ThriftNotice/main/images/screenshots/modify.png" width="19.2%" alt="modify" />
+  <img src="https://raw.githubusercontent.com/kiloumanjaro/ThriftNotice/main/images/screenshots/create.png" width="19.2%" alt="create" />
 
 _For more examples, please refer to the [Documentation](https://example.com)_
 
@@ -179,7 +188,8 @@ Don't forget to give the project a star! Thanks again!
 <!-- LICENSE -->
 ## ⚖️ License
 
-Distributed under the project_license. See `LICENSE.txt` for more information.
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
 
 <!-- MARKDOWN LINKS & IMAGES -->
 <!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
@@ -191,8 +201,6 @@ Distributed under the project_license. See `LICENSE.txt` for more information.
 [stars-url]: https://github.com/kiloumanjaro/ThriftNotice/stargazers
 [issues-shield]: https://img.shields.io/github/issues/kiloumanjaro/ThriftNotice.svg?style=for-the-badge
 [issues-url]: https://github.com/kiloumanjaro/ThriftNotice/issues
-[license-shield]: https://img.shields.io/github/license/kiloumanjaro/ThriftNotice.svg?style=for-the-badge
-[license-url]: https://github.com/kiloumanjaro/ThriftNotice/blob/master/LICENSE.txt
 [linkedin-shield]: https://img.shields.io/badge/-LinkedIn-black.svg?style=for-the-badge&logo=linkedin&colorB=555
 [linkedin-url]: https://linkedin.com/in/linkedin_username
 [product-screenshot]: images/screenshot.png
