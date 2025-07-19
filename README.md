@@ -10,6 +10,7 @@
 
 <!-- PROJECT LOGO -->
 <div align="center">
+  <br />
   <a href="https://github.com/kiloumanjaro/ThriftNotice">
     <img src="images/icon.png" alt="Logo" width="20%" height="20%">
   </a>
@@ -71,6 +72,8 @@ This project aims to develop an application that locates ukay-ukay/pop-ups by re
 <!-- SCREENSHOTS -->
 
 ## 📱 Screenshots & Features
+  _For more examples, please refer to the [Documentation](https://drive.google.com/file/d/1iiQQrZf02hVZbq_25RLbFwuvpia_fD36/view?usp=sharing)_
+
 <div align="center">
   <img src="https://raw.githubusercontent.com/kiloumanjaro/ThriftNotice/main/images/screenshots/startup.png" width="19.5%" alt="startup" />
   <img src="https://raw.githubusercontent.com/kiloumanjaro/ThriftNotice/main/images/screenshots/assist.png" width="19.5%" alt="assist" />
@@ -84,7 +87,7 @@ This project aims to develop an application that locates ukay-ukay/pop-ups by re
   <img src="https://raw.githubusercontent.com/kiloumanjaro/ThriftNotice/main/images/screenshots/create.png" width="19.5%" alt="create" />
 </div>
 
-_For more examples, please refer to the [Documentation](https://example.com)_
+
 
 <!-- GETTING STARTED -->
 
