@@ -77,9 +77,6 @@ This project aims to develop an application that locates ukay-ukay/pop-ups by re
   <img src="https://raw.githubusercontent.com/kiloumanjaro/ThriftNotice/main/images/screenshots/preferences.png" width="19.5%" alt="preferences" />
   <img src="https://raw.githubusercontent.com/kiloumanjaro/ThriftNotice/main/images/screenshots/map.png" width="19.5%" alt="map" />
   <img src="https://raw.githubusercontent.com/kiloumanjaro/ThriftNotice/main/images/screenshots/review.png" width="19.5%" alt="review" />
-</div>
-
-<div align="center">
   <img src="https://raw.githubusercontent.com/kiloumanjaro/ThriftNotice/main/images/screenshots/shop.png" width="19.5%" alt="shop" />
   <img src="https://raw.githubusercontent.com/kiloumanjaro/ThriftNotice/main/images/screenshots/favorites.png" width="19.5%" alt="favorites" />
   <img src="https://raw.githubusercontent.com/kiloumanjaro/ThriftNotice/main/images/screenshots/tabs.png" width="19.5%" alt="tabs" />
