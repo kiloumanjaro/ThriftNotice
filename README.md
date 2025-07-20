@@ -22,7 +22,7 @@
     <br />
     <p align="center">
       <a href="#"><img alt="Status" src="https://img.shields.io/badge/status-Beta-yellow?style=flat&color=yellow" /></a>
-      <a href="https://www.figma.com/file/ViBW8GbUgkTMmK6a80h8X1/Read-You?node-id=7028%3A23673"><img alt="Figma" src="https://img.shields.io/badge/Figma-ThriftNotice-FE5196?logo=figma&style=flat" /></a>
+      <a href="https://www.figma.com/design/Wphx1EKR0eY2Io0gokTvyn/ThriftNotice?node-id=0-1&t=GhaLetxFdu1aiIcZ-1"><img alt="Figma" src="https://img.shields.io/badge/Figma-ThriftNotice-FE5196?logo=figma&style=flat" /></a>
       <a href="https://www.python.org"><img alt="Python Versions" src="https://img.shields.io/badge/python-3.12%2B-blue?logo=python&logoColor=white" /></a>
       <a href="https://github.com/kiloumanjaro/ThriftNotice/commits/main"><img alt="Last commit" src="https://proxy.cyb3rko.de/shields/github/last-commit/cyb3rko/flashdim?color=coral&logo=git&logoColor=white"/</a>
     </p>
@@ -217,7 +217,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 [issues-shield]: https://img.shields.io/github/issues/kiloumanjaro/ThriftNotice.svg?style=for-the-badge
 [issues-url]: https://github.com/kiloumanjaro/ThriftNotice/issues
 [linkedin-shield]: https://img.shields.io/badge/-LinkedIn-black.svg?style=for-the-badge&logo=linkedin&colorB=555
-[linkedin-url]: https://linkedin.com/in/linkedin_username
+[linkedin-url]: https://www.linkedin.com/in/kiloumanjaro/overlay/urn:li:fsd_profileProject:(ACoAAFzjJQAB9x0aScdtku_x1uEPQArwlLGW7CQ,653859170)/skill-associations-details/
 [product-screenshot]: images/screenshot.png
 [Python]: https://img.shields.io/badge/python-3670A0?style=for-the-badge&logo=python&logoColor=ffdd54
 [Python-url]: https://www.python.org/
