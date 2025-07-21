@@ -72,7 +72,7 @@ This project aims to develop an application that locates ukay-ukay/pop-ups by re
 <!-- SCREENSHOTS -->
 
 ## 📱 Screenshots & Features
-  _For more examples, please refer to the [Documentation](https://drive.google.com/file/d/1iiQQrZf02hVZbq_25RLbFwuvpia_fD36/view?usp=sharing)_
+> _For more examples, please refer to the [Documentation](https://drive.google.com/file/d/1iiQQrZf02hVZbq_25RLbFwuvpia_fD36/view?usp=sharing)_
 
 <div align="center">
   <img src="https://raw.githubusercontent.com/kiloumanjaro/ThriftNotice/main/images/screenshots/startup.png" width="19.5%" alt="startup" />
@@ -99,7 +99,7 @@ Follow these steps to get ThriftNotice running on your local machine.
 
 - Python 3.12 or higher
 - Poetry (Python package manager)
-- Git
+- Flet
 
 ### 🛠️ Installation
 
