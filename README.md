@@ -24,7 +24,7 @@
       <a href="#"><img alt="Status" src="https://img.shields.io/badge/status-Beta-yellow?style=flat&color=yellow" /></a>
       <a href="https://www.figma.com/design/Wphx1EKR0eY2Io0gokTvyn/ThriftNotice?node-id=0-1&t=GhaLetxFdu1aiIcZ-1"><img alt="Figma" src="https://img.shields.io/badge/Figma-ThriftNotice-FE5196?logo=figma&style=flat" /></a>
       <a href="https://www.python.org"><img alt="Python Versions" src="https://img.shields.io/badge/python-3.12%2B-blue?logo=python&logoColor=white" /></a>
-      <a href="https://github.com/kiloumanjaro/Watchoble/commits/main"><img alt="Last commit" src="https://proxy.cyb3rko.de/shields/github/last-commit/kiloumanjaro/ThriftNotice?color=coral&logo=git&logoColor=white"/</a>
+      <a href="https://github.com/kiloumanjaro/ThriftNotice/commits/main"><img alt="Last commit" src="https://proxy.cyb3rko.de/shields/github/last-commit/kiloumanjaro/ThriftNotice?color=coral&logo=git&logoColor=white"/</a>
     </p>
     <a href="https://github.com/kiloumanjaro/ThriftNotice/issues/new?labels=bug&template=bug-report---.md">Report Bug</a>
     &middot;
